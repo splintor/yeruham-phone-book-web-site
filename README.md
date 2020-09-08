@@ -1,6 +1,7 @@
 ## ספר הטלפונים של ירוחם - אתר האינטרנט 
 
-A [next.js](https://nextjs.org/) site to give access Yeruham Phone book
+A [next.js](https://nextjs.org/) site to provide access to Yeruham Phone book data
+(which is stored on Firebase Firestore, and accessed through Firebase Functions).
 
 ### Things left to be done:
 1. TODO: Format pages properly

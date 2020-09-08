@@ -2,8 +2,7 @@ import { GetServerSideProps } from 'next';
 import absoluteUrl from 'next-absolute-url/index';
 import React from 'react';
 import Head from 'next/head'
-import Link from 'next/link'
-import { siteTitle } from '../consts';
+import { siteTitle } from '../consts'
 
 export const getServerSideProps: GetServerSideProps = async ({ req}) => {
   const { origin } = absoluteUrl(req)
