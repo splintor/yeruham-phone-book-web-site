@@ -5,8 +5,8 @@ import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
 import fetch from 'isomorphic-fetch'
 import { parse } from 'cookie'
+import { LoginPage } from '../../components/LoginPage';
 import { functionsUrl, siteTitle } from '../../consts'
-import { LoginPage } from '../LoginPage'
 
 interface PageProps {
   title: string
