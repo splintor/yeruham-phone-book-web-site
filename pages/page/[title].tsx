@@ -20,17 +20,29 @@ interface PageParams extends ParsedUrlQuery {
 }
 
 export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = async ({ params, req}) => {
-  const { origin } = absoluteUrl(req)
-  const { auth } = parse(req.headers.cookie)
-  const res = await fetch('https://europe-west3-yeruham-phone-book.cloudfunctions.net/page/' + encodeURI(params.title as string), { headers: { Authorization: auth } })
-  return {
-    props: {
-      title: params.title,
-      html: res.ok && (await res.json()).html,
-      status: res.status,
-      origin,
-      url: decodeURI(origin + req.url),
-    },
+  try {
+    const { origin } = absoluteUrl(req)
+    const { auth } = parse(req.headers.cookie)
+    const res = await fetch('https://europe-west3-yeruham-phone-book.cloudfunctions.net/page/' + encodeURI(params.title as string), { headers: { Authorization: auth } })
+    return {
+      props: {
+        title: params.title,
+        html: res.ok && (await res.json()).html,
+        status: res.status,
+        origin,
+        url: decodeURI(origin + req.url),
+      },
+    }
+  } catch (e) {
+    return {
+      props: {
+        title: params.title,
+        html: 'error',
+        status: 200,
+        origin,
+        url: decodeURI(origin + req.url),
+      },
+    }
   }
 }
 
