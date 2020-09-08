@@ -22,7 +22,8 @@ interface PageParams extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = async ({ params, req}) => {
   try {
     const { origin } = absoluteUrl(req)
-    const { auth } = parse(req.headers.cookie)
+    console.log('req.headers.cookie', req.headers.cookie);
+    const { auth } = parse(req.headers.cookie || '')
     const res = await fetch('https://europe-west3-yeruham-phone-book.cloudfunctions.net/page/' + encodeURI(params.title as string), { headers: { Authorization: auth } })
     return {
       props: {
