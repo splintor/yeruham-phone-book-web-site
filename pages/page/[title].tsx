@@ -23,12 +23,13 @@ interface PageParams extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = async ({ params, req}) => {
   const { origin } = absoluteUrl(req)
   const { auth } = parse(req.headers.cookie || '')
+  const title = params.title.replace(/_/g, ' ')
   const res = auth
-    ? await fetch(`${functionsUrl}/page/${encodeURI(params.title as string)}`, { headers: { Authorization: auth } })
+    ? await fetch(`${functionsUrl}/page/${encodeURI(title)}`, { headers: { Authorization: auth } })
     : { status: 401 }
   return {
     props: {
-      title: params.title,
+      title,
       html: res.ok ? (await res.json()).html : '',
       status: res.status,
       origin,
