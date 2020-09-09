@@ -56,7 +56,7 @@ function renderContent({ status, html, title }: Pick<PageProps, 'status' | 'titl
 
 export default function Page({ title, html, status, origin, url }) {
   const pageTitle = `${title} - ${siteTitle}`
-  return <div dir="rtl">
+  return <div className="page">
     <Head>
       <title>{pageTitle}</title>
       <meta property="og:title" content={pageTitle} key="title"/>

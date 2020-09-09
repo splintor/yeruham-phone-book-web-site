@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req}) => {
 
 export default function Home( { url, origin }) {
   return (
-    <div className="container" dir="rtl">
+    <div className="home">
       <Head>
         <title>{siteTitle}</title>
         <meta property="og:title" content={siteTitle} key="title"/>

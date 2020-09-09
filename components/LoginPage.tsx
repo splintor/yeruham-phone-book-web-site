@@ -1,20 +1,47 @@
-import React, { useCallback, useState } from 'react';
-import { functionsUrl } from '../consts';
+import React, { FormEvent, useCallback, useState } from 'react';
+import { adminEmail, adminPhone, functionsUrl, siteTitle } from '../consts';
 
 const defaultLoginHandler = () => {
   location.reload();
   return true;
 }
+
+enum ErrorType {
+  None,
+  NotFound,
+  NetworkError
+}
+
+function renderError(errorType: ErrorType) {
+  switch (errorType) {
+    case ErrorType.None:
+      return <img src="/logo.png" alt={siteTitle} />
+
+    case ErrorType.NetworkError:
+      return 'אירעה תקלה בתקשורת עם השרת (כן, כן, התקשורת אשמה...)';
+
+    case ErrorType.NotFound:
+      return <div>
+        מספר הטלפון שהוכנס לא קיים בספר הטלפונים.
+        <div className="contact">אם הינך תושב/ת ירוחם, שלח/י את פרטיך
+        ל-<a href={`mailto:${adminEmail}?subject=נא להוסיף אותי לספר הטלפונים של ירוחם`}>{adminEmail}</a>{' '}<br/>
+        או למספר <span className="adminPhone">{adminPhone}</span> ונשמח להוסיף אותך!
+        </div>
+      </div>
+  }
+}
+
 export function LoginPage({ onLogin = defaultLoginHandler }) {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorType, setErrorType] = useState(ErrorType.None)
 
-  const isLoginDisabled = phoneNumber?.length < 9 || isLoading
+  const isLoginDisabled = phoneNumber?.replace(/[-+]/g, '').length < 9 || isLoading
   const loginTitle = isLoading ? 'בודק...' : 'אישור'
 
-  const onOK = useCallback(async () => {
-    setErrorMessage('');
+  const onSubmit = useCallback(async (e: FormEvent) => {
+    e.preventDefault();
+    setErrorType(ErrorType.None);
     setIsLoading(true);
     try {
       const res = await fetch(`${functionsUrl}/login/${phoneNumber}`);
@@ -26,24 +53,23 @@ export function LoginPage({ onLogin = defaultLoginHandler }) {
           return; // leave isLoading true until page is reloaded
         }
       } else {
-        setErrorMessage('מספר הטלפון שהוכנס לא קיים בספר הטלפונים')
+        setErrorType(ErrorType.NotFound)
       }
     } catch (e) {
       console.error('failed to login', e)
-      setErrorMessage('אירעה תקלה בתקשורת עם השרת (כן, כן, התקשורת אשמה...)')
+      setErrorType(ErrorType.NetworkError)
     }
     setIsLoading(false);
   }, [phoneNumber])
 
-  return <div className="LoginPage">
+  return <div className="loginPage">
+    <h3>{siteTitle}</h3>
     <div>ספר הטלפונים מיועד לתושבי ירוחם בלבד.</div>
     <div>כדי לוודא שהינך תושב/ת ירוחם, יש להכניס את מספר הטלפון שלך:</div>
-    <div>
+    <form onSubmit={onSubmit} >
       <input type="phone" disabled={isLoading} value={phoneNumber} onChange={event => setPhoneNumber(event.target.value)}/>
-    </div>
-    <div>
-      <button onClick={onOK} disabled={isLoginDisabled}>{loginTitle}</button>
-    </div>
-    <div className="error">{errorMessage}</div>
+      <button type="submit" disabled={isLoginDisabled}>{loginTitle}</button>
+    </form>
+    <div className={'error ' + ErrorType[errorType]}>{renderError(errorType)}</div>
   </div>
 }

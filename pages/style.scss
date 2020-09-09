@@ -1,8 +1,72 @@
 body {
+  direction: rtl;
+  font-family: Verdana, Geneva, sans-serif;
 }
 
-.LoginPage {
+.page, .home {
+  display: flex;
+  height: 100vh;
+  margin: auto;
+}
+
+.loginPage {
+  font-size: 1.3em;
+  border: 1px solid grey;
+  border-radius: 5px;
+  box-shadow: 2px 2px rebeccapurple;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  padding: 10px;
+
+  h3 {
+    margin: 10px auto;
+  }
+
+  form {
+    margin-block: 10px;
+    display: flex;
+    justify-content: center;
+
+    input {
+
+      margin-inline-end: 8px;
+      font-size: 1em;
+      border-radius: 5px;
+    }
+
+    button {
+      border-radius: 20px;
+      min-width: 4em;
+      margin: 3px;
+      font-size: 1em;
+      background-color: #3899EC;
+      outline: 0;
+      padding: 0;
+      color: white;
+    }
+  }
+
   .error {
     color: red;
+    height: 160px;
+    display: flex;
+
+    .contact {
+      color: purple;
+    }
+
+    .adminPhone {
+      font-weight: bold;
+    }
+
+    &.None {
+      justify-content: center;
+
+      img {
+        width: auto;
+        height: 100%;
+      }
+    }
   }
 }
