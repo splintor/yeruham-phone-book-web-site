@@ -9,3 +9,5 @@ A [next.js](https://nextjs.org/) site to provide access to Yeruham Phone book da
 1. TODO: Build proper home page
 1. TODO: Handle lists and tags
 1. TODO: Enable to edit a page 
+1. TODO: X Think of how to handle deletion (also so the flutter app can be updated about changes)
+1. TODO: X Handle page history

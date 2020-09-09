@@ -63,7 +63,7 @@ export function LoginPage({ onLogin = defaultLoginHandler }) {
   }, [phoneNumber])
 
   return <div className="loginPage">
-    <h3>{siteTitle}</h3>
+    <h3 className="title">{siteTitle}</h3>
     <div>ספר הטלפונים מיועד לתושבי ירוחם בלבד.</div>
     <div>כדי לוודא שהינך תושב/ת ירוחם, יש להכניס את מספר הטלפון שלך:</div>
     <form onSubmit={onSubmit} >

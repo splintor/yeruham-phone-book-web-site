@@ -5,8 +5,58 @@ body {
 
 .page, .home {
   display: flex;
-  height: 100vh;
+  height: 96vh;
   margin: auto;
+}
+
+
+.title {
+  margin: 10px auto;
+}
+
+.home {
+  justify-content: center;
+  align-content: center;
+
+  main {
+    margin-inline: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    > div {
+      white-space: nowrap;
+    }
+  }
+
+  .logo img {
+    margin-block-start: 10px;
+    width: 200px;
+  }
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-block-end: 10px;
+
+  input {
+    border-radius: 20px;
+    border: 1px solid grey;
+    padding: 10px;
+    width: 100%;
+    font-size: 1.1em;
+    outline: 0;
+
+    & ~ * {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-inline-start: -30px;
+    }
+  }
 }
 
 .loginPage {
@@ -19,20 +69,16 @@ body {
   margin: auto;
   padding: 10px;
 
-  h3 {
-    margin: 10px auto;
-  }
-
   form {
     margin-block: 10px;
     display: flex;
     justify-content: center;
 
     input {
-
       margin-inline-end: 8px;
       font-size: 1em;
       border-radius: 5px;
+      outline: 0;
     }
 
     button {
