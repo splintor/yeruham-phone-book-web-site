@@ -1,6 +1,7 @@
 body {
   direction: rtl;
   font-family: Verdana, Geneva, sans-serif;
+  background-color: beige;
 }
 
 .page, .home {
@@ -60,6 +61,7 @@ body {
 }
 
 .loginPage {
+  background: aliceblue;
   font-size: 1.3em;
   border: 1px solid grey;
   border-radius: 5px;
@@ -84,12 +86,18 @@ body {
     button {
       border-radius: 20px;
       min-width: 4em;
-      margin: 3px;
-      font-size: 1em;
+      font-size: 0.8em;
       background-color: #3899EC;
+      border: 1px solid #3899EC;
       outline: 0;
-      padding: 0;
+      padding: 0 17px;
       color: white;
+      text-decoration: none;
+      user-select: none;
+
+      &:disabled {
+        color: lightgrey;
+      }
     }
   }
 
