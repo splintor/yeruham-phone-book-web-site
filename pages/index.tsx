@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { parse } from 'cookie'
 import Head from 'next/head'
 import fetch from 'isomorphic-fetch'
+import { AccountBadge } from '../components/AccountBadge';
 import { LoginPage } from '../components/LoginPage'
 import { adminEmail, functionsUrl, siteTitle } from '../consts'
 import { PageData } from '../types/PageData';
@@ -40,6 +41,7 @@ function HomeComponent({ pages }: Pick<PageProps, 'pages'>) {
           </span>
         </form>
 
+        <AccountBadge/>
         <div>
         האתר זמין גם כ<a href="https://play.google.com/store/apps/details?id=com.splintor.yeruhamphonebook">אפליקצית אנדרואיד</a> וכ<a href="https://groups.google.com/d/msg/yerucham1/QWQYnxeXNfU/Q104gimvAAAJ">בוט בטלגרם</a>
         </div>

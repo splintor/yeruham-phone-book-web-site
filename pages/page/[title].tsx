@@ -5,6 +5,7 @@ import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
 import fetch from 'isomorphic-fetch'
 import { parse } from 'cookie'
+import { AccountBadge } from '../../components/AccountBadge';
 import { LoginPage } from '../../components/LoginPage';
 import { functionsUrl, siteTitle } from '../../consts'
 import { PageData } from '../../types/PageData';
@@ -41,6 +42,7 @@ function renderContent({ status, html, title }: Pick<PageProps, 'status'> & Page
 
     default:
       return <div>
+        <AccountBadge/>
         <h1>{title}</h1>
         <div dangerouslySetInnerHTML={{ __html: html }}/>
       </div>
