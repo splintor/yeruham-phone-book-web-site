@@ -47,8 +47,8 @@ export function LoginPage({ onLogin = defaultLoginHandler }) {
       const res = await fetch(`${functionsUrl}/login/${phoneNumber}`);
       if (res.ok) {
         const { auth, authTitle } = await res.json();
-        document.cookie = `auth=${auth};max-age=2147483647`
-        document.cookie = `authTitle=${authTitle};max-age=2147483647`
+        document.cookie = `auth=${auth};path=/;max-age=2147483647`
+        document.cookie = `authTitle=${authTitle};path=/;max-age=2147483647`
         const onLoginResult = onLogin && onLogin();
         if (onLoginResult) {
           return; // leave isLoading true until page is reloaded
