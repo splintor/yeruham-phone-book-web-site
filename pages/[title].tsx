@@ -5,11 +5,11 @@ import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
 import fetch from 'isomorphic-fetch'
 import { parse } from 'cookie'
-import { AccountBadge } from '../../components/AccountBadge';
-import { LoginPage } from '../../components/LoginPage';
-import { functionsUrl, siteTitle } from '../../consts'
-import { PageData } from '../../types/PageData';
-import { PageProps } from '../../types/PageProps';
+import { AccountBadge } from '../components/AccountBadge';
+import { LoginPage } from '../components/LoginPage';
+import { functionsUrl, siteTitle } from '../consts'
+import { PageData } from '../types/PageData';
+import { PageProps } from '../types/PageProps';
 
 interface PageParams extends ParsedUrlQuery {
   title: string
@@ -27,6 +27,8 @@ export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = asy
       pages: res.ok ? [await res.json()] : [{ title }],
       status: res.status,
       origin,
+      auth,
+      authTitle,
       url: decodeURI(origin + req.url),
     },
   }
