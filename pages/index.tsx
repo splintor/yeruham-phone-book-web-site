@@ -4,16 +4,13 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { parse } from 'cookie'
 import Head from 'next/head'
+import fetch from 'isomorphic-fetch'
 import { LoginPage } from '../components/LoginPage'
-import { adminEmail, siteTitle } from '../consts'
+import { adminEmail, functionsUrl, siteTitle } from '../consts'
+import { PageData } from '../types/PageData';
+import { PageProps } from '../types/PageProps';
 
-interface HomeProps {
-  url: string
-  origin: string
-  status: number
-}
-
-export const getServerSideProps: GetServerSideProps = async ({ req}) => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req, query}) => {
   const { origin } = absoluteUrl(req)
   const { auth } = parse(req.headers.cookie || '')
   const status = auth ? 200 : 401
@@ -21,12 +18,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req}) => {
     props: {
       origin,
       status,
+      pages,
       url: decodeURI(origin + req.url),
     },
   }
 }
 
-function HomeComponent() {
+function HomeComponent({ pages }: Pick<PageProps, 'pages'>) {
   const { search: initialSearch } = useRouter().query
   const [search, setSearch] = useState(initialSearch)
 
@@ -56,7 +54,7 @@ function HomeComponent() {
   )
 }
 
-export default function Home( { url, origin, status }) {
+export default function Home({ url, origin, status, pages }: PageProps) {
   return <div className="home">
     <Head>
       <title>{siteTitle}</title>
@@ -65,6 +63,6 @@ export default function Home( { url, origin, status }) {
       <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
       <link rel="icon" href="/favicon.ico"/>
     </Head>
-    {status === 401 ? <LoginPage/> : <HomeComponent/>}
+    {status === 401 ? <LoginPage/> : <HomeComponent pages={pages}/>}
   </div>
 }

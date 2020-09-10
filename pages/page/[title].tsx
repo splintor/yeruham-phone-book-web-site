@@ -7,14 +7,8 @@ import fetch from 'isomorphic-fetch'
 import { parse } from 'cookie'
 import { LoginPage } from '../../components/LoginPage';
 import { functionsUrl, siteTitle } from '../../consts'
-
-interface PageProps {
-  title: string
-  html: string
-  status: number
-  origin: string
-  url: string
-}
+import { PageData } from '../../types/PageData';
+import { PageProps } from '../../types/PageProps';
 
 interface PageParams extends ParsedUrlQuery {
   title: string
@@ -22,15 +16,14 @@ interface PageParams extends ParsedUrlQuery {
 
 export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = async ({ params, req}) => {
   const { origin } = absoluteUrl(req)
-  const { auth } = parse(req.headers.cookie || '')
+  const { auth, authTitle } = parse(req.headers.cookie || '')
   const title = params.title.replace(/_/g, ' ')
   const res = auth
     ? await fetch(`${functionsUrl}/page/${encodeURI(title)}`, { headers: { Authorization: auth } })
     : { status: 401 }
   return {
     props: {
-      title,
-      html: res.ok ? (await res.json()).html : '',
+      pages: res.ok ? [await res.json()] : [{ title }],
       status: res.status,
       origin,
       url: decodeURI(origin + req.url),
@@ -38,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<PageProps, PageParams> = asy
   }
 }
 
-function renderContent({ status, html, title }: Pick<PageProps, 'status' | 'title' | 'html'>) {
+function renderContent({ status, html, title }: Pick<PageProps, 'status'> & PageData) {
   switch(status) {
     case 404:
       return <h3 className="notFound">הדף <span className="title">{title}</span> לא נמצא בספר הטלפונים</h3>
@@ -54,7 +47,8 @@ function renderContent({ status, html, title }: Pick<PageProps, 'status' | 'titl
   }
 }
 
-export default function Page({ title, html, status, origin, url }) {
+export default function Page({ pages, status, origin, url }: PageProps) {
+  const [{ title, html }] = pages
   const pageTitle = `${title} - ${siteTitle}`
   return <div className="page">
     <Head>
