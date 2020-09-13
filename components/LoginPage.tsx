@@ -1,9 +1,10 @@
-import React, { FormEvent, useCallback, useState } from 'react';
-import { adminEmail, adminPhone, siteTitle } from '../utils/consts';
+import React, { FormEvent, useCallback, useState } from 'react'
+import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
+import { setAuthCookies } from '../utils/cookies'
 
 const defaultLoginHandler = () => {
-  location.reload();
-  return true;
+  location.reload()
+  return true
 }
 
 enum ErrorType {
@@ -18,7 +19,7 @@ function renderError(errorType: ErrorType) {
       return <img src="/logo.png" alt={siteTitle} />
 
     case ErrorType.NetworkError:
-      return 'אירעה תקלה בתקשורת עם השרת (כן, כן, התקשורת אשמה...)';
+      return 'אירעה תקלה בתקשורת עם השרת (כן, כן, התקשורת אשמה...)'
 
     case ErrorType.NotFound:
       return <div>
@@ -40,18 +41,17 @@ export function LoginPage({ onLogin = defaultLoginHandler }) {
   const loginTitle = isLoading ? 'בודק...' : 'אישור'
 
   const onSubmit = useCallback(async (e: FormEvent) => {
-    e.preventDefault();
-    setErrorType(ErrorType.None);
-    setIsLoading(true);
+    e.preventDefault()
+    setErrorType(ErrorType.None)
+    setIsLoading(true)
     try {
-      const res = await fetch(`/api/login/${phoneNumber}`);
+      const res = await fetch(`/api/login/${phoneNumber}`)
       if (res.ok) {
-        const { auth, authTitle } = await res.json();
-        document.cookie = `auth=${auth};path=/;max-age=2147483647`
-        document.cookie = `authTitle=${authTitle};path=/;max-age=2147483647`
-        const onLoginResult = onLogin && onLogin();
+        const { auth, authTitle } = await res.json()
+        setAuthCookies(auth, authTitle)
+        const onLoginResult = onLogin && onLogin()
         if (onLoginResult) {
-          return; // leave isLoading true until page is reloaded
+          return // leave isLoading true until page is reloaded
         }
       } else {
         setErrorType(ErrorType.NotFound)
@@ -60,7 +60,7 @@ export function LoginPage({ onLogin = defaultLoginHandler }) {
       console.error('failed to login', e)
       setErrorType(ErrorType.NetworkError)
     }
-    setIsLoading(false);
+    setIsLoading(false)
   }, [phoneNumber])
 
   return <div className="loginPage">

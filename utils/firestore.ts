@@ -62,7 +62,11 @@ export const getPageJSON = (page: QueryDocumentSnapshot<PageData>) =>
   ({ id: page.id, updateDate: page.updateTime.toDate().toISOString(), ...page.data() })
 
 export function checkLogin(request: IncomingMessage, { requireAdmin }: { requireAdmin?: boolean } = {}): DatabaseResponse<any> {
-  const { auth } = parse(request.headers['cookie'] || '')
+  console.log('in checkLogin')
+  const cookieHeader = request.headers['cookie'] || ''
+  console.log('cookieHeader', cookieHeader);
+  const { auth } = parse(cookieHeader)
+  console.log('auth', auth);
   const logData = { auth, ...getRequestLogData(request) }
 
   if (!auth || auth.slice(0, authPrefix.length) !== authPrefix) {

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { parse } from 'cookie'
-import Link from 'next/link';
-import { TitleLink } from './TitleLink';
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { parseAuthCookies, setAuthCookies } from '../utils/cookies'
+import { TitleLink } from './TitleLink'
 
 export function AccountBadge() {
   const [authTitle, setAuthTitle] = useState('')
   useEffect(() => {
-    const { authTitle } = parse(document.cookie || '')
+    const { authTitle } = parseAuthCookies()
     setAuthTitle(authTitle)
   }, [])
 
@@ -14,7 +14,7 @@ export function AccountBadge() {
     מחובר כ
     <TitleLink title={authTitle}/> (
     <Link href="/">
-      <a onClick={() => document.cookie = 'auth=;path=/'}>התנתק</a>
+      <a onClick={() => setAuthCookies('', '')}>התנתק</a>
     </Link>
     )
   </div>
