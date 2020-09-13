@@ -62,11 +62,8 @@ export const getPageJSON = (page: QueryDocumentSnapshot<PageData>) =>
   ({ id: page.id, updateDate: page.updateTime.toDate().toISOString(), ...page.data() })
 
 export function checkLogin(request: IncomingMessage, { requireAdmin }: { requireAdmin?: boolean } = {}): DatabaseResponse<any> {
-  console.log('in checkLogin')
   const cookieHeader = request.headers['cookie'] || ''
-  console.log('cookieHeader', cookieHeader);
   const { auth } = parse(cookieHeader)
-  console.log('auth', auth);
   const logData = { auth, ...getRequestLogData(request) }
 
   if (!auth || auth.slice(0, authPrefix.length) !== authPrefix) {
@@ -101,10 +98,10 @@ export async function getPage(title: string, request: IncomingMessage): Promise<
   }
 
   if (result.empty) {
-    console.log(`Page with title '${title}' was not found`, getRequestLogData(request))
+    console.warn(`Page with title '${title}' was not found`, getRequestLogData(request))
     return DatabaseResponse.notFound()
   } else {
-    console.log(`Found page '${title}'`, getRequestLogData(request))
+    console.debug(`Found page '${title}'`, getRequestLogData(request))
     return DatabaseResponse.ok(getPageJSON(result.docs[0]))
   }
 }
@@ -144,6 +141,6 @@ export async function getPages({ search, tag, since }: PagesFilter, request: Inc
     })
   }
 
-  console.log(`found ${docs.length} pages`, getRequestLogData(request))
+  console.debug(`found ${docs.length} pages`, getRequestLogData(request))
   return DatabaseResponse.ok({ pages: docs.map(getPageJSON) })
 }
