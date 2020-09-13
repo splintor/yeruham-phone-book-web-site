@@ -23,6 +23,6 @@ export function sendUnsupportedMethodResponse(response: ServerResponse, message:
 }
 
 export function getRequestLogData(request: IncomingMessage) {
-  const { url, headers: { host, 'fastly-client-ip': ip }, method } = request
+  const { url, headers: { host, 'x-forwarded-for': ip }, method } = request
   return { url, host, method, ip }
 }
