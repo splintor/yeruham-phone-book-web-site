@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "cookie": "^0.4.1",
+    "firebase-admin": "^9.1.1",
     "isomorphic-fetch": "^2.2.1",
     "next": "9.3.5",
     "next-absolute-url": "^1.2.2",

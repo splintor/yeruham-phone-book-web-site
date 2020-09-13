@@ -1,4 +1,4 @@
 export interface PageData {
-  title: string;
-  html: string;
+  title: string
+  html: string
 }

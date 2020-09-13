@@ -1,5 +1,5 @@
 import React, { FormEvent, useCallback, useState } from 'react';
-import { adminEmail, adminPhone, functionsUrl, siteTitle } from '../consts';
+import { adminEmail, adminPhone, siteTitle } from '../utils/consts';
 
 const defaultLoginHandler = () => {
   location.reload();
@@ -44,7 +44,7 @@ export function LoginPage({ onLogin = defaultLoginHandler }) {
     setErrorType(ErrorType.None);
     setIsLoading(true);
     try {
-      const res = await fetch(`${functionsUrl}/login/${phoneNumber}`);
+      const res = await fetch(`/api/login/${phoneNumber}`);
       if (res.ok) {
         const { auth, authTitle } = await res.json();
         document.cookie = `auth=${auth};path=/;max-age=2147483647`
