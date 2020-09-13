@@ -2,6 +2,7 @@ body {
   direction: rtl;
   font-family: Verdana, Geneva, sans-serif;
   background-color: beige;
+  box-sizing: border-box;
 }
 
 .page, .home {
@@ -29,12 +30,47 @@ body {
     > div {
       white-space: nowrap;
     }
+
+    &.searchStarted {
+      .title {
+        position: fixed;
+        top: 0;
+        right: 10px;
+      }
+
+      .searchForm {
+        position: fixed;
+        top: 60px;
+        right: 10px;
+        width: calc(100vw - 100px);
+      }
+
+      .logo {
+        position: fixed;
+        top: 45px;
+        left: 10px;
+        img {
+          width: 60px;
+        }
+      }
+    }
   }
 
   .logo img {
     margin-block-start: 10px;
     width: 200px;
   }
+}
+
+.results {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 20px);
+  height: calc(100vh - 130px);
+  top: 120px;
+  overflow: scroll;
+  right: 17px;
 }
 
 .searchForm {
@@ -70,6 +106,7 @@ body {
   flex-direction: column;
   margin: auto;
   padding: 10px;
+  max-width: calc(100vw - 30px);
 
   form {
     margin-block: 10px;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { parse } from 'cookie'
 import Link from 'next/link';
+import { TitleLink } from './TitleLink';
 
 export function AccountBadge() {
   const [authTitle, setAuthTitle] = useState('')
@@ -11,9 +12,7 @@ export function AccountBadge() {
 
   return authTitle && <div className="account">
     מחובר כ
-    <Link href={`/${authTitle.replace(/ /g, '_')}`}>
-      <a>{authTitle}</a>
-    </Link> (
+    <TitleLink title={authTitle}/> (
     <Link href="/">
       <a onClick={() => document.cookie = 'auth=;path=/'}>התנתק</a>
     </Link>
