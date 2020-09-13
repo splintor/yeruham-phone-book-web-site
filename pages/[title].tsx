@@ -3,13 +3,12 @@ import Head from 'next/head'
 import React from 'react'
 import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
-import { parse } from 'cookie'
-import { AccountBadge } from '../components/AccountBadge';
-import { LoginPage } from '../components/LoginPage';
+import { AccountBadge } from '../components/AccountBadge'
+import { LoginPage } from '../components/LoginPage'
 import { siteTitle } from '../utils/consts'
-import { PageData } from '../types/PageData';
-import { PageProps } from '../types/PageProps';
-import { getPage } from '../utils/firestore';
+import { PageData } from '../types/PageData'
+import { PageProps } from '../types/PageProps'
+import { getPage } from '../utils/firestore'
 
 interface PageParams extends ParsedUrlQuery {
   title: string

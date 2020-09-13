@@ -9,15 +9,16 @@ import { AccountBadge } from '../components/AccountBadge'
 import { LoginPage } from '../components/LoginPage'
 import { TitleLink } from '../components/TitleLink'
 import { adminEmail, siteTitle } from '../utils/consts'
-import useDebounce from '../hooks/useDebounce';
+import useDebounce from '../hooks/useDebounce'
 import { PageData } from '../types/PageData'
 import { PageProps } from '../types/PageProps'
-import { checkLogin, getPages } from '../utils/firestore';
+import { parseAuthCookies } from '../utils/cookies';
+import { checkLogin, getPages } from '../utils/firestore'
 
 async function searchForPages(search: string) {
-  const { auth } = parse(document.cookie || '')
+  const { auth } = parseAuthCookies()
   if (auth && search) {
-    const res = await fetch(`/api/pages/search/${search}`, { headers: { Authorization: auth } })
+    const res = await fetch(`/api/pages/search/${search}`, { headers: { Cookie: document.cookie } })
     if (res.ok) {
       return (await res.json()).pages as PageData[]
     }
@@ -29,7 +30,6 @@ async function searchForPages(search: string) {
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req}) => {
   const { origin } = absoluteUrl(req)
   const loginCheck = checkLogin(req)
-  console.log(loginCheck.status);
 
   return {
     props: {
@@ -47,7 +47,7 @@ function HomeComponent({ pages }: Pick<PageProps, 'pages'>) {
   const [search, setSearch] = useState(initialSearch as string || '')
   const [isSearching, setIsSearching] = useState(false)
   const [searchStarted, setSearchStarted] = useState(false)
-  const debouncedSearchTerm = useDebounce(search, 500);
+  const debouncedSearchTerm = useDebounce(search, 500)
   const stringBeingSearched = useRef(search)
   const pagesToShow = results || pages
 
@@ -72,7 +72,7 @@ function HomeComponent({ pages }: Pick<PageProps, 'pages'>) {
           setIsSearching(false)
           setResults(results)
         }
-      });
+      })
     } else {
       setResults(null)
     }
