@@ -86,13 +86,13 @@ body {
     width: 100%;
     font-size: 1.1em;
     outline: 0;
+  }
 
-    & ~ * {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      margin-inline-start: -30px;
-    }
+  .searchIcon {
+    display: inline-block !important;
+    width: 20px;
+    height: 20px;
+    margin-inline-start: -30px;
   }
 }
 
