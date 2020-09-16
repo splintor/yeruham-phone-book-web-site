@@ -1,10 +1,11 @@
 import { PageData } from './PageData'
 
-export interface PageProps {
+export interface AppProps {
   url: string
   origin: string
   status: number
   search?: string
   tag?: string
-  pages: PageData[]
+  page?: PageData
+  pages?: PageData[]
 }

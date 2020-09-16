@@ -1,30 +1,60 @@
 import { parse } from 'cookie'
 import * as admin from 'firebase-admin'
+import * as fs from 'fs';
 import { IncomingMessage } from 'http'
+import cache from 'memory-cache'
+import { PageData } from '../types/PageData';
 import { getRequestLogData } from './api'
 import { decrypt, getKeyFromPassword } from './crypt'
-type Query<T> = admin.firestore.Query<T>
-type CollectionReference<T> = admin.firestore.CollectionReference<T>
-type QueryDocumentSnapshot<T> = admin.firestore.QueryDocumentSnapshot<T>
+type QuerySnapshot<T> = admin.firestore.QuerySnapshot<T>
 
 const serviceAccount = JSON.parse(Buffer.from(process.env.SERVICE_ACCOUNT, 'base64').toString())
+const getAllPages = () => cache.get('pages') as PageData[]
+const getPagesByTitle = () => cache.get('pagesByTitle') as Map<string, PageData>
+const getPhones = () => cache.get('phones') as Map<string, PageData>
+export const removePhoneDelimiters = (s: string) => s.replace(/[+\-.]+/g, '')
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://yeruham-phone-book.firebaseio.com"
   })
-}
 
-export interface PageData {
-  title: string
-  html: string
-  oldUrl?: string
-  oldName?: string
-}
+  console.debug('getting data...')
+  admin.firestore().collection('pages').get().then((data: QuerySnapshot<PageData>) => {
+    console.debug('got data', data.docs?.length)
+    const pages = data.docs.map(page => ({ id: page.id, updateDate: page.updateTime.toDate().toISOString(), ...page.data() }))
+    cache.put('pages', pages);
 
-export interface PageMetaData extends PageData {
-  id: string
+    console.debug('parsing titles')
+    const pagesByTitle = new Map(pages.map(page => [page.title, page]))
+    pages.forEach(page => {
+      const { oldName } = page
+      if (!pagesByTitle.has(oldName)) {
+        pagesByTitle.set(oldName, page)
+      }
+    })
+    cache.put('pagesByTitle', pagesByTitle)
+
+    console.debug('parsing phones')
+    let phoneDuplicates = '';
+    const phones = new Map<string, PageData>();
+    pages.forEach(page => {
+      const matches = removePhoneDelimiters(page.html).match(/[^A-Z_\d=\/:]\d{9,}/g)
+      matches?.forEach(match => {
+        match = match.substr(1)
+        const existing = phones.get(match);
+        if (existing) {
+          phoneDuplicates += `${match} appears both in ${existing.title} and in ${page.title}\n`
+        } else {
+          phones.set(match, page)
+        }
+      })
+    })
+
+    cache.put('phones', phones)
+    fs.writeFileSync('./phoneDuplicates.txt', phoneDuplicates)
+  })
 }
 
 export enum DatabaseStatus {
@@ -53,13 +83,9 @@ export class DatabaseResponse<T> {
   }
 }
 
-export const getPagesCollection = () => admin.firestore().collection('pages') as CollectionReference<PageData>
 export const authPrefix = 'PHONE '
 export const authPassword = getKeyFromPassword(process.env.AUTH_PASSWORD)
 export const adminPhoneNumber = () => process.env.ADMIN_PHONE_NUMBER
-
-export const getPageJSON = (page: QueryDocumentSnapshot<PageData>) =>
-  ({ id: page.id, updateDate: page.updateTime.toDate().toISOString(), ...page.data() })
 
 export function checkLogin(request: IncomingMessage, { requireAdmin }: { requireAdmin?: boolean } = {}): DatabaseResponse<any> {
   const cookieHeader = request.headers['cookie'] || ''
@@ -73,36 +99,55 @@ export function checkLogin(request: IncomingMessage, { requireAdmin }: { require
 
   try {
     const phoneNumber = decrypt(auth.slice(authPrefix.length), authPassword)
-    if (phoneNumber && (!requireAdmin || phoneNumber === adminPhoneNumber())) {
-      console.info('Request authentication succeeded', { phoneNumber, ...logData })
+    if (!phoneNumber) {
+      console.error(`Invalid auth header: ${auth}`, logData)
+      return DatabaseResponse.unauthorized()
+    }
+
+    logData['phoneNumber'] = phoneNumber
+
+    if (phoneNumber === adminPhoneNumber()) {
+      console.info('Admin request authentication succeeded', logData)
       return DatabaseResponse.ok(phoneNumber)
     }
 
-    console.error(`Invalid phone number: ${phoneNumber}`, logData)
-    return DatabaseResponse.unauthorized()
+    if (requireAdmin) {
+      console.error(`Admin request done by non-admin: ${phoneNumber}`, logData)
+      return DatabaseResponse.unauthorized()
+    }
+
+    if (!getPhones().has(phoneNumber)) {
+      console.error(`Auth phone not found: ${phoneNumber}`, logData)
+      return DatabaseResponse.unauthorized()
+    }
+
+    console.info('Request authentication succeeded', logData)
+    return DatabaseResponse.ok(phoneNumber)
   } catch (exception) {
-    console.error('Failed to parse authentication header', { exception, ...logData})
+    console.error('Failed to parse authentication header', { exception, ...logData })
     return DatabaseResponse.unauthorized()
   }
 }
 
-export async function getPage(title: string, request: IncomingMessage): Promise<DatabaseResponse<PageMetaData>> {
+export function findByPhone(phoneNumber: string): PageData | undefined {
+  return getPhones().get(phoneNumber)
+}
+
+export function getPage(title: string, request: IncomingMessage): DatabaseResponse<PageData> {
   const loginCheck = checkLogin(request)
   if (loginCheck.fail()) {
     return loginCheck
   }
 
-  let result = await getPagesCollection().where('title', '==', title.replace(/_/g, ' ')).limit(1).get()
-  if (result.empty) {
-    result = await getPagesCollection().where('oldName', '==', title).limit(1).get()
-  }
+  const titleToSearch = title.replace(/_/g, ' ')
+  const result = getPagesByTitle().get(titleToSearch)
 
-  if (result.empty) {
+  if (result) {
+    console.debug(`Found page '${title}'`, getRequestLogData(request))
+    return DatabaseResponse.ok(result)
+  } else {
     console.warn(`Page with title '${title}' was not found`, getRequestLogData(request))
     return DatabaseResponse.notFound()
-  } else {
-    console.debug(`Found page '${title}'`, getRequestLogData(request))
-    return DatabaseResponse.ok(getPageJSON(result.docs[0]))
   }
 }
 
@@ -113,34 +158,24 @@ export interface PagesFilter {
 }
 
 export interface PagesResponse {
-  pages: PageMetaData[]
+  pages: PageData[]
 }
 
-export async function getPages({ search, tag, since }: PagesFilter, request: IncomingMessage): Promise<DatabaseResponse<PagesResponse>> {
+const MaxPagesToReturn = 30
+
+export function getPages({ search, tag, since }: PagesFilter, request: IncomingMessage): DatabaseResponse<PagesResponse> {
   const loginCheck = checkLogin(request, { requireAdmin: !search && !tag })
   if (loginCheck.fail()) {
     return loginCheck
   }
 
-  let query: Query<PageData> = getPagesCollection()
+  const sinceDate = since && new Date(since)
 
-  if (tag) {
-    query = query.where('tags', 'array-contains', tag)
-  }
+  const result = getAllPages().filter(({ tags, updateDate, title, html }) =>
+    (!tag || tags?.includes(tag)) &&
+    (!sinceDate || new Date(updateDate) >= sinceDate) &&
+    (!search || title.includes(search) || html.includes(search)))
 
-  let docs = (await query.get()).docs
-  if (since) {
-    const sinceTimestamp = admin.firestore.Timestamp.fromDate(new Date(since as string))
-    docs = docs.filter(d => d.updateTime >= sinceTimestamp)
-  }
-
-  if (search && typeof search === 'string') {
-    docs = docs.filter(d => {
-      const { title, html } = d.data()
-      return title.includes(search) || html.includes(search)
-    })
-  }
-
-  console.debug(`found ${docs.length} pages`, getRequestLogData(request))
-  return DatabaseResponse.ok({ pages: docs.map(getPageJSON) })
+  console.debug(`found ${result.length} pages`, getRequestLogData(request))
+  return DatabaseResponse.ok({ pages: result.slice(0, MaxPagesToReturn), hasMore: result.length > MaxPagesToReturn })
 }

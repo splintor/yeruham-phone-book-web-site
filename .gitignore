@@ -30,3 +30,4 @@ service-account.json
 .env.test.local
 .env.production.local
 .idea
+phoneDuplicates.txt
