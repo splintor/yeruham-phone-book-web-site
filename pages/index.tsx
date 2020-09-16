@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 import absoluteUrl from 'next-absolute-url/index'
 import React from 'react'
-import App from '../components/App';
+import App from '../components/App'
 import { AppProps } from '../types/AppProps'
 import { checkLogin } from '../utils/firestore'
 

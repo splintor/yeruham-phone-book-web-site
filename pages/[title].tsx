@@ -1,16 +1,10 @@
-import absoluteUrl from 'next-absolute-url/index'
-import Head from 'next/head'
 import React from 'react'
 import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
-import { AccountBadge } from '../components/AccountBadge'
-import App from '../components/App';
-import { LoginPage } from '../components/LoginPage'
-import { siteTitle } from '../utils/consts'
-import { PageData } from '../types/PageData'
+import App from '../components/App'
 import { AppProps } from '../types/AppProps'
 import { getPage } from '../utils/firestore'
-import { requestProps } from '../utils/requestProps';
+import { requestProps } from '../utils/requestProps'
 
 interface PageParams extends ParsedUrlQuery {
   title: string

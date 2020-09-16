@@ -1,9 +1,9 @@
 import { parse } from 'cookie'
 import * as admin from 'firebase-admin'
-import * as fs from 'fs';
+import * as fs from 'fs'
 import { IncomingMessage } from 'http'
 import cache from 'memory-cache'
-import { PageData } from '../types/PageData';
+import { PageData } from '../types/PageData'
 import { getRequestLogData } from './api'
 import { decrypt, getKeyFromPassword } from './crypt'
 type QuerySnapshot<T> = admin.firestore.QuerySnapshot<T>
@@ -37,13 +37,13 @@ if (!admin.apps.length) {
     cache.put('pagesByTitle', pagesByTitle)
 
     console.debug('parsing phones')
-    let phoneDuplicates = '';
-    const phones = new Map<string, PageData>();
+    let phoneDuplicates = ''
+    const phones = new Map<string, PageData>()
     pages.forEach(page => {
       const matches = removePhoneDelimiters(page.html).match(/[^A-Z_\d=\/:]\d{9,}/g)
       matches?.forEach(match => {
         match = match.substr(1)
-        const existing = phones.get(match);
+        const existing = phones.get(match)
         if (existing) {
           phoneDuplicates += `${match} appears both in ${existing.title} and in ${page.title}\n`
         } else {

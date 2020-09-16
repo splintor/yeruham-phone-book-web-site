@@ -1,9 +1,9 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
-import App from '../../components/App';
-import { AppProps } from '../../types/AppProps';
-import { checkLogin, getPages } from '../../utils/firestore';
-import { requestProps } from '../../utils/requestProps';
+import React from 'react'
+import { GetServerSideProps } from 'next'
+import App from '../../components/App'
+import { AppProps } from '../../types/AppProps'
+import { getPages } from '../../utils/firestore'
+import { requestProps } from '../../utils/requestProps'
 
 export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, query}) => {
   const { search } = query as { search: string}
