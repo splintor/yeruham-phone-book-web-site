@@ -1,7 +1,8 @@
 ## ספר הטלפונים של ירוחם - אתר האינטרנט 
 
-A [next.js](https://nextjs.org/) site to provide access to Yeruham Phone book data
-(which is stored on Firebase Firestore, and accessed through Firebase Functions).
+A [next.js](https://nextjs.org/) site to provide access to Yeruham Phone book data.
+
+Data is stored on Firebase Firestore, and cached by next.js server on start, to reduce reads, as they are limited in the free plan to up to 50k documents per-day.
 
 ### Things left to be done:
 1. TODO: Format results view - show first lines of page
