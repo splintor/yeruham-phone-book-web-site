@@ -14,7 +14,6 @@ const getPagesByTitle = () => getFromCache('pagesByTitle', new Map<string, PageD
 const getPhones = () => getFromCache('phones', new Map<string, PageData>())
 export const removePhoneDelimiters = (s: string) => s.replace(/[+\-.]+/g, '')
 
-
 function initFirestore() {
   console.log('admin.apps.length', admin.apps.length)
   if (!admin.apps.length) {
@@ -27,17 +26,20 @@ function initFirestore() {
 }
 
 function getFromCache<T>(key: string, defaultValue: T): T {
-  const result = cache.get(key) as T
-  if (!result) {
-    console.error(`key ${key} is missing in cache. Trying to reload...`)
-    try {
-      loadData()
-    } catch(e) {
-      console.log('Failed to load data', e)
-    }
-  }
-  
-  return defaultValue
+  return cache.get(key) as T || defaultValue
+  // const result = cache.get(key) as T
+  // if (result) {
+  //   return result
+  // }
+  //
+  // console.error(`key ${key} is missing in cache. Trying to reload...`)
+  // try {
+  //   loadData()
+  // } catch(e) {
+  //   console.log('Failed to load data', e)
+  // }
+  //
+  // return defaultValue
 }
 
 function loadData() {
