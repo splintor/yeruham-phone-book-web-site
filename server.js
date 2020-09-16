@@ -61,7 +61,7 @@ function loadData() {
     cache.put('phones', phones)
     fs.writeFileSync('./phoneDuplicates.txt', phoneDuplicates)
   }).catch(e => {
-    console.error('Failed to load firestore data', e)
+    console.error('Failed to load firestore data:', e)
   })
 }
 
