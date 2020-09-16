@@ -141,7 +141,7 @@ export function checkLogin(request: IncomingMessage, { requireAdmin }: { require
       return DatabaseResponse.unauthorized()
     }
 
-    const phones = customData.phones || new Map()
+    const phones = customData?.phones || new Map()
 
     if (!phones.has(phoneNumber)) {
       console.error(`Auth phone not found: ${phoneNumber}`, logData)
@@ -159,7 +159,7 @@ export function checkLogin(request: IncomingMessage, { requireAdmin }: { require
 export function findByPhone(phoneNumber: string, request: IncomingMessage): PageData | undefined {
   const { customNumber, customData } = request as any
   console.log('findByPhone', { customNumber, pageCount: customData?.pages?.length })
-  const phones = customData.phones || new Map()
+  const phones = customData?.phones || new Map()
 
   return phones.get(phoneNumber)
 }
@@ -173,7 +173,7 @@ export function getPage(title: string, request: IncomingMessage): DatabaseRespon
     return loginCheck
   }
 
-  const pagesByTitle = customData.pagesByTitle || new Map()
+  const pagesByTitle = customData?.pagesByTitle || new Map()
 
   const titleToSearch = title.replace(/_/g, ' ')
   const result = pagesByTitle.get(titleToSearch)
@@ -208,7 +208,7 @@ export function getPages({ search, tag, since }: PagesFilter, request: IncomingM
     return loginCheck
   }
 
-  const pages = customData.pages || []
+  const pages = customData?.pages || []
   const sinceDate = since && new Date(since)
 
   const result = pages.filter(({ tags, updateDate, title, html }) =>
