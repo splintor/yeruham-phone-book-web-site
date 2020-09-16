@@ -25,7 +25,7 @@ export default async function phoneNumber(request: NextApiRequest, response: Nex
     return
   }
 
-  const match = findByPhone(phoneNumber)
+  const match = findByPhone(phoneNumber, request)
   if (match) {
     sendJson(response, { auth: authPrefix + encrypt(phoneNumber, authPassword), authTitle: match.title }, 'Login request succeeded', logData)
   } else {

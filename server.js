@@ -60,14 +60,24 @@ function loadData() {
 
     cache.put('phones', phones)
     fs.writeFileSync('./phoneDuplicates.txt', phoneDuplicates)
+    return {
+      pages,
+      pagesByTitle,
+      phones,
+    }
   }).catch(e => {
     console.error('Failed to load firestore data:', e)
   })
 }
 
-app.prepare().then(loadData).then(() => {
+app.prepare().then(loadData).then(data => {
   const server = express()
-  server.get('*', handle)
+  server.get('*', (req, res) => {
+    req.customData = data
+    req.customNumber = 42
+    console.log('server.get')
+    return handle(req, res)
+  })
   server.listen(port, err => {
     if (err) throw err
     console.log(`> Ready on http://localhost:${port}`)

@@ -9,9 +9,6 @@ import { decrypt, getKeyFromPassword } from './crypt'
 type QuerySnapshot<T> = admin.firestore.QuerySnapshot<T>
 
 const serviceAccount = JSON.parse(Buffer.from(process.env.SERVICE_ACCOUNT, 'base64').toString())
-const getAllPages = () => getFromCache<PageData[]>('pages', [])
-const getPagesByTitle = () => getFromCache('pagesByTitle', new Map<string, PageData>())
-const getPhones = () => getFromCache('phones', new Map<string, PageData>())
 export const removePhoneDelimiters = (s: string) => s.replace(/[+\-.]+/g, '')
 
 function initFirestore() {
@@ -114,6 +111,8 @@ export const authPassword = getKeyFromPassword(process.env.AUTH_PASSWORD)
 export const adminPhoneNumber = () => process.env.ADMIN_PHONE_NUMBER
 
 export function checkLogin(request: IncomingMessage, { requireAdmin }: { requireAdmin?: boolean } = {}): DatabaseResponse<any> {
+  const { customNumber, customData } = request as any
+  console.log('checkLogin', { customNumber, pageCount: customData?.pages?.length })
   const cookieHeader = request.headers['cookie'] || ''
   const { auth } = parse(cookieHeader)
   const logData = { auth, ...getRequestLogData(request) }
@@ -142,7 +141,9 @@ export function checkLogin(request: IncomingMessage, { requireAdmin }: { require
       return DatabaseResponse.unauthorized()
     }
 
-    if (!getPhones().has(phoneNumber)) {
+    const phones = customData.phones || new Map()
+
+    if (!phones.has(phoneNumber)) {
       console.error(`Auth phone not found: ${phoneNumber}`, logData)
       return DatabaseResponse.unauthorized()
     }
@@ -155,18 +156,27 @@ export function checkLogin(request: IncomingMessage, { requireAdmin }: { require
   }
 }
 
-export function findByPhone(phoneNumber: string): PageData | undefined {
-  return getPhones().get(phoneNumber)
+export function findByPhone(phoneNumber: string, request: IncomingMessage): PageData | undefined {
+  const { customNumber, customData } = request as any
+  console.log('findByPhone', { customNumber, pageCount: customData?.pages?.length })
+  const phones = customData.phones || new Map()
+
+  return phones.get(phoneNumber)
 }
 
 export function getPage(title: string, request: IncomingMessage): DatabaseResponse<PageData> {
+  const { customNumber, customData } = request as any
+  console.log('getPage', { customNumber, pageCount: customData?.pages?.length })
+
   const loginCheck = checkLogin(request)
   if (loginCheck.fail()) {
     return loginCheck
   }
 
+  const pagesByTitle = customData.pagesByTitle || new Map()
+
   const titleToSearch = title.replace(/_/g, ' ')
-  const result = getPagesByTitle().get(titleToSearch)
+  const result = pagesByTitle.get(titleToSearch)
 
   if (result) {
     console.debug(`Found page '${title}'`, getRequestLogData(request))
@@ -190,14 +200,18 @@ export interface PagesResponse {
 const MaxPagesToReturn = 30
 
 export function getPages({ search, tag, since }: PagesFilter, request: IncomingMessage): DatabaseResponse<PagesResponse> {
+  const { customNumber, customData } = request as any
+  console.log('getPages', { customNumber, pageCount: customData?.pages?.length })
+
   const loginCheck = checkLogin(request, { requireAdmin: !search && !tag })
   if (loginCheck.fail()) {
     return loginCheck
   }
 
+  const pages = customData.pages || []
   const sinceDate = since && new Date(since)
 
-  const result = getAllPages().filter(({ tags, updateDate, title, html }) =>
+  const result = pages.filter(({ tags, updateDate, title, html }) =>
     (!tag || tags?.includes(tag)) &&
     (!sinceDate || new Date(updateDate) >= sinceDate) &&
     (!search || title.includes(search) || html.includes(search)))
