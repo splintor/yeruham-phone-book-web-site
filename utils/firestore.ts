@@ -9,22 +9,37 @@ import { decrypt, getKeyFromPassword } from './crypt'
 type QuerySnapshot<T> = admin.firestore.QuerySnapshot<T>
 
 const serviceAccount = JSON.parse(Buffer.from(process.env.SERVICE_ACCOUNT, 'base64').toString())
-const getAllPages = () => cache.get('pages') as PageData[]
-const getPagesByTitle = () => cache.get('pagesByTitle') as Map<string, PageData>
-const getPhones = () => cache.get('phones') as Map<string, PageData>
+const getAllPages = () => getFromCache<PageData[]>('pages', [])
+const getPagesByTitle = () => getFromCache('pagesByTitle', new Map<string, PageData>())
+const getPhones = () => getFromCache('phones', new Map<string, PageData>())
 export const removePhoneDelimiters = (s: string) => s.replace(/[+\-.]+/g, '')
 
 if (!admin.apps.length) {
+  console.info('firestore initializeApp')
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://yeruham-phone-book.firebaseio.com"
   })
+  
+  loadData()
+}
 
+function getFromCache<T>(key: string, defaultValue: T): T {
+  const result = cache.get(key) as T
+  if (!result) {
+    console.error(`key ${key} is missing in cache. Trying to reload...`)
+    loadData()
+  }
+  
+  return defaultValue
+}
+
+function loadData() {
   console.debug('getting data...')
   admin.firestore().collection('pages').get().then((data: QuerySnapshot<PageData>) => {
     console.debug('got data', data.docs?.length)
     const pages = data.docs.map(page => ({ id: page.id, updateDate: page.updateTime.toDate().toISOString(), ...page.data() }))
-    cache.put('pages', pages);
+    cache.put('pages', pages)
 
     console.debug('parsing titles')
     const pagesByTitle = new Map(pages.map(page => [page.title, page]))
@@ -54,6 +69,8 @@ if (!admin.apps.length) {
 
     cache.put('phones', phones)
     fs.writeFileSync('./phoneDuplicates.txt', phoneDuplicates)
+  }).catch(e => {
+    console.error('Failed to load firestore data', e)
   })
 }
 
