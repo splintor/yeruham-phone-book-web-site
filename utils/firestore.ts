@@ -14,27 +14,34 @@ const getPagesByTitle = () => getFromCache('pagesByTitle', new Map<string, PageD
 const getPhones = () => getFromCache('phones', new Map<string, PageData>())
 export const removePhoneDelimiters = (s: string) => s.replace(/[+\-.]+/g, '')
 
-if (!admin.apps.length) {
-  console.info('firestore initializeApp')
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://yeruham-phone-book.firebaseio.com"
-  })
-  
-  loadData()
+
+function initFirestore() {
+  console.log('admin.apps.length', admin.apps.length)
+  if (!admin.apps.length) {
+    console.info('firestore initializeApp', serviceAccount)
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: "https://yeruham-phone-book.firebaseio.com"
+    })
+  }
 }
 
 function getFromCache<T>(key: string, defaultValue: T): T {
   const result = cache.get(key) as T
   if (!result) {
     console.error(`key ${key} is missing in cache. Trying to reload...`)
-    loadData()
+    try {
+      loadData()
+    } catch(e) {
+      console.log('Failed to load data', e)
+    }
   }
   
   return defaultValue
 }
 
 function loadData() {
+  initFirestore()
   console.debug('getting data...')
   admin.firestore().collection('pages').get().then((data: QuerySnapshot<PageData>) => {
     console.debug('got data', data.docs?.length)
