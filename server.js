@@ -75,7 +75,7 @@ app.prepare().then(loadData).then(data => {
   server.get('*', (req, res) => {
     req.customData = data
     req.customNumber = 42
-    console.log('server.get')
+    console.log('server.get', req.url)
     return handle(req, res)
   })
   server.listen(port, err => {
