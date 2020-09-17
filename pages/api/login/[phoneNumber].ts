@@ -17,9 +17,13 @@ export default async function phoneNumber(request: NextApiRequest, response: Nex
   console.log('cacheKey1', typeof cacheKey1, cacheKey1 || 'N/A')
   cache.put('key1', 1 + Number(cacheKey1 || 0))
 
-  const file1 = fs.readFileSync('./file.txt')
-  console.log('file1', typeof file1, file1?.toString() || 'N/A')
-  fs.writeFileSync('./file.txt', 'a ' + file1?.toString())
+  try {
+    const file1 = fs.existsSync('./file.txt') ? fs.readFileSync('./file.txt') : '{file not found}'
+    console.log('file1', typeof file1, file1?.toString() || 'N/A')
+    fs.writeFileSync('./file.txt', 'a ' + file1?.toString())
+  } catch(e) {
+    console.log('file test failed', e);
+  }
 
   if (request.env) {
     const env1 = request.env['env1'];
