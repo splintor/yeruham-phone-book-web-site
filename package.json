@@ -3,13 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev --port 3030",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "next start --port 3030"
   },
   "dependencies": {
     "cookie": "^0.4.1",
-    "express": "^4.17.1",
     "firebase-admin": "^9.1.1",
     "isomorphic-fetch": "^2.2.1",
     "memory-cache": "^0.2.0",

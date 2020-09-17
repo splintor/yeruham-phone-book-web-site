@@ -23,20 +23,20 @@ function initFirestore() {
 }
 
 function getFromCache<T>(key: string, defaultValue: T): T {
-  return cache.get(key) as T || defaultValue
-  // const result = cache.get(key) as T
-  // if (result) {
-  //   return result
-  // }
-  //
-  // console.error(`key ${key} is missing in cache. Trying to reload...`)
-  // try {
-  //   loadData()
-  // } catch(e) {
-  //   console.log('Failed to load data', e)
-  // }
-  //
-  // return defaultValue
+  const result = cache.get(key) as T
+  if (result) {
+    console.log(`returning ${key} from cache`)
+    return result
+  }
+
+  console.error(`key ${key} is missing in cache. Trying to reload...`)
+  try {
+    loadData()
+  } catch (e) {
+    console.log('Failed to load data', e)
+  }
+
+  return defaultValue
 }
 
 function loadData() {
