@@ -1,5 +1,4 @@
 // From https://stackoverflow.com/a/62640781/46635
-import { CipherGCM, DecipherGCM } from 'crypto'
 import * as crypto from 'crypto'
 import { Buffer } from 'buffer'
 
@@ -16,7 +15,7 @@ const ALGORITHM = {
   SALT_BYTE_LEN: 16
 }
 
-export function getKeyFromPassword(password: string) {
+export function getKeyFromPassword(password) {
   return crypto.createHash('sha256').update(String(password)).digest('base64').substr(0, 32)
 }
 
@@ -29,9 +28,9 @@ export function getKeyFromPassword(password: string) {
  * the Buffer after the encryption to prevent the message text
  * and the key from lingering in the memory
  */
-export function encrypt(textToEncrypt: string, key: string) {
+export function encrypt(textToEncrypt, key) {
   const iv = crypto.randomBytes(ALGORITHM.IV_BYTE_LEN)
-  const cipher = crypto.createCipheriv(ALGORITHM.BLOCK_CIPHER, key, iv) as CipherGCM
+  const cipher = crypto.createCipheriv(ALGORITHM.BLOCK_CIPHER, key, iv)
   const bufferToEncrypt = Buffer.from(textToEncrypt, 'utf8')
   let encryptedMessage = cipher.update(bufferToEncrypt)
   const cipherFinal = cipher.final()
@@ -49,15 +48,14 @@ export function encrypt(textToEncrypt: string, key: string) {
  * the Buffer after the decryption to prevent the message text
  * and the key from lingering in the memory
  */
-export function decrypt(encryptedText: string, key: string) {
+export function decrypt(encryptedText, key) {
   const encryptedBuffer = Buffer.from(encryptedText, 'base64')
   const authTag = encryptedBuffer.slice(-16)
   const iv = encryptedBuffer.slice(0, 12)
   const encryptedMessage = encryptedBuffer.slice(12, -16)
-  const decipher = crypto.createDecipheriv(ALGORITHM.BLOCK_CIPHER, key, iv) as DecipherGCM
+  const decipher = crypto.createDecipheriv(ALGORITHM.BLOCK_CIPHER, key, iv)
   decipher.setAuthTag(authTag)
   const decryptedText = decipher.update(encryptedMessage)
   const decipherFinal = decipher.final()
   return Buffer.concat([decryptedText, decipherFinal]).toString('utf8')
-  // return decryptedText.toString('base64')
 }

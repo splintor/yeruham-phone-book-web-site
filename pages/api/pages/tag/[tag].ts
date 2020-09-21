@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getPages } from '../../../../utils/firestore'
+import { getRequestLogData, sendResponse } from '../../../../utils/api'
+import { getTagPages } from '../../../../utils/data-layer'
 
 export default async function tag(request: NextApiRequest, response: NextApiResponse) {
   const { query: { tag } } = request
-  const { status, data } = await getPages({ tag: tag as string }, request)
-  response.status(status)
-  data && response.json(data)
+  return sendResponse(response, await getTagPages(request, tag as string), getRequestLogData(request))
 }

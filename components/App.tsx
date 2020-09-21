@@ -41,8 +41,8 @@ function AppComponent(appProps: AppProps) {
   const [results, setResults] = useState(null)
   const [userSearch, setUserSearch] = useState(search || '')
   const [isSearching, setIsSearching] = useState(false)
-  const debouncedSearchTerm = useDebounce(userSearch, 500)
-  const stringBeingSearched = useRef(search)
+  const debouncedSearchTerm = useDebounce(userSearch, 300)
+  const stringBeingSearched = useRef(userSearch)
   const router = useRouter()
   const pagesToShow = results || pages
   const focusInput = useCallback(element => element?.focus(), [])
@@ -74,7 +74,7 @@ function AppComponent(appProps: AppProps) {
   }, [userSearch, setResults])
 
   useEffect(() => {
-    if (debouncedSearchTerm) {
+    if (debouncedSearchTerm && stringBeingSearched.current !== debouncedSearchTerm) {
       setIsSearching(true)
       stringBeingSearched.current = debouncedSearchTerm
       searchForPages(debouncedSearchTerm).then(results => {

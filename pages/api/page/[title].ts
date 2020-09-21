@@ -1,15 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getRequestLogData, sendUnsupportedMethodResponse } from '../../../utils/api'
-import { getPage } from '../../../utils/firestore'
+import { getRequestLogData, sendResponse, sendUnsupportedMethodResponse } from '../../../utils/api'
+import { getPage } from '../../../utils/data-layer'
 
 export default async function page(request: NextApiRequest, response: NextApiResponse) {
   const { method, query: { title }} = request
   switch (request.method) {
     case 'GET':
-      const { status, data } = await getPage(title as string, request)
-      response.status(status)
-      data && response.json(data)
-      break
+      return sendResponse(response, await getPage(request, title as string), getRequestLogData(request))
 
 //    case 'POST':
       // TODO: Allow updating a page

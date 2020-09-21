@@ -1,20 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http'
+import { NextApiResponse } from 'next'
 
-export function sendJson(response: ServerResponse, json: object, message: string, logData: object) {
-  console.info(message, logData)
-  response.statusCode = 200
+export async function sendResponse(response: NextApiResponse, fetchResponse: Response, logData: ReturnType<typeof getRequestLogData>) {
+  console.info('sending response', logData)
+  response.statusCode = fetchResponse.status
   response.setHeader('Content-Type', 'application/json')
-  response.end(JSON.stringify(json))
-}
-
-export function sendUnauthorizedResponse(response: ServerResponse, message: string, logData: object) {
-  console.error(message, logData)
-  response.statusCode = 401
-}
-
-export function sendNotFoundResponse(response: ServerResponse, message: string, logData: object) {
-  console.error(message, logData)
-  response.statusCode = 404
+  response.end(await fetchResponse.text())
 }
 
 export function sendUnsupportedMethodResponse(response: ServerResponse, message: string, logData: object) {
