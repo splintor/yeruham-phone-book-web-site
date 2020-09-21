@@ -12,7 +12,7 @@ export const setAuthCookies = (auth: string, authTitle: string) => {
 }
 
 export const parseAuthCookies = (request?: IncomingMessage): { auth?: string, authTitle?: string } => {
-  const { auth } = parse(request ? request.headers.cookie : document.cookie || '')
+  const { auth } = parse((request ? request.headers.cookie : document.cookie) || '')
   const authTitle = !request && auth && localStorage.getItem(authTitleKey) || ''
   return { auth, authTitle }
 }
