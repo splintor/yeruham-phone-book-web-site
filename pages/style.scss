@@ -1,6 +1,6 @@
 body {
   direction: rtl;
-  font-family: Verdana, Geneva, sans-serif;
+  font-family: Verdana, Geneva;
   background-color: beige;
   box-sizing: border-box;
 }
@@ -120,7 +120,8 @@ body {
   max-width: calc(100vw - 30px);
 
   form {
-    margin-block: 10px;
+    margin-block-start: 10px;
+    margin-block-end: 10px;
     display: flex;
     justify-content: center;
 
