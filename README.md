@@ -6,7 +6,6 @@ Data is stored on Firebase Firestore, and cached by next.js server on start, to 
 
 ### Things left to be done:
 1. TODO: Format results view - show first lines of page
-1. TODO: Improve login page on Chrome
 1. TODO: Show "there are more results" label
 1. TODO: Make page links from results open page without refresh
 1. TODO: Make page links from page open page without refresh
