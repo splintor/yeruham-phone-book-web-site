@@ -99,16 +99,18 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
 // URL: https://<wix-site-url>/_functions/page/<titleOrOldName>
 export async function get_page(request) {
   const loginCheck = await get_checkLogin(request)
-  if (loginCheck.status !== 200) {
-    return loginCheck
-  }
-
   const param = decodeURI(request.path[0])
   const titleToSearch = param.replace(/_/g, ' ')
   const result = await wixData.query('pages').eq('title', titleToSearch).or(wixData.query('pages').eq('oldName', param)).find()
-  return result.items.length === 0 ?
-    notFound({ headers, body: { error: `'${param}' was not found` } }) :
-    ok({ headers, body: { ...result.items[0] } })
+  const item = result.items.length === 0 ? null : result.items[0]
+
+  if (loginCheck.status !== 200) {
+    return response({ headers, status: loginCheck.status, body: { title: item && item.title || titleToSearch } })
+  }
+
+  return item ?
+    notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } }) :
+    ok({ headers, body: { ...item } })
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>

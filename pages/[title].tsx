@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = asyn
   return {
     props: {
       status: result.status,
-      page: result.ok && await result.json(),
+      page: await result.json(),
       ...requestProps(req)
     },
   }
