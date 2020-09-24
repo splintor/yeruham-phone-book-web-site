@@ -124,7 +124,7 @@ export async function get_search(request) {
   const [first, ...rest] = param.replace(/_/g, ' ').split(/\s+/)
   let query = wixData.query('pages').contains('title', first).or(wixData.query('pages').contains('html', first))
   rest.forEach(t => query = query.and(wixData.query('pages').contains('title', t).or(wixData.query('pages').contains('html', t))))
-  const { items, totalCount } = await query.limit(50).find()
+  const { items, totalCount } = await query.find()
   return ok({ headers, body: { pages: items, totalCount } })
 }
 
