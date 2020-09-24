@@ -109,8 +109,8 @@ export async function get_page(request) {
   }
 
   return item ?
-    notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } }) :
-    ok({ headers, body: { ...item } })
+    ok({ headers, body: { ...item } }) :
+    notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
