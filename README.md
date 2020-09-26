@@ -2,15 +2,17 @@
 
 A [next.js](https://nextjs.org/) site to provide access to Yeruham Phone book data.
 
-Data is stored on Firebase Firestore, and cached by next.js server on start, to reduce reads, as they are limited in the free plan to up to 50k documents per-day.
+We store the data on a [Wix site data collection](https://www.wix.com/corvid/feature/database)
+with [services](./wix-site-code) to access the data.
+The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
 1. TODO: Format results view - show first lines of page
+1. TODO: Show page tags
 1. TODO: Show "there are more results" label
 1. TODO: Make page links from results open page without refresh
 1. TODO: Make page links from page open page without refresh
 1. TODO: Add documentation and link to it from home
-1. TODO: Show page tags
 1. TODO: Handle lists and tags
 1. TODO: Enable to edit a page 
 1. TODO: Add "add a new page" button in title and in empty search results
