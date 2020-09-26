@@ -26,7 +26,7 @@ async function searchForPages(search: string) {
 function PageContent({ status, page: { html, title } }: Pick<AppProps, 'status' | 'page'>) {
   switch(status) {
     case 404:
-      return <h3 className="notFound">הדף <span className="title">{title}</span> לא נמצא בספר הטלפונים</h3>
+      return <div className="notFound">הדף <span className="searchedTitle">{title}</span> לא נמצא בספר הטלפונים.</div>
 
     default:
       return <div className="results page">

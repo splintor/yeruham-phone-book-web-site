@@ -21,6 +21,14 @@ body {
     margin: 10px auto;
   }
 
+  .notFound {
+    font-size: 1.5em;
+
+    .searchedTitle {
+      font-weight: bold;
+    }
+  }
+
   main {
     margin-inline: 10px;
     display: flex;
