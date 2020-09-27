@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, qu
     props: {
       search,
       status: result.status,
-      pages: result.ok && (await result.json()).pages,
+      ...(result.ok && (await result.json())),
       ...requestProps(req)
     },
   }
