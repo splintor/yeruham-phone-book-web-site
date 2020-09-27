@@ -13,9 +13,11 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 
 let phones
+let tagsList
 
-async function loadPhonesMap() {
+async function loadPhonesMapAndTagsList() {
   const phonesMap = new Map()
+  const tagsSet = new Set()
   let result = await wixData.query('pages').limit(1000).find()
   while (result) {
     result.items.forEach(page => {
@@ -29,10 +31,13 @@ async function loadPhonesMap() {
           phonesMap.set(match, page)
         }
       })
+
+      page.tags && page.tags.forEach(tagsSet.add, tagsSet)
     })
     result = result.hasNext() && await result.next()
   }
   phones = phonesMap
+  tagsList = [...tagsSet]
 }
 
 // URL: https://<wix-site-url>/_functions/login/<phoneNumber>
@@ -44,7 +49,7 @@ export async function get_login(request) {
   }
 
   if (!phones) {
-    await loadPhonesMap()
+    await loadPhonesMapAndTagsList()
   }
 
   const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -82,7 +87,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
     }
 
     if (!phones) {
-      await loadPhonesMap()
+      await loadPhonesMapAndTagsList()
     }
 
     const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -120,12 +125,18 @@ export async function get_search(request) {
     return loginCheck
   }
 
+  if (!tagsList) {
+    await loadPhonesMapAndTagsList()
+  }
+
   const param = decodeURI(request.path[0])
-  const [first, ...rest] = param.replace(/_/g, ' ').split(/\s+/)
+  const searchWords = param.replace(/_/g, ' ').split(/\s+/)
+  const [first, ...rest] = searchWords
   let query = wixData.query('pages').contains('title', first).or(wixData.query('pages').contains('html', first))
   rest.forEach(t => query = query.and(wixData.query('pages').contains('title', t).or(wixData.query('pages').contains('html', t))))
   const { items, totalCount } = await query.find()
-  return ok({ headers, body: { pages: items, totalCount } })
+  const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
+  return ok({ headers, body: { pages: items, totalCount, tags } })
 }
 
 // URL: https://<wix-site-url>/_functions/tag/<tag>
