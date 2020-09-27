@@ -9,9 +9,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 ### Things left to be done:
 1. TODO: Format results view - show first lines of page
 1. TODO: Show page tags
-1. TODO: Show "there are more results" label
-1. TODO: Make page links from results open page without refresh
-1. TODO: Make page links from page open page without refresh
+1. TODO: Highlight search in result page
 1. TODO: Add documentation and link to it from home
 1. TODO: Handle lists and tags
 1. TODO: Enable to edit a page 
