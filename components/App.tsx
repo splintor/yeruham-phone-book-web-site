@@ -34,7 +34,7 @@ function PageContent({ status, search, page: { html, title } }: Pick<AppProps, '
       return <div className="results page">
         <h1>
           {search && <a className="backButton" href={`/search/${search}`} onClick={e => { e.preventDefault(); history.back() }}>&#8658;</a>}
-          <a href={`/${pageUrl(title)}`}>{title}</a>
+          <a href={pageUrl(title)}>{title}</a>
         </h1>
         <div dangerouslySetInnerHTML={{ __html: html }}/>
       </div>
