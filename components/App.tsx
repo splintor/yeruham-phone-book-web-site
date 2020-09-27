@@ -183,7 +183,9 @@ function AppComponent(appProps: AppProps) {
                 ? <span className="noResults">לא נמצאו תוצאות.</span>
                 : <>
                   <div className="resultsTitle">{
-                    totalCountToShow > pagesToShow.length ? `נמצאו ${totalCountToShow} דפים. מציג את ${pagesToShow.length} הראשונים:` : `נמצאו ${pagesToShow.length} דפים:`
+                    pagesToShow.length === 1 ? 'נמצא דף אחד:' :
+                      totalCountToShow > pagesToShow.length ? `נמצאו ${totalCountToShow} דפים. מציג את ${pagesToShow.length} הראשונים:` :
+                        `נמצאו ${pagesToShow.length} דפים:`
                   }</div>
                   {
                     pagesToShow.map(page => <div className="preview" key={page.title}>
