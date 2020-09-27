@@ -57,8 +57,6 @@ function AppComponent(appProps: AppProps) {
   const pageToShow = displayedPage === undefined ? page : displayedPage
   const showWelcome = !userSearch && !pageToShow && !pagesToShow
 
-  console.log('debouncedSearchTerm', debouncedSearchTerm);
-
   function focusSearchInput(element = null) {
     if (element) {
       searchInput.current = element;

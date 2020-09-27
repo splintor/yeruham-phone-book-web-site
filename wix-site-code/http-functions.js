@@ -136,7 +136,6 @@ export async function get_tag(request) {
   }
 
   const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
-  console.log('searchedTag', searchedTag)
   const { items } = await wixData.query('pages').contains('tags', searchedTag).limit(1000).find()
   return ok({ headers, body: { pages: items } })
 }
