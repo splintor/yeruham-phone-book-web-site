@@ -83,7 +83,8 @@ body {
   padding: 7px 10px;
 
   > h1 {
-    margin-top: 0;
+    margin-block-start: 0;
+    margin-block-end: 10px;
 
     a {
       text-decoration: none;
@@ -96,25 +97,27 @@ body {
     margin-block-end: 7px;
   }
 
-  .preview {
-    margin-block-end: 7px;
-    .titleLink {
-      font-size: 1.3em;
-      margin-block-end: 7px;
-      text-decoration: none;
+  .titleLink {
+    font-size: 1.3em;
+    margin-block-end: 14px;
+    text-decoration: none;
+    align-self: start;
 
-      &:hover {
-        text-decoration: underline;
-      }
+    &:hover {
+      text-decoration: underline;
     }
-    .html {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      max-height: 88px;
-      margin-block-start: 10px;
-      margin-block-end: 12px;
-    }
+  }
+}
+
+.tag {
+  background-color: darkkhaki;
+  border-radius: 12px;
+  padding: 2px 10px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    background-color: burlywood;
   }
 }
 

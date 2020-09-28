@@ -18,6 +18,6 @@ export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req}) =
   }
 }
 
-export default function Home(appProps: AppProps) {
+export default function(appProps: AppProps) {
   return <App {...appProps} />
 }

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
+import { PageData } from '../types/PageData';
 import { adminEmail, siteTitle } from '../utils/consts'
 import { parseAuthCookies } from '../utils/cookies'
 import { pageUrl } from '../utils/url';
@@ -23,7 +24,7 @@ async function searchForPages(search: string) {
   return null
 }
 
-function PageContent({ status, search, page: { html, title } }: Pick<AppProps, 'status' | 'page' | 'search'>) {
+function PageContent({ status, search, tag, page: { html, title } }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag'>) {
   switch(status) {
     case 404:
       return <div className="results page">
@@ -31,9 +32,10 @@ function PageContent({ status, search, page: { html, title } }: Pick<AppProps, '
       </div>
 
     default:
+      const backUrl = search ? `/search/${search}` : tag ? `/tag/${tag}` : null
       return <div className="results page">
         <h1>
-          {search && <a className="backButton" href={`/search/${search}`} onClick={e => { e.preventDefault(); history.back() }}>&#8658;</a>}
+          {backUrl && <a className="backButton" href={backUrl} onClick={e => { e.preventDefault(); history.back() }}>&#8658;</a>}
           <a href={pageUrl(title)}>{title}</a>
         </h1>
         <div dangerouslySetInnerHTML={{ __html: html }}/>
@@ -42,20 +44,17 @@ function PageContent({ status, search, page: { html, title } }: Pick<AppProps, '
 }
 
 function AppComponent(appProps: AppProps) {
-  const { pages, page, search, tag, status, totalCount } = appProps
-  const [searchResults, setSearchResults] = useState<SearchResults>(null)
-  const [displayedPage, setDisplayedPage] = useState(undefined)
-  const [userSearch, setUserSearch] = useState(search || '')
+  const [{ pages, tags, totalCount}, setSearchResults] = useState<SearchResults>({ pages: appProps.pages, totalCount: appProps.totalCount, tags: appProps.tags })
+  const [displayedPage, setDisplayedPage] = useState(appProps.page)
+  const [search, setSearch] = useState(appProps.search || '')
+  const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
-  const debouncedSearchTerm = useDebounce(userSearch, 300)
-  const stringBeingSearched = useRef(userSearch)
-  const lastUserSearch = useRef(userSearch)
+  const debouncedSearchTerm = useDebounce(search, 300)
+  const stringBeingSearched = useRef(search)
+  const lastSearch = useRef(search)
   const searchInput = useRef(null)
   const router = useRouter()
-  const pagesToShow = searchResults ? searchResults.pages : pages
-  const totalCountToShow = searchResults?.totalCount ?? totalCount
-  const pageToShow = displayedPage === undefined ? page : displayedPage
-  const showWelcome = !userSearch && !pageToShow && !pagesToShow
+  const showWelcome = !search && !displayedPage && !pages
 
   function focusSearchInput(element = null) {
     if (element) {
@@ -64,24 +63,32 @@ function AppComponent(appProps: AppProps) {
 
     if (searchInput.current) {
       searchInput.current.focus();
-      if (search === userSearch) {
+      if (search === appProps.search) {
         searchInput.current.selectionStart = search.length
       }
     }
   }
 
+  useEffect(() => { lastSearch.current = search }, [search])
+
   useEffect(() => {
-    lastUserSearch.current = userSearch
-  }, [userSearch])
+    if (pages) {
+      const { state } = window.history.state || {}
+      if (!state) {
+        window.history.replaceState(appProps, '', location.href)
+      }
+    }
+  }, [])
 
   const processDynamicState = useCallback((state: Partial<AppProps>) => {
-    const { search, page, pages, totalCount } = state
-    setUserSearch(search || '')
+    const { search, page, pages, tags, tag, totalCount } = state
+    setSearch(search || '')
     setDisplayedPage(page || null)
     setIsSearching(false)
-    setSearchResults({ pages, totalCount })
+    setSearchResults({ pages, tags, totalCount })
+    setTag(tag)
     focusSearchInput()
-  }, [setDisplayedPage, setUserSearch, setIsSearching, setSearchResults])
+  }, [setDisplayedPage, setSearchResults, setIsSearching, setSearchResults, setTag])
 
   function pushState(url, state: Partial<AppProps>) {
     window.history.pushState(state, '', url);
@@ -109,13 +116,13 @@ function AppComponent(appProps: AppProps) {
   }
 
   const performSearch = useCallback(async () => {
-    if (!userSearch) {
+    if (!search) {
       return
     }
     
     setIsSearching(true)
-    updateSearchInPage(userSearch, await searchForPages(userSearch))
-  }, [userSearch, setSearchResults])
+    updateSearchInPage(search, await searchForPages(search))
+  }, [search, setSearchResults])
 
   useEffect(() => {
     if (!debouncedSearchTerm) {
@@ -127,7 +134,7 @@ function AppComponent(appProps: AppProps) {
       setIsSearching(true)
       stringBeingSearched.current = debouncedSearchTerm
       searchForPages(debouncedSearchTerm).then(results => {
-        if (stringBeingSearched.current === debouncedSearchTerm && lastUserSearch.current === debouncedSearchTerm) {
+        if (stringBeingSearched.current === debouncedSearchTerm && lastSearch.current === debouncedSearchTerm) {
           updateSearchInPage(debouncedSearchTerm, results)
         }
       })
@@ -150,7 +157,7 @@ function AppComponent(appProps: AppProps) {
         e.preventDefault()
         await performSearch()
       }}>
-        <input type="text" value={userSearch} ref={focusSearchInput} onChange={e => setUserSearch(e.target.value)} placeholder="חפש אדם, עסק או מוסד"/>
+        <input type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)} placeholder="חפש אדם, עסק או מוסד"/>
         <span className="searchIcon" style={{ display: 'none' }}>
             <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -172,26 +179,22 @@ function AppComponent(appProps: AppProps) {
             הערות והצעות <a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>כדאי לשלוח במייל</a>
           </div>
         </>
-        : pageToShow
-          ? <PageContent status={status} page={pageToShow} search={searchResults && userSearch}/>
+        : displayedPage
+          ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>
-              : !pagesToShow || pagesToShow.length === 0
-                ? <span className="noResults">לא נמצאו תוצאות.</span>
-                : <>
-                  <div className="resultsTitle">{
-                    pagesToShow.length === 1 ? 'נמצא דף אחד:' :
-                      totalCountToShow > pagesToShow.length ? `נמצאו ${totalCountToShow} דפים. מציג את ${pagesToShow.length} הראשונים:` :
-                        `נמצאו ${pagesToShow.length} דפים:`
-                  }</div>
+              : <>
+                  {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
+                  <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount)}</div>
                   {
-                    pagesToShow.map(page => <div className="preview" key={page.title}>
-                      <TitleLink title={page.title} onClick={e => {
+                    tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
+                  }
+                  {
+                    pages && pages.map(page => <TitleLink title={page.title} key={page.title} onClick={e => {
                         e.preventDefault()
-                        pushState(pageUrl(page.title), { page, search: userSearch })
-                      }}/>
-                    </div>)
+                        pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
+                      }}/>)
                   }
                 </>
             }
@@ -210,6 +213,37 @@ function getPageTitle({ search, tag, page }: Partial<AppProps>) {
       : page
         ? `${siteTitle} - ${page.title}`
         : siteTitle
+}
+
+function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
+  const pagesCount = pages && pages.length || 0
+  const tagsCount = tags && tags.length || 0
+
+  switch (pagesCount) {
+    case 0:
+      switch (tagsCount) {
+        case 0: return 'לא נמצאו תוצאות.'
+        case 1: return 'נמצאה קטגוריה אחת:'
+        default: return `נמצאו ${tagsCount} קטגוריות:`
+      }
+
+    case 1:
+      switch (tagsCount) {
+        case 0: return 'נמצא דף אחד:'
+        case 1: return 'נמצאו קטגוריה אחת ודף אחד:'
+        default: return `נמצאו ${tagsCount} קטגוריות ודף אחד:`
+      }
+
+    default:
+      const suffix = totalCount > pagesCount ?
+        `${totalCount} דפים. מציג את ${pagesCount} הראשונים:` :
+        `${pagesCount} דפים:`
+      switch (tagsCount) {
+        case 0: return `נמצאו ${suffix}`
+        case 1: return `נמצאו קטגוריה אחת ו-${suffix}`
+        default: return `נמצאו ${tagsCount} קטגוריות ן-${suffix}`
+      }
+  }
 }
 
 export default function App(appProps: AppProps) {

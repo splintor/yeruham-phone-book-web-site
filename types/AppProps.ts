@@ -11,5 +11,6 @@ export interface AppProps extends SearchResults {
 
 export interface SearchResults {
   pages?: PageData[]
+  tags?: string[]
   totalCount?: number
 }
