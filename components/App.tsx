@@ -24,7 +24,7 @@ async function searchForPages(search: string) {
   return null
 }
 
-function PageContent({ status, search, tag, page: { html, title } }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag'>) {
+function PageContent({ status, search, tag, page: { html, title, tags } }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag'>) {
   switch(status) {
     case 404:
       return <div className="results page">
@@ -39,6 +39,7 @@ function PageContent({ status, search, tag, page: { html, title } }: Pick<AppPro
           <a href={pageUrl(title)}>{title}</a>
         </h1>
         <div dangerouslySetInnerHTML={{ __html: html }}/>
+        <div className="tags">{tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)}</div>
       </div>
   }
 }

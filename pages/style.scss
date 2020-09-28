@@ -130,6 +130,15 @@ body {
     margin-inline-end: 5px;
     text-decoration: none;
   }
+
+  .tags {
+    margin-block-start: 10px;
+    display: flex;
+
+    a {
+      margin-inline-end: 5px;
+    }
+  }
 }
 
 .searchForm {
