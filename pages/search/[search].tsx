@@ -7,7 +7,7 @@ import { requestProps } from '../../utils/requestProps'
 
 export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, query}) => {
   const { search } = query as { search: string}
-  const result = await searchPages(req, search as string)
+  const result = await searchPages(req, search)
   return {
     props: {
       search,
@@ -18,6 +18,6 @@ export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, qu
   }
 }
 
-export default function Home(appProps: AppProps) {
+export default function(appProps: AppProps) {
   return <App {...appProps} />
 }

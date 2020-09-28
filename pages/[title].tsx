@@ -21,6 +21,6 @@ export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = asyn
   }
 }
 
-export default function Page(appProps: AppProps) {
+export default function(appProps: AppProps) {
   return <App {...appProps} />
 }
