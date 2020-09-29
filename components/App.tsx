@@ -45,7 +45,11 @@ function PageContent({ status, search, tag, page: { html, title, tags } }: Pick<
 }
 
 function AppComponent(appProps: AppProps) {
-  const [{ pages, tags, totalCount}, setSearchResults] = useState<SearchResults>({ pages: appProps.pages, totalCount: appProps.totalCount, tags: appProps.tags })
+  const [{ pages, tags, totalCount }, setSearchResults] = useState<SearchResults>({
+    pages: appProps.pages,
+    totalCount: appProps.totalCount,
+    tags: appProps.tags
+  })
   const [displayedPage, setDisplayedPage] = useState(appProps.page)
   const [search, setSearch] = useState(appProps.search || '')
   const [tag, setTag] = useState(appProps.tag)
@@ -70,7 +74,9 @@ function AppComponent(appProps: AppProps) {
     }
   }
 
-  useEffect(() => { lastSearch.current = search }, [search])
+  useEffect(() => {
+    lastSearch.current = search
+  }, [search])
 
   useEffect(() => {
     if (pages) {
@@ -120,7 +126,7 @@ function AppComponent(appProps: AppProps) {
     if (!search) {
       return
     }
-    
+
     setIsSearching(true)
     updateSearchInPage(search, await searchForPages(search))
   }, [search, setSearchResults])
@@ -143,7 +149,7 @@ function AppComponent(appProps: AppProps) {
   }, [debouncedSearchTerm])
 
   return (
-    <main className={ showWelcome ? 'showWelcome' : '' }>
+    <main className={showWelcome ? 'showWelcome' : ''}>
       <AccountBadge/>
       <Link href="/">
         <h1 className="title">
@@ -158,10 +164,12 @@ function AppComponent(appProps: AppProps) {
         e.preventDefault()
         await performSearch()
       }}>
-        <input type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)} placeholder="חפש אדם, עסק או מוסד"/>
+        <input type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)}
+               placeholder="חפש אדם, עסק או מוסד"/>
         <span className="searchIcon" style={{ display: 'none' }}>
             <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              <path
+                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
           </span>
       </form>
@@ -186,22 +194,22 @@ function AppComponent(appProps: AppProps) {
             {isSearching
               ? <span className="loading">מחפש...</span>
               : <>
-                  {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
-                  <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount)}</div>
-                  {
-                    tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
-                  }
-                  {
-                    pages && pages.map(page => <TitleLink title={page.title} key={page.title} onClick={e => {
-                        e.preventDefault()
-                        pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
-                      }}/>)
-                  }
-                </>
+                {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
+                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount)}</div>
+                {
+                  tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
+                }
+                {
+                  pages && pages.map(page => <TitleLink title={page.title} key={page.title} onClick={e => {
+                    e.preventDefault()
+                    pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
+                  }}/>)
+                }
+              </>
             }
           </div>
       }
-      <div className="logo"><img src="/logo.png" alt={siteTitle} /></div>
+      <div className="logo"><img src="/logo.png" alt={siteTitle}/></div>
     </main>
   )
 }
@@ -223,16 +231,22 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
   switch (pagesCount) {
     case 0:
       switch (tagsCount) {
-        case 0: return 'לא נמצאו תוצאות.'
-        case 1: return 'נמצאה קטגוריה אחת:'
-        default: return `נמצאו ${tagsCount} קטגוריות:`
+        case 0:
+          return 'לא נמצאו תוצאות.'
+        case 1:
+          return 'נמצאה קטגוריה אחת:'
+        default:
+          return `נמצאו ${tagsCount} קטגוריות:`
       }
 
     case 1:
       switch (tagsCount) {
-        case 0: return 'נמצא דף אחד:'
-        case 1: return 'נמצאו קטגוריה אחת ודף אחד:'
-        default: return `נמצאו ${tagsCount} קטגוריות ודף אחד:`
+        case 0:
+          return 'נמצא דף אחד:'
+        case 1:
+          return 'נמצאו קטגוריה אחת ודף אחד:'
+        default:
+          return `נמצאו ${tagsCount} קטגוריות ודף אחד:`
       }
 
     default:
@@ -240,9 +254,12 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
         `${totalCount} דפים. מציג את ${pagesCount} הראשונים:` :
         `${pagesCount} דפים:`
       switch (tagsCount) {
-        case 0: return `נמצאו ${suffix}`
-        case 1: return `נמצאו קטגוריה אחת ו-${suffix}`
-        default: return `נמצאו ${tagsCount} קטגוריות ן-${suffix}`
+        case 0:
+          return `נמצאו ${suffix}`
+        case 1:
+          return `נמצאו קטגוריה אחת ו-${suffix}`
+        default:
+          return `נמצאו ${tagsCount} קטגוריות ן-${suffix}`
       }
   }
 }
