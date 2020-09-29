@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "cookie": "^0.4.1",
-    "firebase-admin": "^9.1.1",
+    "draft-js": "^0.11.7",
     "isomorphic-fetch": "^2.2.1",
     "memory-cache": "^0.2.0",
     "next": "9.3.5",
