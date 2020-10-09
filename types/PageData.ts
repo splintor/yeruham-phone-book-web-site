@@ -4,6 +4,6 @@ export interface PageData {
   oldUrl?: string
   oldName?: string
   tags?: string[]
-  id?: string
-  updateDate?: string
+  _id?: string
+  _updateDate?: string
 }

@@ -1,4 +1,4 @@
-import { response, ok, badRequest, notFound, serverError } from 'wix-http-functions'
+import { response, ok, created, badRequest, notFound, serverError } from 'wix-http-functions'
 import wixData from 'wix-data'
 import { adminPhoneNumber, authPassword } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
@@ -11,6 +11,7 @@ const authKey = getKeyFromPassword(authPassword)
 const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
+const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
 
 let phones
 let tagsList
@@ -79,7 +80,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
     }
 
     if (phoneNumber === adminPhoneNumber) {
-      return ok()
+      return okResponse({ phoneNumber })
     }
 
     if (requireAdmin) {
@@ -95,7 +96,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
       return unauthorizedResponse(`Auth phone not found: ${strippedPhoneNumber}`)
     }
 
-    return ok()
+    return okResponse({ phoneNumber: strippedPhoneNumber })
   } catch (exception) {
     return unauthorizedResponse('Failed to parse authentication header')
   }
@@ -116,6 +117,37 @@ export async function get_page(request) {
   return item ?
     ok({ headers, body: { ...item } }) :
     notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
+}
+
+export async function post_page(request) {
+  const loginCheck = await get_checkLogin(request)
+  if (loginCheck.status !== 200) {
+    return loginCheck
+  }
+
+  const { page } = await request.body.json()
+  const { phoneNumber } = loginCheck.body
+  const conflicts = await wixData.query('pages').eq('title', page.title).ne('_id', page._id).find()
+  if (conflicts.items.length > 0) {
+    return response({ headers, status: 409, body: { message: `Page with title ${page.title} already exists.` } })
+  }
+
+  if (page._id) {
+    const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
+    if (page.title === existing.title && page.html === existing.html && (page.tags || []).join() === (existing.tags || []).join()) {
+      return ok({ headers, body: { message: `No change was needed in page ${page.title}.` } });
+    }
+
+    await wixData.save('pages_history', { pageId: existing._id, changedBy: phoneNumber, oldTitle: existing.title, oldHtml: existing.html, oldTags: existing.tags }, suppressAuthAndHooks)
+  } else {
+    page.createdBy = phoneNumber
+  }
+
+  await wixData.save('pages', page, suppressAuthAndHooks)
+
+  return page._id ?
+    ok({ headers, body: { message: `Page ${page.title} was updated` } }) :
+    created({ headers, body: { message: `Page ${page.title} was created` } });
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
@@ -149,4 +181,21 @@ export async function get_tag(request) {
   const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
   const { items } = await wixData.query('pages').contains('tags', searchedTag).limit(1000).find()
   return ok({ headers, body: { pages: items } })
+}
+
+// URL: https://<wix-site-url>/_functions/tags
+export async function get_tags(request) {
+  const loginCheck = await get_checkLogin(request)
+  if (loginCheck.status !== 200) {
+    return loginCheck
+  }
+
+  if (!tagsList) {
+    await loadPhonesMapAndTagsList()
+  }
+
+
+  const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
+  const { items } = await wixData.query('pages').contains('tags', searchedTag).limit(1000).find()
+  return ok({ headers, body: { tags: tagsList } })
 }

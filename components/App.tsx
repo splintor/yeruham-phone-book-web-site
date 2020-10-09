@@ -1,16 +1,20 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData';
 import { adminEmail, siteTitle } from '../utils/consts'
 import { parseAuthCookies } from '../utils/cookies'
+import { savePage } from '../utils/api';
 import { pageUrl } from '../utils/url';
 import { AccountBadge } from './AccountBadge'
 import { LoginPage } from './LoginPage'
 import { TitleLink } from './TitleLink'
+
+const PageEditor = dynamic(() => import('./PageEditor'))
 
 async function searchForPages(search: string) {
   const { auth } = parseAuthCookies()
@@ -24,8 +28,18 @@ async function searchForPages(search: string) {
   return null
 }
 
-function PageContent({ status, search, tag, page: { html, title, tags } }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag'>) {
-  switch(status) {
+function PageContent({ status, search, tag, page: pageProp }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag'>) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [page, setPage] = useState(pageProp)
+  const { html, title, tags } = page
+
+  const saveChanges = async (pageToSave: PageData) => {
+    await savePage(pageToSave)
+    setPage(pageToSave)
+    setIsEditing(false)
+  }
+
+  switch (status) {
     case 404:
       return <div className="results page">
         <div className="notFound">הדף <span className="searchedTitle">{title}</span> לא נמצא בספר הטלפונים.</div>
@@ -33,14 +47,21 @@ function PageContent({ status, search, tag, page: { html, title, tags } }: Pick<
 
     default:
       const backUrl = search ? `/search/${search}` : tag ? `/tag/${tag}` : null
-      return <div className="results page">
-        <h1>
-          {backUrl && <a className="backButton" href={backUrl} onClick={e => { e.preventDefault(); history.back() }}>&#8658;</a>}
-          <a href={pageUrl(title)}>{title}</a>
-        </h1>
-        <div dangerouslySetInnerHTML={{ __html: html }}/>
-        <div className="tags">{tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)}</div>
-      </div>
+      return isEditing ? <PageEditor page={page} onCancel={() => setIsEditing(false)} onSave={saveChanges}/> :
+        <div className="results page">
+          <button className="edit-button" onClick={() => setIsEditing(true)}>עריכה</button>
+          <h1>
+            {backUrl && <a className="backButton" href={backUrl} onClick={e => {
+              e.preventDefault();
+              history.back()
+            }}>&#8658;</a>}
+            <a href={pageUrl(title)}>{title}</a>
+          </h1>
+          <div dangerouslySetInnerHTML={{ __html: html }}/>
+          <div className="tags">
+            {tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)}
+          </div>
+        </div>
   }
 }
 
@@ -175,7 +196,7 @@ function AppComponent(appProps: AppProps) {
       </form>
 
       {showWelcome
-        ? <>
+        ? <div className="welcome">
           <div>
             האתר זמין גם כ<a href="https://play.google.com/store/apps/details?id=com.splintor.yeruhamphonebook">אפליקצית
             אנדרואיד</a> וכ<a href="https://groups.google.com/d/msg/yerucham1/QWQYnxeXNfU/Q104gimvAAAJ">בוט בטלגרם</a>
@@ -187,7 +208,7 @@ function AppComponent(appProps: AppProps) {
           <div>
             הערות והצעות <a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>כדאי לשלוח במייל</a>
           </div>
-        </>
+        </div>
         : displayedPage
           ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag}/>
           : <div className="results">

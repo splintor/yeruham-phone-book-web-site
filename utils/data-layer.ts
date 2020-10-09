@@ -1,4 +1,5 @@
 import { IncomingMessage } from 'http'
+import { NextApiRequest } from 'next';
 import { parseAuthCookies } from './cookies'
 import fetch from 'isomorphic-fetch'
 
@@ -24,9 +25,12 @@ export const searchPages = async (req: IncomingMessage, search: string) =>
 export const getTagPages = async (req: IncomingMessage, tag: string) =>
   fetch(`${urlPrefix}/tag/${encodeURI(tag)}`, getRequestOptions(req))
 
-export const updatePage = async (req: IncomingMessage, id: string, newTitle: string, newHTML: string, newTags: string[]) =>
+export const getAllTags = async (req: IncomingMessage) =>
+  fetch(`${urlPrefix}/tags`, getRequestOptions(req))
+
+export const savePage = async (req: NextApiRequest) =>
   fetch(`${urlPrefix}/page`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: parseAuthCookies(req).auth },
-    body: JSON.stringify({ id, newTitle, newHTML, newTags }),
+    body: JSON.stringify(req.body),
   })

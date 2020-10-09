@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { NextApiResponse } from 'next'
+import { parseAuthCookies } from './cookies';
 
 export async function sendResponse(response: NextApiResponse, fetchResponse: Response, logData: ReturnType<typeof getRequestLogData>) {
   console.info('sending response', logData)
@@ -16,4 +17,28 @@ export function sendUnsupportedMethodResponse(response: ServerResponse, message:
 export function getRequestLogData(request: IncomingMessage) {
   const { url, headers: { host, 'x-forwarded-for': ip }, method } = request
   return { url, host, method, ip }
+}
+
+let allTags: string[];
+export async function getAllTags(force = false): Promise<string[]> {
+  if (!allTags || force) {
+    const { auth } = parseAuthCookies()
+    if (auth) {
+      const res = await fetch(`/api/tags`, { headers: { Cookie: `auth=${auth}` } })
+      if (res.ok) {
+        allTags = (await res.json()).tags.sort()
+      }
+    }
+  }
+
+  return allTags
+}
+
+export async function savePage(page) {
+  const { auth } = parseAuthCookies()
+  const res = await fetch(`/api/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: `auth=${auth}` },
+    body: JSON.stringify({ page })
+  })
 }
