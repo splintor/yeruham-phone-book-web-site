@@ -25,8 +25,12 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps) {
 
   async function save() {
     try {
+      const tagsWereUpdated = page.tags !== tags
       setIsSaving(true)
       await onSave({ ...page, title, html: stateToHTML(editorState.getCurrentContent()), tags })
+      if (tagsWereUpdated) {
+        await getAllTags(true)
+      }
     }
     finally {
       setIsSaving(false)

@@ -144,6 +144,7 @@ export async function post_page(request) {
   }
 
   await wixData.save('pages', page, suppressAuthAndHooks)
+  await loadPhonesMapAndTagsList()
 
   return page._id ?
     ok({ headers, body: { message: `Page ${page.title} was updated` } }) :
