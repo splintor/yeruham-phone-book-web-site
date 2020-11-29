@@ -157,7 +157,7 @@ function AppComponent(appProps: AppProps) {
 
   useEffect(() => {
     if (!debouncedSearchTerm) {
-      setIsSearching(false)
+      setIsSearching(!pages)
       return
     }
 
