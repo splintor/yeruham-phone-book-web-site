@@ -97,6 +97,9 @@ function AppComponent(appProps: AppProps) {
 
   useEffect(() => {
     lastSearch.current = search
+    if (!search) {
+      stringBeingSearched.current = search
+    }
   }, [search])
 
   useEffect(() => {
