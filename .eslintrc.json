@@ -20,6 +20,14 @@
       "rules": {
         "@typescript-eslint/explicit-module-boundary-types": "off"
       }
+    },
+    {
+      "files": [
+        "next.config.js"
+      ],
+      "rules": {
+        "semi": "off"
+      }
     }
   ]
 }
