@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, ReactElement, useCallback, useState } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { setAuthCookies } from '../utils/cookies'
 
@@ -32,7 +32,7 @@ function renderError(errorType: ErrorType) {
   }
 }
 
-export function LoginPage({ onLogin = defaultLoginHandler }) {
+export function LoginPage({ onLogin = defaultLoginHandler }: { onLogin(): boolean }): ReactElement {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorType, setErrorType] = useState(ErrorType.None)

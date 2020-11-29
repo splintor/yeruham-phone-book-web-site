@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
 import App from '../components/App'
@@ -21,6 +21,6 @@ export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = asyn
   }
 }
 
-export default function(appProps: AppProps) {
+export default function(appProps: AppProps): ReactElement {
   return <App {...appProps} />
 }

@@ -2,7 +2,7 @@ import { parse } from 'cookie'
 import { IncomingMessage } from 'http'
 
 const authTitleKey = 'authTitle'
-export const setAuthCookies = (auth: string, authTitle: string) => {
+export const setAuthCookies = (auth: string, authTitle: string): void => {
   document.cookie = [`auth=${auth}`, 'path=/', 'max-age=2147483647'].join(';')
   if (auth && authTitle) {
     localStorage.setItem(authTitleKey, authTitle)

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-export function useKeyPress(targetKey) {
+export function useKeyPress(targetKey: string): boolean {
   const [keyPressed, setKeyPressed] = useState(false)
 
   function downHandler({ key }) {

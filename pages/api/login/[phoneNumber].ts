@@ -3,6 +3,6 @@ import { getRequestLogData, sendResponse } from '../../../utils/api'
 import { login } from '../../../utils/data-layer'
 
 // noinspection JSUnusedGlobalSymbols
-export default async function phoneNumber(request: NextApiRequest, response: NextApiResponse) {
+export default async function phoneNumber(request: NextApiRequest, response: NextApiResponse): Promise<void> {
   return sendResponse(response, await login(request?.query?.phoneNumber as string || ''), getRequestLogData(request))
 }

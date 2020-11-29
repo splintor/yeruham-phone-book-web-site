@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { GetServerSideProps } from 'next'
 import App from '../../components/App'
 import { AppProps } from '../../types/AppProps'
 import { searchPages } from '../../utils/data-layer'
 import { requestProps } from '../../utils/requestProps'
 
+// noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, query}) => {
   const { search } = query as { search: string}
   const result = await searchPages(req, search)
@@ -18,6 +19,7 @@ export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, qu
   }
 }
 
-export default function(appProps: AppProps) {
+// noinspection JSUnusedGlobalSymbols
+export default function(appProps: AppProps): ReactElement {
   return <App {...appProps} />
 }

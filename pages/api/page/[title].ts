@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getRequestLogData, sendResponse, sendUnsupportedMethodResponse } from '../../../utils/api'
 import { getPage } from '../../../utils/data-layer'
 
-export default async function page(request: NextApiRequest, response: NextApiResponse) {
+export default async function page(request: NextApiRequest, response: NextApiResponse): Promise<void> {
   const { method, query: { title }} = request
   switch (request.method) {
     case 'GET':

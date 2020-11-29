@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { parseAuthCookies, setAuthCookies } from '../utils/cookies'
 import { TitleLink } from './TitleLink'
 
-export function AccountBadge() {
+export function AccountBadge(): ReactElement {
   const [authTitle, setAuthTitle] = useState('')
   useEffect(() => {
     const { authTitle } = parseAuthCookies()

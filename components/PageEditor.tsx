@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { Editor, EditorState, CompositeDecorator } from 'draft-js'
 import { stateFromHTML } from 'draft-js-import-html'
 import { stateToHTML } from 'draft-js-export-html'
@@ -28,7 +28,7 @@ function Link(props) {
 
 const customDecorators = new CompositeDecorator([{ strategy: findLinkEntities, component: Link }])
 
-export default function PageEditor({ page, onCancel, onSave }: EditorProps) {
+export default function PageEditor({ page, onCancel, onSave }: EditorProps): ReactElement {
   const [title, setTitle] = useState(page.title)
   const [tags, setTags] = useState(page.tags)
   const [showAddTag, setShowAddTag] = useState(false)
