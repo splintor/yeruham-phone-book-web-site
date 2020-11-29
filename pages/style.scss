@@ -88,8 +88,9 @@ body {
   top: 120px;
   right: 12px;
   left: 12px;
-  background-color: #DEE;
+  background-color: white;
   padding: 7px 10px;
+  border: 1px solid #c2beb9;
 
   > h1 {
     margin-block-start: 0;
@@ -102,12 +103,14 @@ body {
   }
 
   .resultsTitle {
-    font-size: 1.2em;
-    margin-block-end: 7px;
+    font-size: 1.05em;
+    padding-block-end: 6px;
+    margin-block-end: 12px;
+    border-bottom: 1px solid #c2beb9;
   }
 
   .titleLink {
-    font-size: 1.3em;
+    font-size: 1.15em;
     margin-block-end: 14px;
     align-self: start;
     cursor: pointer;
@@ -167,6 +170,10 @@ body {
     width: 100%;
     font-size: 1.1em;
     outline: 0;
+
+    &:focus {
+      border-color: blue;
+    }
   }
 
   .searchIcon {
