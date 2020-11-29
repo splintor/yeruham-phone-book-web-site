@@ -2,11 +2,6 @@ import React, { FormEvent, ReactElement, useCallback, useState } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { setAuthCookies } from '../utils/cookies'
 
-const defaultLoginHandler = () => {
-  location.reload()
-  return true
-}
-
 enum ErrorType {
   None,
   NotFound,
@@ -32,7 +27,7 @@ function renderError(errorType: ErrorType) {
   }
 }
 
-export function LoginPage({ onLogin = defaultLoginHandler }: { onLogin(): boolean }): ReactElement {
+export function LoginPage(): ReactElement {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorType, setErrorType] = useState(ErrorType.None)
@@ -49,10 +44,8 @@ export function LoginPage({ onLogin = defaultLoginHandler }: { onLogin(): boolea
       if (res.ok) {
         const { auth, authTitle } = await res.json()
         setAuthCookies(auth, authTitle)
-        const onLoginResult = onLogin && onLogin()
-        if (onLoginResult) {
-          return // leave isLoading true until page is reloaded
-        }
+        location.reload()
+        return // leave isLoading true until page is reloaded
       } else {
         setErrorType(ErrorType.NotFound)
       }
