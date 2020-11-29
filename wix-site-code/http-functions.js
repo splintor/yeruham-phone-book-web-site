@@ -1,4 +1,4 @@
-import { response, ok, created, badRequest, notFound, serverError } from 'wix-http-functions'
+import { response, ok, created, notFound } from 'wix-http-functions'
 import wixData from 'wix-data'
 import { adminPhoneNumber, authPassword } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
@@ -195,8 +195,5 @@ export async function get_tags(request) {
     await loadPhonesMapAndTagsList()
   }
 
-
-  const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
-  const { items } = await wixData.query('pages').contains('tags', searchedTag).limit(1000).find()
   return ok({ headers, body: { tags: tagsList } })
 }
