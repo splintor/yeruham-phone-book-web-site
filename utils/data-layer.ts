@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http'
-import { NextApiRequest } from 'next';
+import { NextApiRequest } from 'next'
 import { parseAuthCookies } from './cookies'
 import fetch from 'isomorphic-fetch'
 

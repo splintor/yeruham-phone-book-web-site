@@ -2,14 +2,14 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
-import { PageData } from '../types/PageData';
+import { PageData } from '../types/PageData'
 import { adminEmail, siteTitle } from '../utils/consts'
 import { parseAuthCookies } from '../utils/cookies'
-import { savePage } from '../utils/api';
-import { pageUrl } from '../utils/url';
+import { savePage } from '../utils/api'
+import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
 import { LoginPage } from './LoginPage'
 import { TitleLink } from './TitleLink'
@@ -52,7 +52,7 @@ function PageContent({ status, search, tag, page: pageProp }: Pick<AppProps, 'st
           <button className="edit-button" onClick={() => setIsEditing(true)}>עריכה</button>
           <h1>
             {backUrl && <a className="backButton" href={backUrl} onClick={e => {
-              e.preventDefault();
+              e.preventDefault()
               history.back()
             }}>&#8658;</a>}
             <a href={pageUrl(title)}>{title}</a>
@@ -84,11 +84,11 @@ function AppComponent(appProps: AppProps) {
 
   function focusSearchInput(element = null) {
     if (element) {
-      searchInput.current = element;
+      searchInput.current = element
     }
 
     if (searchInput.current) {
-      searchInput.current.focus();
+      searchInput.current.focus()
       if (search === appProps.search) {
         searchInput.current.selectionStart = search.length
       }
@@ -119,7 +119,7 @@ function AppComponent(appProps: AppProps) {
   }, [setDisplayedPage, setSearchResults, setIsSearching, setSearchResults, setTag])
 
   function pushState(url, state: Partial<AppProps>) {
-    window.history.pushState(state, '', url);
+    window.history.pushState(state, '', url)
     document.title = getPageTitle(state)
     processDynamicState(state)
   }
@@ -285,7 +285,7 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
   }
 }
 
-export default function App(appProps: AppProps) {
+export default function App(appProps: AppProps): ReactElement {
   const { url, origin, status } = appProps
   const pageTitle = getPageTitle(appProps)
   return <div className="app">

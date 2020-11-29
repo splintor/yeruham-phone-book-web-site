@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Editor, EditorState, CompositeDecorator } from 'draft-js'
 import { stateFromHTML } from 'draft-js-import-html'
 import { stateToHTML } from 'draft-js-export-html'
-import { useKeyPress } from '../hooks/useKeyPress';
+import { useKeyPress } from '../hooks/useKeyPress'
 import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
 
@@ -14,7 +14,7 @@ interface EditorProps {
 
 function findLinkEntities(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(character => {
-      const entityKey = character.getEntity();
+      const entityKey = character.getEntity()
       return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK'
     },
     callback,
@@ -26,7 +26,7 @@ function Link(props) {
   return <a href={url}>{props.children}</a>
 }
 
-const customDecorators = new CompositeDecorator([{ strategy: findLinkEntities, component: Link }]);
+const customDecorators = new CompositeDecorator([{ strategy: findLinkEntities, component: Link }])
 
 export default function PageEditor({ page, onCancel, onSave }: EditorProps) {
   const [title, setTitle] = useState(page.title)
@@ -36,8 +36,8 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps) {
   const [editorState, setEditorState] = useState(() => EditorState.createWithContent(stateFromHTML(page.html), customDecorators))
   const [isSaving, setIsSaving] = useState(false)
   const allTagsRef = useRef<string[]>()
-  const enterPressed = useKeyPress('Enter');
-  const escapePressed = useKeyPress('Escape');
+  const enterPressed = useKeyPress('Enter')
+  const escapePressed = useKeyPress('Escape')
 
   async function save() {
     try {
@@ -69,7 +69,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps) {
 
   if (showAddTag) {
     if (enterPressed) {
-      addNewTag();
+      addNewTag()
     } else if (escapePressed) {
       setShowAddTag(false)
     }

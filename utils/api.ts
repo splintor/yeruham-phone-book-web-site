@@ -1,25 +1,26 @@
-import { IncomingMessage, ServerResponse } from 'http'
+import { IncomingHttpHeaders, IncomingMessage, ServerResponse } from 'http'
 import { NextApiResponse } from 'next'
-import { parseAuthCookies } from './cookies';
+import { PageData } from '../types/PageData'
+import { parseAuthCookies } from './cookies'
 
-export async function sendResponse(response: NextApiResponse, fetchResponse: Response, logData: ReturnType<typeof getRequestLogData>) {
-  console.info('sending response', logData)
+export async function sendResponse(response: NextApiResponse, fetchResponse: Response): Promise<void> {
   response.statusCode = fetchResponse.status
   response.setHeader('Content-Type', 'application/json')
   response.end(await fetchResponse.text())
 }
 
-export function sendUnsupportedMethodResponse(response: ServerResponse, message: string, logData: object) {
+export function sendUnsupportedMethodResponse(response: ServerResponse, message: string, logData: Record<string, unknown>): void {
   console.error(message, logData)
   response.statusCode = 405
 }
 
-export function getRequestLogData(request: IncomingMessage) {
+export function getRequestLogData(request: IncomingMessage):
+  Pick<IncomingMessage, 'url' | 'method'> & { ip: IncomingHttpHeaders['ip'], host: IncomingHttpHeaders['host']  } {
   const { url, headers: { host, 'x-forwarded-for': ip }, method } = request
   return { url, host, method, ip }
 }
 
-let allTags: string[];
+let allTags: string[]
 export async function getAllTags(force = false): Promise<string[]> {
   if (!allTags || force) {
     const { auth } = parseAuthCookies()
@@ -34,9 +35,9 @@ export async function getAllTags(force = false): Promise<string[]> {
   return allTags
 }
 
-export async function savePage(page) {
+export async function savePage(page: PageData): Promise<void> {
   const { auth } = parseAuthCookies()
-  const res = await fetch(`/api/save`, {
+  await fetch(`/api/save`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: `auth=${auth}` },
     body: JSON.stringify({ page })

@@ -135,7 +135,7 @@ export async function post_page(request) {
   if (page._id) {
     const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
     if (page.title === existing.title && page.html === existing.html && (page.tags || []).join() === (existing.tags || []).join()) {
-      return ok({ headers, body: { message: `No change was needed in page ${page.title}.` } });
+      return ok({ headers, body: { message: `No change was needed in page ${page.title}.` } })
     }
 
     await wixData.save('pages_history', { pageId: existing._id, changedBy: phoneNumber, oldTitle: existing.title, oldHtml: existing.html, oldTags: existing.tags }, suppressAuthAndHooks)
@@ -148,7 +148,7 @@ export async function post_page(request) {
 
   return page._id ?
     ok({ headers, body: { message: `Page ${page.title} was updated` } }) :
-    created({ headers, body: { message: `Page ${page.title} was created` } });
+    created({ headers, body: { message: `Page ${page.title} was created` } })
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
