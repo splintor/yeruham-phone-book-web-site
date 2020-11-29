@@ -125,11 +125,11 @@ function AppComponent(appProps: AppProps) {
   }
 
   useEffect(() => {
-    router.beforePopState(state => {
-      processDynamicState(state);
-      return false;
+    window.addEventListener('popstate',(e: PopStateEvent) => {
+      processDynamicState(e.state as AppProps)
+      return false
     })
-  }, [router, processDynamicState])
+  }, [processDynamicState])
 
   useEffect(() => {
     const activeSearch = router.query.search as string
