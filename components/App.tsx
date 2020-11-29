@@ -111,6 +111,23 @@ function AppComponent(appProps: AppProps) {
     }
   }, [])
 
+  useEffect(() => {
+    if (pages?.length > 0) {
+      document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
+        for(let i = p.children.length - 1; i >= 0; --i) {
+          const c = p.children[i] as HTMLElement
+          if (!c.innerText?.trim()) {
+            c.remove()
+          }
+        }
+
+        if (p.scrollHeight > p.offsetHeight) {
+          p.classList.add('truncated')
+        }
+      })
+    }
+  }, [pages])
+
   const processDynamicState = useCallback((state: Partial<AppProps>) => {
     const { search, page, pages, tags, tag, totalCount } = state
     setSearch(search || '')
@@ -224,10 +241,15 @@ function AppComponent(appProps: AppProps) {
                   tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
                 }
                 {
-                  pages && pages.map(page => <TitleLink title={page.title} key={page.title} onClick={e => {
-                    e.preventDefault()
-                    pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
-                  }}/>)
+                  pages && pages.map(page => <div className="result">
+                    <TitleLink title={page.title} key={page.title} onClick={e => {
+                      e.preventDefault()
+                      pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
+                    }}/>
+                    <input type="checkbox" id={page.title} />
+                    <div dangerouslySetInnerHTML={{ __html: page.html }} className="preview"/>
+                    <label htmlFor={page.title} role="button">הצג עוד</label>
+                  </div>)
                 }
               </>
             }

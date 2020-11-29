@@ -434,6 +434,41 @@ body {
   }
 }
 
-p {
-  margin: 5px 0;
+.result {
+  margin-block-end: 20px;
+
+  & > input {
+    display: none;
+
+    &:checked + .preview {
+      transition: all 3s ease;
+      max-height: unset;
+    }
+
+    &:checked ~ label {
+      display: none;
+    }
+  }
+}
+
+.preview {
+  max-height: 110px;
+  transition: all 3s ease;
+  overflow-y: hidden;
+  margin-block-start: 4px;
+
+  p, div {
+    margin: 4px 0;
+  }
+
+  &:not(.truncated) ~ label {
+    display: none;
+  }
+
+  & ~ label {
+    color: grey;
+    margin-top: 10px;
+    cursor: pointer;
+    display: inline-block;
+  }
 }
