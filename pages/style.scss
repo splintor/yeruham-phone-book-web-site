@@ -309,10 +309,16 @@ button {
       color: black;
 
       &.OK {
-        background-color: lightgreen;
+        background-color: grey;
+        cursor: not-allowed;
 
-        &:hover {
-          background-color: forestgreen;
+        &:enabled {
+          cursor: pointer;
+          background-color: lightgreen;
+
+          &:hover {
+            background-color: forestgreen;
+          }
         }
       }
 
