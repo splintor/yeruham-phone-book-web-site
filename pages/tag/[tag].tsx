@@ -20,6 +20,6 @@ export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, qu
 }
 
 // noinspection JSUnusedGlobalSymbols
-export default function(appProps: AppProps): ReactElement {
+export default function Tag(appProps: AppProps): ReactElement {
   return <App {...appProps} />
 }

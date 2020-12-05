@@ -21,6 +21,6 @@ export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = asyn
   }
 }
 
-export default function(appProps: AppProps): ReactElement {
+export default function Title(appProps: AppProps): ReactElement {
   return <App {...appProps} />
 }
