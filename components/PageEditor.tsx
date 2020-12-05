@@ -79,12 +79,15 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
     getAllTags().then(allTags => allTagsRef.current = allTags)
   }, [])
 
+  const titleInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => titleInputRef.current?.select(), [titleInputRef])
+
   return <div className="results page-editor">
     <div className="buttons">
       <button className="OK" onClick={save}>{isSaving ? 'שומר...' : 'שמירה'}</button>
       <button className="Cancel" onClick={onCancel}>ביטול</button>
     </div>
-    <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} />
+    <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
     <div className="editor-container">
       <Editor editorState={editorState} onChange={setEditorState} textDirectionality="RTL"/>
     </div>
