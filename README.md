@@ -14,6 +14,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. TODO: Sort results according to mobile app logic
 1. TODO: Add documentation and link to it from home
 1. TODO: Enable showing all tags
+1. TODO: Send mail on change (https://github.com/kpdecker/jsdiff)
 1. TODO: Highlight search in result page
 1. TODO: Handle cross-domain authentication 
 1. TODO: X Think of how to handle deletion (also so the flutter app can be updated about changes)
