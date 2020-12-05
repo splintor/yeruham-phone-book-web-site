@@ -11,6 +11,7 @@ export function AccountBadge(): ReactElement {
   }, [])
 
   return authTitle && <div className="account">
+    <button onClick={() => location.href = '/new_page'}>הוסף דף חדש</button>{' '}
     מחובר כ
     <TitleLink title={authTitle}/> (
     <Link href="/">

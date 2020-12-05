@@ -8,9 +8,8 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Show better "Not found" page (take sample from old site)
-1. TODO: Enable page edit
-1. TODO: Add "add a new page" button in title and in empty search results
-1. TODO: Add "delete page" button in page view
+1. TODO: Add "delete page" button in page view 
+1. TODO: Improve editing features (bold, underline, link, social media icons)
 1. TODO: Sort results according to mobile app logic
 1. TODO: Add documentation and link to it from home
 1. TODO: Enable showing all tags

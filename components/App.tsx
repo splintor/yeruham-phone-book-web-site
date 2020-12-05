@@ -28,10 +28,16 @@ async function searchForPages(search: string) {
   return null
 }
 
-function PageContent({ status, search, tag, page: pageProp }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag'>) {
+function PageContent({ search, tag, ...props }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'newPage'>) {
   const [isEditing, setIsEditing] = useState(false)
-  const [page, setPage] = useState(pageProp)
+  const [page, setPage] = useState(props.page)
   const { html, title, tags } = page
+
+  useEffect(() => {
+    if (!isEditing && props.newPage) {
+      setIsEditing(true)
+    }
+  }, [props.newPage])
 
   const saveChanges = async (pageToSave: PageData) => {
     await savePage(pageToSave)
@@ -39,7 +45,7 @@ function PageContent({ status, search, tag, page: pageProp }: Pick<AppProps, 'st
     setIsEditing(false)
   }
 
-  switch (status) {
+  switch (props.status) {
     case 404:
       return <div className="results page">
         <div className="notFound">הדף <span className="searchedTitle">{title}</span> לא נמצא בספר הטלפונים.</div>
@@ -71,10 +77,11 @@ function AppComponent(appProps: AppProps) {
     totalCount: appProps.totalCount,
     tags: appProps.tags
   })
-  const [displayedPage, setDisplayedPage] = useState(appProps.page)
+  const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: '', html: '' } : appProps.page)
   const [search, setSearch] = useState(appProps.search || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
+  const [isNewPage, setIsNewPage] = useState(appProps.newPage)
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
@@ -135,6 +142,7 @@ function AppComponent(appProps: AppProps) {
     setIsSearching(false)
     setSearchResults({ pages, tags, totalCount })
     setTag(tag)
+    setIsNewPage(state.newPage || false)
     focusSearchInput()
   }, [setDisplayedPage, setSearchResults, setIsSearching, setSearchResults, setTag])
 
@@ -230,7 +238,7 @@ function AppComponent(appProps: AppProps) {
           </div>
         </div>
         : displayedPage
-          ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag}/>
+          ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag} newPage={isNewPage}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>
@@ -260,14 +268,16 @@ function AppComponent(appProps: AppProps) {
   )
 }
 
-function getPageTitle({ search, tag, page }: Partial<AppProps>) {
+function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>) {
   return search
     ? `${siteTitle} - חיפוש - ${search}`
     : tag
       ? `${siteTitle} - ${tag}`
-      : page
-        ? `${siteTitle} - ${page.title}`
-        : siteTitle
+      : newPage
+        ? `${siteTitle} - דף חדש`
+        : page
+          ? `${siteTitle} - ${page.title}`
+          : siteTitle
 }
 
 function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {

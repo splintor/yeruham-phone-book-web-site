@@ -261,24 +261,27 @@ body {
   font-size: 0.8em;
 }
 
-.edit-button {
-  position: absolute;
-  left: 5px;
+button {
   border-radius: 15px;
   min-width: 2em;
   font-size: 1rem;
   background-color: #80008082;
-  border: 0px;
-  outline: 0;
-  padding: 0 9px 3px 9px;
   color: white;
-  text-decoration: none;
   user-select: none;
   cursor: pointer;
+  text-decoration: none;
+  outline: 0;
+  border: 0px;
+  padding: 0 9px 3px 9px;
 
   &:hover {
     background-color: #800080;
   }
+}
+
+.edit-button {
+  position: absolute;
+  left: 5px;
 }
 
 .page-editor {
@@ -303,6 +306,7 @@ body {
       padding: 2px;
       width: 80px;
       cursor: pointer;
+      color: black;
 
       &.OK {
         background-color: lightgreen;

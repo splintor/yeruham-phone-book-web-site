@@ -11,12 +11,22 @@ interface PageParams extends ParsedUrlQuery {
 }
 
 export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = async ({ params: { title }, req}) => {
+  if (title === 'new_page') {
+    return {
+      props: {
+        status: 200,
+        newPage: true,
+        ...requestProps(req),
+      }
+    }
+  }
+
   const result = await getPage(req, title as string)
   return {
     props: {
       status: result.status,
       page: await result.json(),
-      ...requestProps(req)
+      ...requestProps(req),
     },
   }
 }
