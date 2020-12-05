@@ -52,10 +52,15 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
       setIsSaving(false)
     }
   }
-  const removeTag = tag => setTags(tags.filter(t => t !== tag))
+
+  const removeTag = tag => {
+    const filterTags = tags.filter(t => t !== tag)
+    setTags(filterTags.length === 0 ? null : filterTags)
+  }
+
   const addTag = tag => {
-    if (!tags.includes(tag)) {
-      setTags([...tags, tag])
+    if (!tags?.includes(tag)) {
+      setTags([...(tags || []), tag])
     }
     setShowAddTag(false)
   }
@@ -106,7 +111,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
         {showAddTag && <>
         <div key="overlay" className="overlay" onClick={() => setShowAddTag(false)}/>
         <div key="addTagModal" className="addTagModal">
-          {allTagsRef.current?.filter(t => !tags.includes(t)).map(t => <div><span className="titleLink tag" key={t} onClick={() => addTag(t)}>{t}</span></div> )}
+          {allTagsRef.current?.filter(t => !tags?.includes(t)).map(t => <div><span className="titleLink tag" key={t} onClick={() => addTag(t)}>{t}</span></div> )}
           <div className="newTag">
             <input autoFocus placeholder="קטגוריה חדשה" type="text" value={newTag} onChange={e => setNewTag(e.target.value)}/>
             <button onClick={addNewTag} disabled={!newTag}>הוסף</button>
