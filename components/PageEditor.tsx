@@ -93,7 +93,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
       {page.title && <button className="delete" onClick={onCancel}>ביטול</button>}
     </div>
     <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
-    <div className="editor-container">
+    <div className="editor-container" onClick={e => setTimeout(() => (e.target as any)?.querySelector('[contenteditable]')?.focus(), 0)}>
       <Editor editorState={editorState} onChange={setEditorState} textDirectionality="RTL"/>
     </div>
     <div className="tags-footer">
