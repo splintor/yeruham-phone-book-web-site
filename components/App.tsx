@@ -313,14 +313,14 @@ function AppComponent(appProps: AppProps) {
 }
 
 function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>) {
-  return search
-    ? `${siteTitle} - חיפוש - ${search}`
+  return page
+    ? `${page.title} - ${siteTitle}`
     : tag
-      ? `${siteTitle} - ${tag}`
+      ? `${tag} - ${siteTitle}`
       : newPage
-        ? `${siteTitle} - דף חדש`
-        : page
-          ? `${siteTitle} - ${page.title}`
+        ? `דף חדש - ${siteTitle}`
+        : search
+          ? `חיפוש: ${search} - ${siteTitle}`
           : siteTitle
 }
 
