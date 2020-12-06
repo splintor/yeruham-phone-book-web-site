@@ -4,6 +4,7 @@ export interface PageData {
   oldUrl?: string
   oldName?: string
   tags?: string[]
+  isDeleted?: boolean
   _id?: string
   _updateDate?: string
 }

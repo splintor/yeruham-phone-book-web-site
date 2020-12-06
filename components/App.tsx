@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import React, { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import React, { ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
@@ -12,6 +12,7 @@ import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
 import { LoginPage } from './LoginPage'
+import { Modal } from './Modal'
 import { TitleLink } from './TitleLink'
 
 const PageEditor = dynamic(() => import('./PageEditor'))
@@ -28,8 +29,14 @@ async function searchForPages(search: string) {
   return null
 }
 
-function PageContent({ search, tag, ...props }: Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'newPage'>) {
+interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'newPage'> {
+  pushState(url: string, state: Partial<AppProps>)
+  setToast(toast: ReactNode)
+}
+
+function PageContent({ search, tag, pushState, setToast, ...props }: PageContentProps) {
   const [isEditing, setIsEditing] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [page, setPage] = useState(props.page)
   const { html, title, tags } = page
 
@@ -45,6 +52,20 @@ function PageContent({ search, tag, ...props }: Pick<AppProps, 'status' | 'page'
     setIsEditing(false)
   }
 
+  const deletePage = useCallback(async () => {
+    await savePage({ ...page, isDeleted: true })
+    const cancelDelete = (e: React.MouseEvent) => {
+      e.preventDefault()
+      setToast(undefined)
+      savePage({ ...page, isDeleted: false }).then(() => {
+        pushState(`/${page.title}`, { page })
+        setToast(<div>המחיקה של הדף<b>{page.title}</b> בוטלה.</div>)
+      })
+    }
+    pushState('/', {})
+    setToast(<div>הדף<b>{page.title}</b> נמחק בהצלחה.<a className="cancel-button" href="/" onClick={cancelDelete}>בטל מחיקה</a></div>)
+  }, [page])
+
   switch (props.status) {
     case 404:
       return <div className="results page">
@@ -55,7 +76,18 @@ function PageContent({ search, tag, ...props }: Pick<AppProps, 'status' | 'page'
       const backUrl = search ? `/search/${search}` : tag ? `/tag/${tag}` : null
       return isEditing ? <PageEditor page={page} onCancel={() => setIsEditing(false)} onSave={saveChanges}/> :
         <div className="results page">
-          <button className="edit-button" onClick={() => setIsEditing(true)}>עריכה</button>
+          <div className="buttons">
+            <button className="delete" onClick={() => setShowDeleteConfirmation(true)}>מחיקה</button>
+            <button onClick={() => setIsEditing(true)}>עריכה</button>
+          </div>
+          <Modal title={`מחיקת הדף ${title}`}
+                 show={showDeleteConfirmation}
+                 setShow={setShowDeleteConfirmation}
+                 submitText="מחק את הדף"
+                 onSubmit={deletePage}
+          >
+            האם ברצונך למחוק את הדף <b>{title}</b>?
+          </Modal>
           <h1>
             {backUrl && <a className="backButton" href={backUrl} onClick={e => {
               e.preventDefault()
@@ -82,6 +114,7 @@ function AppComponent(appProps: AppProps) {
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
   const [isNewPage, setIsNewPage] = useState(appProps.newPage)
+  const [toast, setToast] = useState<ReactNode>()
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
@@ -119,9 +152,15 @@ function AppComponent(appProps: AppProps) {
   }, [])
 
   useEffect(() => {
+    if (toast) {
+      setTimeout(() => setToast(undefined), 10000)
+    }
+  }, [toast])
+
+  useEffect(() => {
     if (pages?.length > 0) {
       document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
-        for(let i = p.children.length - 1; i >= 0; --i) {
+        for (let i = p.children.length - 1; i >= 0; --i) {
           const c = p.children[i] as HTMLElement
           if (!c.innerText?.trim()) {
             c.remove()
@@ -153,7 +192,7 @@ function AppComponent(appProps: AppProps) {
   }
 
   useEffect(() => {
-    window.addEventListener('popstate',(e: PopStateEvent) => {
+    window.addEventListener('popstate', (e: PopStateEvent) => {
       processDynamicState(e.state as AppProps)
       return false
     })
@@ -200,6 +239,10 @@ function AppComponent(appProps: AppProps) {
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
       <AccountBadge/>
+      {toast && <div className="toast">
+        {toast}
+        <button className="close-button" onClick={() => setToast(undefined)}>X</button>
+      </div>}
       <Link href="/">
         <h1 className="title">
           <TitleLink title={siteTitle} onClick={e => {
@@ -238,7 +281,8 @@ function AppComponent(appProps: AppProps) {
           </div>
         </div>
         : displayedPage
-          ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag} newPage={isNewPage}/>
+          ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag}
+                         newPage={isNewPage} pushState={pushState} setToast={setToast}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>
@@ -254,7 +298,7 @@ function AppComponent(appProps: AppProps) {
                       e.preventDefault()
                       pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
                     }}/>
-                    <input type="checkbox" id={page.title} />
+                    <input type="checkbox" id={page.title}/>
                     <div dangerouslySetInnerHTML={{ __html: page.html }} className="preview"/>
                     <label htmlFor={page.title} role="button">הצג עוד</label>
                   </div>)

@@ -279,9 +279,97 @@ button {
   }
 }
 
-.edit-button {
+
+.delete {
+  background-color: lightcoral;
+
+  &:hover {
+    background-color: indianred;
+  }
+}
+
+.results .buttons {
   position: absolute;
   left: 5px;
+
+  button {
+    margin-inline-start: 5px;
+  }
+}
+
+.toast {
+  z-index: 1001;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: greenyellow;
+  padding: 7px;
+
+  b {
+    margin-inline-start: 5px;
+    margin-inline-end: 5px;
+  }
+
+  .cancel-button {
+    margin-inline-start: 10px;
+  }
+
+  .close-button {
+    position: absolute;
+    left: 15px;
+    top: 7px;
+    font-size: 0.7em;
+    padding: 3px
+  }
+}
+
+.overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #0004;
+  z-index: 900;
+  cursor: default;
+}
+
+.modal {
+  position: fixed;
+  overflow-y: auto;
+  right: 0;
+  left: 0;
+  max-width: 30%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: auto;
+  background-color: #DADADA;
+  border-radius: 10px;
+  border: 1px solid purple;
+  cursor: default;
+  z-index: 1000;
+
+  .modal-title {
+    background-color: dodgerblue;
+    color: white;
+    padding: 5px;
+  }
+
+  .modal-body {
+    padding: 13px;
+    background-color: white;
+  }
+
+  .modal-buttons {
+    padding: 15px;
+    position: relative;
+    bottom: 0;
+    direction: ltr;
+
+    button {
+      margin-inline-start: 10px;
+    }
+  }
 }
 
 .page-editor {
@@ -319,14 +407,6 @@ button {
           &:hover {
             background-color: forestgreen;
           }
-        }
-      }
-
-      &.Cancel {
-        background-color: lightcoral;
-
-        &:hover {
-          background-color: indianred;
         }
       }
     }
@@ -375,47 +455,19 @@ button {
         text-decoration: underline;
       }
 
-      .removeTag {
+      .delete {
         margin-inline-start: 5px;
         font-size: 0.7em;
         top: -1px;
         padding: 4px;
         border-radius: 10px;
-        color: darkred;
-
-        &:hover {
-          background-color: coral;
-        }
       }
     }
   }
 
-  .overlay {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: #0004;
-    z-index: 900;
-    cursor: default;
-  }
-
   .addTagModal {
-    position: fixed;
-    max-width: 300px;
-    overflow-y: auto;
-    right: 0;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    margin: auto;
-    background-color: #DADADA;
-    border-radius: 10px;
-    border: 1px solid purple;
     padding: 7px;
-    cursor: default;
-    z-index: 1000;
+    max-width: 300px;
     font-size: 0.8em;
 
     div {

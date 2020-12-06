@@ -90,7 +90,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
   return <div className="results page-editor">
     <div className="buttons">
       <button className="OK" onClick={save} disabled={!title || !editorState.getCurrentContent().hasText()}>{isSaving ? 'שומר...' : 'שמירה'}</button>
-      {page.title && <button className="Cancel" onClick={onCancel}>ביטול</button>}
+      {page.title && <button className="delete" onClick={onCancel}>ביטול</button>}
     </div>
     <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
     <div className="editor-container">
@@ -100,7 +100,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
       {
         tags?.map(t => <a className="titleLink tag" key={t} target="_blank" href={`/tag/${t}`}>
           <span className="tagName">{t}</span>
-          <span className="removeTag" onClick={e => {
+          <span className="delete" onClick={e => {
             e.stopPropagation()
             e.preventDefault()
             removeTag(t)
@@ -110,7 +110,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
         <span onClick={() => setShowAddTag(!showAddTag)}>+ הוסף קטגוריה</span>
         {showAddTag && <>
         <div key="overlay" className="overlay" onClick={() => setShowAddTag(false)}/>
-        <div key="addTagModal" className="addTagModal">
+        <div key="addTagModal" className="modal addTagModal">
           {allTagsRef.current?.filter(t => !tags?.includes(t)).map(t => <div><span className="titleLink tag" key={t} onClick={() => addTag(t)}>{t}</span></div> )}
           <div className="newTag">
             <input autoFocus placeholder="קטגוריה חדשה" type="text" value={newTag} onChange={e => setNewTag(e.target.value)}/>

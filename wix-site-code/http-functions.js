@@ -16,10 +16,12 @@ const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
 let phones
 let tagsList
 
+const getActivePages = () => wixData.query('pages').ne('isDeleted', true)
+
 async function loadPhonesMapAndTagsList() {
   const phonesMap = new Map()
   const tagsSet = new Set()
-  let result = await wixData.query('pages').limit(1000).find()
+  let result = await getActivePages().limit(1000).find()
   while (result) {
     result.items.forEach(page => {
       const matches = page.html.replace(/[+\-.]+/g, '').match(/[^A-Z_\d=\/:]\d{9,}/g)
@@ -107,7 +109,7 @@ export async function get_page(request) {
   const loginCheck = await get_checkLogin(request)
   const param = decodeURI(request.path[0])
   const titleToSearch = param.replace(/_/g, ' ')
-  const result = await wixData.query('pages').eq('title', titleToSearch).or(wixData.query('pages').eq('oldName', param)).find()
+  const result = await getActivePages().eq('title', titleToSearch).or(getActivePages().eq('oldName', param)).find()
   const item = result.items.length === 0 ? null : result.items[0]
 
   if (loginCheck.status !== 200) {
@@ -128,13 +130,18 @@ export async function post_page(request) {
   const { page } = await request.body.json()
   const { phoneNumber } = loginCheck.body
   const conflicts = await wixData.query('pages').eq('title', page.title).ne('_id', page._id).find()
-  if (conflicts.items.length > 0) {
-    return response({ headers, status: 409, body: { message: `Page with title ${page.title} already exists.` } })
+  const [conflictingItem] = conflicts.items
+  if (conflictingItem) {
+    if (conflictingItem.isDeleted) {
+      page._id = conflictingItem._id
+    } else {
+      return response({ headers, status: 409, body: { message: `Page with title ${page.title} already exists.` } })
+    }
   }
 
   if (page._id) {
     const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
-    if (page.title === existing.title && page.html === existing.html && (page.tags || []).join() === (existing.tags || []).join()) {
+    if (page.title === existing.title && page.html === existing.html && page.isDeleted === existing.isDeleted && (page.tags || []).join() === (existing.tags || []).join()) {
       return ok({ headers, body: { message: `No change was needed in page ${page.title}.` } })
     }
 
@@ -165,8 +172,8 @@ export async function get_search(request) {
   const param = decodeURI(request.path[0])
   const searchWords = param.replace(/_/g, ' ').split(/\s+/)
   const [first, ...rest] = searchWords
-  let query = wixData.query('pages').contains('title', first).or(wixData.query('pages').contains('html', first))
-  rest.forEach(t => query = query.and(wixData.query('pages').contains('title', t).or(wixData.query('pages').contains('html', t))))
+  let query = getActivePages().contains('title', first).or(getActivePages().contains('html', first))
+  rest.forEach(t => query = query.and(getActivePages().contains('title', t).or(getActivePages().contains('html', t))))
   const { items, totalCount } = await query.find()
   const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
   return ok({ headers, body: { pages: items, totalCount, tags } })
@@ -180,7 +187,7 @@ export async function get_tag(request) {
   }
 
   const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
-  const { items } = await wixData.query('pages').contains('tags', searchedTag).limit(1000).find()
+  const { items } = await getActivePages().contains('tags', searchedTag).limit(1000).find()
   return ok({ headers, body: { pages: items } })
 }
 
