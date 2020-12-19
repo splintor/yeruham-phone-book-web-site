@@ -13,7 +13,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. TODO: Add "Welcome" toast after login
 1. TODO: Add Cancel button to new page editor
 1. TODO: Make links in results only show underline on hover
-1. TODO: Make links in results open in new page
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO: Show better "Not found" page (take sample from old site)
@@ -23,6 +22,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. TODO: Enable showing all tags
 1. TODO: Send mail on change (https://github.com/kpdecker/jsdiff)
 1. TODO: Highlight search in result page
-1. TODO: Handle cross-domain authentication 
+1. TODO: Handle cross-domain authentication
+1. TODO: Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
 1. TODO: X Think of how to handle deletion (also so the flutter app can be updated about changes)
 1. TODO: X Handle page history

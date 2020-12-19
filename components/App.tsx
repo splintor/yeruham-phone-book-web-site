@@ -249,6 +249,14 @@ function AppComponent(appProps: AppProps) {
     }
   }, [debouncedSearchTerm])
 
+  useEffect(() => {
+    Array.from(document.links).forEach(link => {
+      if (link.href[0] !== '/' && !link.href.startsWith?.(location.origin) && !link.target) {
+        link.target = '_blank'
+      }
+    })
+  }, [displayedPage, pages, isSearching])
+
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
       <AccountBadge/>
