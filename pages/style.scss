@@ -5,6 +5,14 @@ body {
   font-family: Arial,Verdana,sans-serif;
 }
 
+a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .app {
   display: flex;
   height: 96vh;
