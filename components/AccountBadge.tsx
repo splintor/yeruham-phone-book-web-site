@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { parseAuthCookies, setAuthCookies } from '../utils/cookies'
+import { logToGTM } from './App'
 import { TitleLink } from './TitleLink'
 
 export function AccountBadge(): ReactElement {
@@ -15,7 +16,10 @@ export function AccountBadge(): ReactElement {
     מחובר כ
     <TitleLink title={authTitle}/> (
     <Link href="/">
-      <a onClick={() => setAuthCookies('', '')}>התנתק</a>
+      <a onClick={() => {
+        setAuthCookies('', '')
+        logToGTM({ event: 'logout', authTitle })
+      }}>התנתק</a>
     </Link>
     )
   </div>

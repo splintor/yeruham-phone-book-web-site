@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import React, { ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import TagManager from 'react-gtm-module'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
@@ -28,6 +29,15 @@ async function searchForPages(search: string) {
   }
 
   return null
+}
+
+interface GTMDataLayer extends Partial<AppProps> {
+  event: string;
+  authTitle: string;
+}
+
+export function logToGTM(dataLayer: GTMDataLayer): void {
+  TagManager.dataLayer({ dataLayer })
 }
 
 interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'newPage'> {
@@ -183,6 +193,8 @@ function AppComponent(appProps: AppProps) {
     setSearchResults({ pages, tags, totalCount })
     setTag(tag)
     setIsNewPage(state.newPage || false)
+    const { authTitle } = parseAuthCookies()
+    logToGTM({ event: 'navigation', authTitle, ...state })
     focusSearchInput()
   }, [setDisplayedPage, setSearchResults, setIsSearching, setSearchResults, setTag])
 
@@ -369,6 +381,12 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
 export default function App(appProps: AppProps): ReactElement {
   const { url, origin, status } = appProps
   const pageTitle = getPageTitle(appProps)
+
+  useEffect(() => {
+    const { authTitle } = parseAuthCookies()
+    TagManager.initialize({ gtmId: 'GTM-TCN5G8S', dataLayer: { event: 'load', url, status, authTitle } })
+  }, [])
+
   return <div className="app">
     <Head>
       <title>{pageTitle}</title>
