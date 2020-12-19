@@ -8,7 +8,7 @@ import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { adminEmail, siteTitle } from '../utils/consts'
-import { parseAuthCookies } from '../utils/cookies'
+import { isAuthTitleNew, parseAuthCookies } from '../utils/cookies'
 import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
@@ -42,7 +42,7 @@ export function logToGTM(dataLayer: GTMDataLayer): void {
 
 interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'newPage'> {
   pushState(url: string, state: Partial<AppProps>)
-  setToast(toast: ReactNode)
+  setToast(toastOptions: ToastOptions)
 }
 
 function PageContent({ search, tag, pushState, setToast, ...props }: PageContentProps) {
@@ -78,11 +78,11 @@ function PageContent({ search, tag, pushState, setToast, ...props }: PageContent
       setToast(undefined)
       savePage({ ...page, isDeleted: false }).then(() => {
         pushState(`/${page.title}`, { page })
-        setToast(<div>המחיקה של הדף<b>{page.title}</b> בוטלה.</div>)
+        setToast({ content: <div>המחיקה של הדף<b>{page.title}</b> בוטלה.</div> })
       })
     }
     pushState('/', {})
-    setToast(<div>הדף<b>{page.title}</b> נמחק בהצלחה.<a className="cancel-button" href="/" onClick={cancelDelete}>בטל מחיקה</a></div>)
+    setToast({ content: <div>הדף<b>{page.title}</b> נמחק בהצלחה.<a className="cancel-button" href="/" onClick={cancelDelete}>בטל מחיקה</a></div> })
   }, [page])
 
   switch (props.status) {
@@ -122,6 +122,12 @@ function PageContent({ search, tag, pushState, setToast, ...props }: PageContent
   }
 }
 
+interface ToastOptions {
+  content: ReactNode;
+  position?: 'top' | 'bottom'
+  timeout?: number
+}
+
 function AppComponent(appProps: AppProps) {
   const [{ pages, tags, totalCount }, setSearchResults] = useState<SearchResults>({
     pages: appProps.pages,
@@ -133,7 +139,7 @@ function AppComponent(appProps: AppProps) {
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
   const [isNewPage, setIsNewPage] = useState(appProps.newPage)
-  const [toast, setToast] = useState<ReactNode>()
+  const [toast, setToast] = useState<ToastOptions>()
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
@@ -155,6 +161,13 @@ function AppComponent(appProps: AppProps) {
   }
 
   useEffect(() => {
+    if (isAuthTitleNew()) {
+      const { authTitle } = parseAuthCookies()
+      setToast({ position: 'top', timeout: 4000, content: <div>ברוך הבא לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
+    }
+  })
+
+  useEffect(() => {
     lastSearch.current = search
     if (!search) {
       stringBeingSearched.current = search
@@ -172,7 +185,7 @@ function AppComponent(appProps: AppProps) {
 
   useEffect(() => {
     if (toast) {
-      setTimeout(() => setToast(undefined), 10000)
+      setTimeout(() => setToast(undefined), toast.timeout || 10000)
     }
   }, [toast])
 
@@ -268,8 +281,8 @@ function AppComponent(appProps: AppProps) {
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
       <AccountBadge/>
-      {toast && <div className="toast">
-        {toast}
+      {toast && <div className={`toast ${toast.position}`}>
+        {toast.content}
         <button className="close-button" onClick={() => setToast(undefined)}>X</button>
       </div>}
       <Link href="/">

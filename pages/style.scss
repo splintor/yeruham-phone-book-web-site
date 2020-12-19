@@ -308,11 +308,15 @@ button {
 .toast {
   z-index: 1001;
   position: fixed;
-  bottom: 0;
   width: 100%;
   background-color: greenyellow;
   padding: 7px;
   text-align: center;
+  bottom: 0;
+  &.top {
+    bottom: unset;
+    top: 0
+  }
 
   b {
     margin-inline-start: 5px;
