@@ -8,7 +8,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Go to search results after delete if it is not empty
-1. TODO: Add Google Analytics
+1. TODO: Check problem with repeated searches
 1. TODO: Stay in welcome page until Enter is pressed
 1. TODO: Add "Welcome" toast after login
 1. TODO: Add Cancel button to new page editor
