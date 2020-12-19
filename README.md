@@ -7,8 +7,16 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
+1. TODO: Go to search results after delete if it is not empty
 1. TODO: Add Google Analytics
+1. TODO: Stay in welcome page until Enter is pressed
+1. TODO: Add "Welcome" toast after login
+1. TODO: Add Cancel button to new page editor
+1. TODO: Make links in results only show underline on hover
+1. TODO: Make links in results open in new page
 1. TODO: Add GitHub Corner
+1. TODO: Add "Copy" button next to phone numbers
+1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO: Show better "Not found" page (take sample from old site)
 1. TODO: Improve editing features (bold, underline, link, social media icons)
 1. TODO: Sort results according to mobile app logic
