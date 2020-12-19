@@ -11,6 +11,7 @@ import { parseAuthCookies } from '../utils/cookies'
 import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
+import { GitHubCorner } from './GitHubCorner'
 import { LoginPage } from './LoginPage'
 import { Modal } from './Modal'
 import { TitleLink } from './TitleLink'
@@ -268,6 +269,7 @@ function AppComponent(appProps: AppProps) {
 
       {showWelcome
         ? <div className="welcome">
+          <GitHubCorner/>
           <div>
             האתר זמין גם כ<a href="https://play.google.com/store/apps/details?id=com.splintor.yeruhamphonebook">אפליקצית
             אנדרואיד</a> וכ<a href="https://groups.google.com/d/msg/yerucham1/QWQYnxeXNfU/Q104gimvAAAJ">בוט בטלגרם</a>

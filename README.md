@@ -14,7 +14,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. TODO: Add Cancel button to new page editor
 1. TODO: Make links in results only show underline on hover
 1. TODO: Make links in results open in new page
-1. TODO: Add GitHub Corner
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO: Show better "Not found" page (take sample from old site)

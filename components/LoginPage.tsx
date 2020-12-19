@@ -1,6 +1,7 @@
 import React, { FormEvent, ReactElement, useCallback, useState } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { setAuthCookies } from '../utils/cookies'
+import { GitHubCorner } from './GitHubCorner'
 
 enum ErrorType {
   None,
@@ -57,6 +58,7 @@ export function LoginPage(): ReactElement {
   }, [phoneNumber])
 
   return <div className="loginPage">
+    <GitHubCorner/>
     <h3 className="title">{siteTitle}</h3>
     <div>ספר הטלפונים מיועד לתושבי ירוחם בלבד.</div>
     <div>כדי לוודא שהינך תושב/ת ירוחם, יש להכניס את מספר הטלפון שלך:</div>
