@@ -90,7 +90,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
   return <div className="results page-editor">
     <div className="buttons">
       <button className="OK" onClick={save} disabled={!title || !editorState.getCurrentContent().hasText()}>{isSaving ? 'שומר...' : 'שמירה'}</button>
-      {page.title && <button className="delete" onClick={onCancel}>ביטול</button>}
+      <button className="delete" onClick={onCancel}>ביטול</button>
     </div>
     <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>

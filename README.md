@@ -11,7 +11,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. TODO: Check problem with repeated searches
 1. TODO: Stay in welcome page until Enter is pressed
 1. TODO: Add "Welcome" toast after login
-1. TODO: Add Cancel button to new page editor
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO: Show better "Not found" page (take sample from old site)

@@ -63,6 +63,14 @@ function PageContent({ search, tag, pushState, setToast, ...props }: PageContent
     setIsEditing(false)
   }
 
+  function cancelEditing(): void {
+    if (props.newPage) {
+      history.back()
+    } else {
+      setIsEditing(false)
+    }
+  }
+
   const deletePage = useCallback(async () => {
     await savePage({ ...page, isDeleted: true })
     const cancelDelete = (e: React.MouseEvent) => {
@@ -85,7 +93,7 @@ function PageContent({ search, tag, pushState, setToast, ...props }: PageContent
 
     default:
       const backUrl = search ? `/search/${search}` : tag ? `/tag/${tag}` : null
-      return isEditing ? <PageEditor page={page} onCancel={() => setIsEditing(false)} onSave={saveChanges}/> :
+      return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges}/> :
         <div className="results page">
           <div className="buttons">
             <button className="delete" onClick={() => setShowDeleteConfirmation(true)}>מחיקה</button>
@@ -198,7 +206,7 @@ function AppComponent(appProps: AppProps) {
     focusSearchInput()
   }, [setDisplayedPage, setSearchResults, setIsSearching, setSearchResults, setTag])
 
-  function pushState(url, state: Partial<AppProps>) {
+  function pushState(url: string, state: Partial<AppProps>) {
     window.history.pushState(state, '', url)
     document.title = getPageTitle(state)
     processDynamicState(state)
