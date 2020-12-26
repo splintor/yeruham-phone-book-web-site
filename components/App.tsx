@@ -294,18 +294,18 @@ function AppComponent(appProps: AppProps) {
           }}/>
         </h1>
       </Link>
+      {showWelcome && <label htmlFor="search-box">חפש אדם, עסק או מוסד</label>}
       <form className="searchForm" onSubmit={async e => {
         e.preventDefault()
         await performSearch()
       }}>
-        <input type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)}
-               placeholder="חפש אדם, עסק או מוסד"/>
+        <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)}/>
         <span className="searchIcon" style={{ display: 'none' }}>
-            <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path
-                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-            </svg>
-          </span>
+          <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </span>
       </form>
 
       {showWelcome

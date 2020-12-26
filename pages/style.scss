@@ -1,6 +1,6 @@
 body {
   direction: rtl;
-  background-color: beige;
+  background-color: #F5F5EE;
   box-sizing: border-box;
   font-family: Arial,Verdana,sans-serif;
 }
@@ -25,11 +25,6 @@ a {
     text-decoration: none;
   }
 
-  .title {
-    margin: 10px auto;
-    font-size: min(36px, 9.5vw);
-  }
-
   .notFound {
     font-size: 1.5em;
 
@@ -45,10 +40,32 @@ a {
     justify-content: center;
     align-items: center;
 
-    .showWelcome {
-      .searchForm input {
-        max-width: 75vw;
-        margin: auto;
+    .title {
+      margin: 10px auto;
+      font-size: min(36px, 9vw);
+    }
+
+    &.showWelcome {
+      .searchForm {
+        margin-block-end: 45px;
+
+        input {
+          max-width: 75vw;
+        }
+      }
+
+      .title {
+        font-size: min(56px, 9vw);
+      }
+
+      > label {
+        margin-block-start: 35px;
+        margin-block-end: 5px;
+        align-self: start;
+      }
+
+      .welcome {
+        opacity: .6;
       }
     }
 
@@ -279,14 +296,13 @@ button {
   cursor: pointer;
   text-decoration: none;
   outline: 0;
-  border: 0px;
+  border: 0;
   padding: 0 9px 3px 9px;
 
   &:hover {
     background-color: #800080;
   }
 }
-
 
 .delete {
   background-color: lightcoral;
