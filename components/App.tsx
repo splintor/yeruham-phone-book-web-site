@@ -350,7 +350,9 @@ function AppComponent(appProps: AppProps) {
             }
           </div>
       }
-      <div className="logo"><img src="/logo.png" alt={siteTitle}/></div>
+      <a href="/">
+        <div className="logo"><img src="/logo.png" alt={siteTitle}/></div>
+      </a>
     </main>
   )
 }
