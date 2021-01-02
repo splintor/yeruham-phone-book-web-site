@@ -336,7 +336,7 @@ function AppComponent(appProps: AppProps) {
                   tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
                 }
                 {
-                  pages && pages.map(page => <div className="result" key={page.title}>
+                  pages && pages.map((page, i) => <div className="result" key={i}>
                     <TitleLink title={page.title} key={page.title} onClick={e => {
                       e.preventDefault()
                       pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
