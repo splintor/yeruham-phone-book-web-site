@@ -218,7 +218,7 @@ function AppComponent(appProps: AppProps) {
     const { authTitle } = parseAuthCookies()
     logToGTM({ event: 'navigation', authTitle, ...state })
     focusSearchInput()
-  }, [setDisplayedPage, setSearchResults, setIsSearching, setSearchResults, setTag])
+  }, [setDisplayedPage, setSearchResults, setIsSearching, setTag])
 
   function pushState(url: string, state: Partial<AppProps>) {
     window.history.pushState(state, '', url)
