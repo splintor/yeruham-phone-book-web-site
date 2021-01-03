@@ -185,7 +185,8 @@ function AppComponent(appProps: AppProps) {
 
   useEffect(() => {
     if (toast) {
-      setTimeout(() => setToast(undefined), toast.timeout || 10000)
+      const id = setTimeout(() => setToast(undefined), toast.timeout || 10000)
+      return () => clearTimeout(id)
     }
   }, [toast])
 
