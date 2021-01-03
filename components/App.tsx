@@ -40,12 +40,12 @@ export function logToGTM(dataLayer: GTMDataLayer): void {
   TagManager.dataLayer({ dataLayer })
 }
 
-interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'newPage'> {
+interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'pages' | 'newPage' | 'totalCount'> {
   pushState(url: string, state: Partial<AppProps>)
   setToast(toastOptions: ToastOptions)
 }
 
-function PageContent({ search, tag, pushState, setToast, ...props }: PageContentProps) {
+function PageContent({ search, tag, pushState, setToast, pages, totalCount, ...props }: PageContentProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [page, setPage] = useState(props.page)
@@ -73,11 +73,12 @@ function PageContent({ search, tag, pushState, setToast, ...props }: PageContent
 
   const deletePage = useCallback(async () => {
     await savePage({ ...page, isDeleted: true })
+
     const cancelDelete = (e: React.MouseEvent) => {
       e.preventDefault()
       setToast(undefined)
       savePage({ ...page, isDeleted: false }).then(() => {
-        pushState(`/${page.title}`, { page })
+        pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
         setToast({ content: <div>המחיקה של הדף<b>{page.title}</b> בוטלה.</div> })
       })
     }
@@ -325,7 +326,7 @@ function AppComponent(appProps: AppProps) {
           </div>
         </div>
         : displayedPage
-          ? <PageContent status={appProps.status} page={displayedPage} search={pages && search} tag={pages && tag}
+          ? <PageContent status={appProps.status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
                          newPage={isNewPage} pushState={pushState} setToast={setToast}/>
           : <div className="results">
             {isSearching
