@@ -7,7 +7,6 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
-1. TODO: Stay in welcome page until Enter is pressed
 1. TODO: Export JSON data for mobile app
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)

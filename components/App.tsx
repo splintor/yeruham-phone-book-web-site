@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import React, { ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import TagManager from 'react-gtm-module'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
@@ -153,7 +153,7 @@ function AppComponent(appProps: AppProps) {
   const lastSearch = useRef(search)
   const searchInput = useRef(null)
   const router = useRouter()
-  const showWelcome = !search && !displayedPage && !pages
+  const showWelcome = !isSearching && !displayedPage && !pages
 
   function focusSearchInput(element = null) {
     if (element) {
@@ -257,11 +257,13 @@ function AppComponent(appProps: AppProps) {
     }
   }, [router, search, tag])
 
+  const getSearchUrl = (search: string) => search ? `/search/${search}` : '/'
   const updateSearchInPage = (search: string, results: SearchResults) => {
-    pushState(search ? `/search/${search}` : '/', { search, ...results })
+    pushState(getSearchUrl(search), { search, ...results })
   }
 
-  const performSearch = useCallback(async () => {
+  const performSearch = useCallback(async (e: BaseSyntheticEvent) => {
+    e.preventDefault()
     if (!search) {
       return
     }
@@ -271,6 +273,10 @@ function AppComponent(appProps: AppProps) {
   }, [search, setSearchResults])
 
   useEffect(() => {
+    if (showWelcome) {
+      return
+    }
+
     if (!debouncedSearchTerm) {
       setIsSearching(!pages)
       return
@@ -285,7 +291,7 @@ function AppComponent(appProps: AppProps) {
         }
       })
     }
-  }, [debouncedSearchTerm])
+  }, [debouncedSearchTerm, showWelcome])
 
   useEffect(() => {
     Array.from(document.links).forEach(link => {
@@ -312,17 +318,14 @@ function AppComponent(appProps: AppProps) {
         </h1>
       </Link>
       {showWelcome && <label htmlFor="search-box">חפש אדם, עסק או מוסד</label>}
-      <form className="searchForm" onSubmit={async e => {
-        e.preventDefault()
-        await performSearch()
-      }}>
+      <form className="searchForm" onSubmit={performSearch}>
         <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)}/>
-        <span className="searchIcon" style={{ display: 'none' }}>
+        <a href={getSearchUrl(search)} className="searchIcon" style={{ display: 'none' }} onClick={performSearch}>
           <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path
+            <path style={{ fill: search ? 'black' : 'darkgrey'}}
               d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
           </svg>
-        </span>
+        </a>
       </form>
 
       {showWelcome
