@@ -18,6 +18,7 @@ import { Modal } from './Modal'
 import { TitleLink } from './TitleLink'
 
 const PageEditor = dynamic(() => import('./PageEditor'))
+const deletedPageTitleKey = 'deleted-page-title'
 
 async function searchForPages(search: string) {
   const { auth } = parseAuthCookies()
@@ -50,6 +51,7 @@ function PageContent({ search, tag, pushState, setToast, pages, totalCount, ...p
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [page, setPage] = useState(props.page)
   const { html, title, tags } = page
+  const backUrl = pages && (search ? `/search/${search}` : tag && `/tag/${tag}`) || null
 
   useEffect(() => {
     if (!isEditing && props.newPage) {
@@ -82,7 +84,13 @@ function PageContent({ search, tag, pushState, setToast, pages, totalCount, ...p
         setToast({ content: <div>המחיקה של הדף<b>{page.title}</b> בוטלה.</div> })
       })
     }
-    pushState('/', {})
+
+    if (backUrl && pages?.length && (pages.length > 1 || pages[0].title !== page.title)) {
+      sessionStorage.setItem(deletedPageTitleKey, page.title)
+      history.back()
+    } else {
+      pushState('/', {})
+    }
     setToast({ content: <div>הדף<b>{page.title}</b> נמחק בהצלחה.<a className="toast-button" href="/" onClick={cancelDelete}>בטל מחיקה</a></div> })
   }, [page])
 
@@ -93,7 +101,6 @@ function PageContent({ search, tag, pushState, setToast, pages, totalCount, ...p
       </div>
 
     default:
-      const backUrl = search ? `/search/${search}` : tag ? `/tag/${tag}` : null
       return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges}/> :
         <div className="results page">
           <div className="buttons">
@@ -207,6 +214,14 @@ function AppComponent(appProps: AppProps) {
       })
     }
   }, [pages])
+
+  useEffect(() => {
+    const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
+    if (deletedPageTitle) {
+      sessionStorage.removeItem(deletedPageTitleKey)
+      setSearchResults({ pages: pages.filter(p => p.title !== deletedPageTitle), tags, totalCount })
+    }
+  }, [setSearchResults, pages, tags, totalCount])
 
   const processDynamicState = useCallback((state: Partial<AppProps>) => {
     const { search, page, pages, tags, tag, totalCount } = state
