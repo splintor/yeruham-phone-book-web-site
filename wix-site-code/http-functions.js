@@ -162,7 +162,6 @@ export async function post_page(request) {
     created({ headers, body: { message: `Page ${page.title} was created` } })
 }
 
-
 function parseToWords(s) {
   s = s.trim()
   if (!s) {
@@ -193,6 +192,39 @@ function isPageMatchWord(page, word) {
     (word.match(/^[\d-]*$/) && page.html.replace(/-/g, '').includes(word.replace(/-/g, '')))
 }
 
+function compareSearchIndexes(s1, s2, word) {
+  const index1 = s1.indexOf(word)
+  const index2 = s2.indexOf(word)
+
+  if (index1 === index2) {
+    return 0
+  }
+
+  if (index1 === -1) {
+    return 1
+  }
+
+  if (index2 === -1) {
+    return -1
+  }
+
+  return index1 - index2
+}
+
+const resultsCompare = (searchWords) => (a, b) => {
+  const titleCompare = searchWords.map(w => compareSearchIndexes(a.title, b.title, w)).find(r => r)
+  if (titleCompare) {
+    return titleCompare
+  }
+
+  const htmlCompare = searchWords.map(w => compareSearchIndexes(a.html, b.html, w)).find(r => r)
+  if (htmlCompare) {
+    return htmlCompare
+  }
+
+  return a.title.localeCompare(b.title)
+}
+
 // URL: https://<wix-site-url>/_functions/search/<search>
 export async function get_search(request) {
   const loginCheck = await get_checkLogin(request)
@@ -210,11 +242,10 @@ export async function get_search(request) {
   }
 
   const searchWords = parseToWords(param.toLowerCase()).map(s => s.trim()).filter(s => s)
-  const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w)))
+  const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w))).sort(resultsCompare(searchWords))
   const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
   return okResponse({ pages: items.slice(0, 30), totalCount: items.length, tags })
 }
-
 
 // URL: https://<wix-site-url>/_functions/pages
 export async function get_pages(request) {

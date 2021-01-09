@@ -8,11 +8,10 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Export JSON data for mobile app
+1. TODO: Show better "Not found" page (take sample from the old site, and suggest creating a new page with this title)
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
-1. TODO: Show better "Not found" page (take sample from old site)
 1. TODO: Improve editing features (bold, underline, link, social media icons)
-1. TODO: Sort results according to mobile app logic
 1. TODO: Add documentation and link to it from home
 1. TODO: Enable showing all tags
 1. TODO: Send mail on change (https://github.com/kpdecker/jsdiff)
