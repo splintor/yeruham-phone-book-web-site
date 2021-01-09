@@ -258,9 +258,10 @@ export async function get_pages(request) {
     await loadCacheData()
   }
 
-  const pages = request.query.UpdatedAfter ? activePages.filter(p => p._updatedDate >= request.query.UpdatedAfter) : activePages
+  const pages = request.query && request.query.UpdatedAfter ? activePages.filter(p => p._updatedDate.toISOString() >= request.query.UpdatedAfter) : activePages
+  const maxDate = activePages.reduce((d, p) => Math.max(p._updatedDate, d), activePages[0]._updatedDate)
 
-  return okResponse({ pages })
+  return okResponse({ pages, maxDate })
 }
 
 // URL: https://<wix-site-url>/_functions/tag/<tag>
