@@ -1,4 +1,4 @@
-import { response, ok, created, notFound } from 'wix-http-functions'
+import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
 import { adminPhoneNumber, authPassword } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
@@ -13,16 +13,17 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
 
+let activePages
 let phones
 let tagsList
 
-const getActivePages = () => wixData.query('pages').ne('isDeleted', true)
-
-async function loadPhonesMapAndTagsList() {
+async function loadCacheData() {
+  let activePagesList = []
   const phonesMap = new Map()
   const tagsSet = new Set()
-  let result = await getActivePages().limit(1000).find()
+  let result = await wixData.query('pages').ne('isDeleted', true).limit(1000).find()
   while (result) {
+    activePagesList = activePagesList.concat(result.items)
     result.items.forEach(page => {
       const matches = page.html.replace(/[+\-.]+/g, '').match(/[^A-Z_\d=\/:]\d{9,}/g)
       matches && matches.forEach(match => {
@@ -39,6 +40,7 @@ async function loadPhonesMapAndTagsList() {
     })
     result = result.hasNext() && await result.next()
   }
+  activePages = activePagesList
   phones = phonesMap
   tagsList = [...tagsSet]
 }
@@ -52,7 +54,7 @@ export async function get_login(request) {
   }
 
   if (!phones) {
-    await loadPhonesMapAndTagsList()
+    await loadCacheData()
   }
 
   const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -90,7 +92,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
     }
 
     if (!phones) {
-      await loadPhonesMapAndTagsList()
+      await loadCacheData()
     }
 
     const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -107,18 +109,20 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
 // URL: https://<wix-site-url>/_functions/page/<titleOrOldName>
 export async function get_page(request) {
   const loginCheck = await get_checkLogin(request)
-  const param = decodeURI(request.path[0])
-  const titleToSearch = param.replace(/_/g, ' ')
-  const result = await getActivePages().eq('title', titleToSearch).or(getActivePages().eq('oldName', param)).find()
-  const item = result.items.length === 0 ? null : result.items[0]
 
-  if (loginCheck.status !== 200) {
-    return response({ headers, status: loginCheck.status, body: { title: item && item.title || titleToSearch } })
+  if (!activePages) {
+    await loadCacheData()
   }
 
-  return item ?
-    ok({ headers, body: { ...item } }) :
-    notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
+  const param = decodeURI(request.path[0])
+  const titleToSearch = param.replace(/_/g, ' ')
+  const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
+
+  return loginCheck.status === 200
+    ? item
+      ? okResponse(item)
+      : notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
+    : response({ headers, status: loginCheck.status, body: { title: item && item.title || titleToSearch } })
 }
 
 export async function post_page(request) {
@@ -142,7 +146,7 @@ export async function post_page(request) {
   if (page._id) {
     const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
     if (page.title === existing.title && page.html === existing.html && page.isDeleted === existing.isDeleted && (page.tags || []).join() === (existing.tags || []).join()) {
-      return ok({ headers, body: { message: `No change was needed in page ${page.title}.` } })
+      return okResponse({ message: `No change was needed in page ${page.title}.` })
     }
 
     await wixData.save('pages_history', { pageId: existing._id, changedBy: phoneNumber, oldTitle: existing.title, oldHtml: existing.html, oldTags: existing.tags }, suppressAuthAndHooks)
@@ -151,11 +155,42 @@ export async function post_page(request) {
   }
 
   await wixData.save('pages', page, suppressAuthAndHooks)
-  await loadPhonesMapAndTagsList()
+  loadCacheData()
 
   return page._id ?
-    ok({ headers, body: { message: `Page ${page.title} was updated` } }) :
+    okResponse({ message: `Page ${page.title} was updated` }) :
     created({ headers, body: { message: `Page ${page.title} was created` } })
+}
+
+
+function parseToWords(s) {
+  s = s.trim()
+  if (!s) {
+    return []
+  }
+
+  const pos = s.indexOf('"')
+  if (pos === -1 || (pos > 0 && s[pos - 1] !== ' ')) {
+    return s.split(' ')
+  }
+
+  let nextPos = s.indexOf('"', pos + 1)
+  if (nextPos === -1) {
+    nextPos = s.length
+  }
+
+  return [...parseToWords(s.substring(0, pos)), s.substring(pos + 1, nextPos - pos - 1), ...parseToWords(s.substring(nextPos + 1))]
+}
+
+function isPageMatchWord(page, word) {
+  if (word.startsWith('##')) {
+    const re = new RegExp(word.substring(2))
+    return page.title.match(re) || page.html.match(re) || page.html.replace(/-/g, '').match(re)
+  }
+
+  return page.title.toLowerCase().includes(word) ||
+    page.html.toLowerCase().includes(word) ||
+    (word.match(/^[\d-]*$/) && page.html.replace(/-/g, '').includes(word.replace(/-/g, '')))
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
@@ -165,18 +200,36 @@ export async function get_search(request) {
     return loginCheck
   }
 
-  if (!tagsList) {
-    await loadPhonesMapAndTagsList()
+  const param = decodeURI(request.path[0])
+  if (!param || !param.trim()) {
+    return badRequest({ headers, body: 'Search cannot be empty' })
   }
 
-  const param = decodeURI(request.path[0])
-  const searchWords = param.replace(/_/g, ' ').split(/\s+/)
-  const [first, ...rest] = searchWords
-  let query = getActivePages().contains('title', first).or(getActivePages().contains('html', first))
-  rest.forEach(t => query = query.and(getActivePages().contains('title', t).or(getActivePages().contains('html', t))))
-  const { items, totalCount } = await query.find()
+  if (!activePages) {
+    await loadCacheData()
+  }
+
+  const searchWords = parseToWords(param.toLowerCase()).map(s => s.trim()).filter(s => s)
+  const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w)))
   const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
-  return ok({ headers, body: { pages: items, totalCount, tags } })
+  return okResponse({ pages: items.slice(0, 30), totalCount: items.length, tags })
+}
+
+
+// URL: https://<wix-site-url>/_functions/pages
+export async function get_pages(request) {
+  const loginCheck = await get_checkLogin(request)
+  if (loginCheck.status !== 200) {
+    return loginCheck
+  }
+
+  if (!activePages) {
+    await loadCacheData()
+  }
+
+  const pages = request.query.UpdatedAfter ? activePages.filter(p => p._updatedDate >= request.query.UpdatedAfter) : activePages
+
+  return okResponse({ pages })
 }
 
 // URL: https://<wix-site-url>/_functions/tag/<tag>
@@ -187,8 +240,8 @@ export async function get_tag(request) {
   }
 
   const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
-  const { items } = await getActivePages().contains('tags', searchedTag).limit(1000).find()
-  return ok({ headers, body: { pages: items } })
+  const { items } = activePages.filter(p => p.tags.includes(searchedTag))
+  return okResponse({ pages: items })
 }
 
 // URL: https://<wix-site-url>/_functions/tags
@@ -199,8 +252,8 @@ export async function get_tags(request) {
   }
 
   if (!tagsList) {
-    await loadPhonesMapAndTagsList()
+    await loadCacheData()
   }
 
-  return ok({ headers, body: { tags: tagsList } })
+  return okResponse({ tags: tagsList })
 }
