@@ -2,6 +2,7 @@ import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
 import { adminPhoneNumber, authPassword } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
+import { mappedString } from './hebrewMapping'
 
 const headers = { 'Content-Type': 'application/json' }
 const okResponse = body => ok({ headers, body })
@@ -225,6 +226,19 @@ const resultsCompare = (searchWords) => (a, b) => {
   return a.title.localeCompare(b.title)
 }
 
+async function performSearch(search) {
+  const searchWords = parseToWords(search.toLowerCase()).map(s => s.trim()).filter(s => s)
+  const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w))).sort(resultsCompare(searchWords))
+  const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
+  if (items.length === 0 && tags.length === 0) {
+    const mapped = mappedString(search)
+    if (mapped) {
+      return performSearch(mapped)
+    }
+  }
+  return okResponse({ pages: items.slice(0, 30), totalCount: items.length, tags, search })
+}
+
 // URL: https://<wix-site-url>/_functions/search/<search>
 export async function get_search(request) {
   const loginCheck = await get_checkLogin(request)
@@ -241,10 +255,7 @@ export async function get_search(request) {
     await loadCacheData()
   }
 
-  const searchWords = parseToWords(param.toLowerCase()).map(s => s.trim()).filter(s => s)
-  const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w))).sort(resultsCompare(searchWords))
-  const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
-  return okResponse({ pages: items.slice(0, 30), totalCount: items.length, tags })
+  return performSearch(param)
 }
 
 // URL: https://<wix-site-url>/_functions/pages

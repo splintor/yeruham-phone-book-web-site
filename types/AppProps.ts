@@ -15,4 +15,5 @@ export interface SearchResults {
   pages?: PageData[]
   tags?: string[]
   totalCount?: number
+  search?: string
 }

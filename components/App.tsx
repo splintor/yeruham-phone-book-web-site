@@ -45,13 +45,15 @@ export interface ToastOptions {
 }
 
 function AppComponent(appProps: AppProps) {
-  const [{ pages, tags, totalCount }, setSearchResults] = useState<SearchResults>({
+  const [fromUserEdit, setFromUserEdit] = useState(false)
+  const [{ pages, tags, totalCount, search: searchFromResults }, setSearchResults] = useState<SearchResults>({
     pages: appProps.pages,
     totalCount: appProps.totalCount,
-    tags: appProps.tags
+    tags: appProps.tags,
+    search: appProps.search,
   })
   const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: appProps.initialTitle || '', html: '' } : appProps.page)
-  const [search, setSearch] = useState(appProps.search || '')
+  const [search, setSearch] = useState(searchFromResults || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
   const [isNewPage, setIsNewPage] = useState(appProps.newPage)
@@ -127,7 +129,7 @@ function AppComponent(appProps: AppProps) {
     const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
     if (deletedPageTitle) {
       sessionStorage.removeItem(deletedPageTitleKey)
-      setSearchResults({ pages: pages.filter(p => p.title !== deletedPageTitle), tags, totalCount })
+      setSearchResults({ pages: pages.filter(p => p.title !== deletedPageTitle), tags, totalCount, search })
     }
   }, [setSearchResults, pages, tags, totalCount])
 
@@ -136,7 +138,7 @@ function AppComponent(appProps: AppProps) {
     setSearch(search || '')
     setDisplayedPage(page || null)
     setIsSearching(false)
-    setSearchResults({ pages, tags, totalCount })
+    setSearchResults({ pages, tags, totalCount, search })
     setTag(tag)
     setIsNewPage(state.newPage || false)
     const { authTitle } = parseAuthCookies()
@@ -166,7 +168,9 @@ function AppComponent(appProps: AppProps) {
   }, [router, search, tag])
 
   const getSearchUrl = (search: string) => search ? `/search/${search}` : '/'
-  const updateSearchInPage = (search: string, results: SearchResults) => {
+  const updateSearchInPage = ({ search, ...results }: SearchResults) => {
+    setFromUserEdit(false)
+    stringBeingSearched.current = search
     pushState(getSearchUrl(search), { search, ...results })
   }
 
@@ -177,8 +181,9 @@ function AppComponent(appProps: AppProps) {
     }
 
     setIsSearching(true)
-    updateSearchInPage(search, await searchForPages(search))
-  }, [search, setSearchResults])
+    setFromUserEdit(false)
+    updateSearchInPage(await searchForPages(search))
+  }, [search, fromUserEdit])
 
   useEffect(() => {
     if (showWelcome) {
@@ -190,12 +195,12 @@ function AppComponent(appProps: AppProps) {
       return
     }
 
-    if (stringBeingSearched.current !== debouncedSearchTerm) {
+    if (fromUserEdit && stringBeingSearched.current !== debouncedSearchTerm) {
       setIsSearching(true)
       stringBeingSearched.current = debouncedSearchTerm
       searchForPages(debouncedSearchTerm).then(results => {
         if (stringBeingSearched.current === debouncedSearchTerm && lastSearch.current === debouncedSearchTerm) {
-          updateSearchInPage(debouncedSearchTerm, results)
+          updateSearchInPage(results)
         }
       })
     }
@@ -227,7 +232,10 @@ function AppComponent(appProps: AppProps) {
       </Link>
       {showWelcome && <label htmlFor="search-box">חפש אדם, עסק או מוסד</label>}
       <form className="searchForm" onSubmit={performSearch}>
-        <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => setSearch(e.target.value)}/>
+        <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => {
+          setFromUserEdit(true)
+          setSearch(e.target.value)
+        }}/>
         <a href={getSearchUrl(search)} className="searchIcon" style={{ display: 'none' }} onClick={performSearch}>
           <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path style={{ fill: search ? 'black' : 'darkgrey'}}
