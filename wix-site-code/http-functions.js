@@ -14,34 +14,38 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
 
+let allPages
+let maxDate
 let activePages
 let phones
 let tagsList
 
 async function loadCacheData() {
-  let activePagesList = []
-  const phonesMap = new Map()
-  const tagsSet = new Set()
-  let result = await wixData.query('pages').ne('isDeleted', true).limit(1000).find()
+  let pagesList = []
+  let result = await wixData.query('pages').limit(1000).find()
   while (result) {
-    activePagesList = activePagesList.concat(result.items)
-    result.items.forEach(page => {
-      const matches = page.html.replace(/[+\-.]+/g, '').match(/[^A-Z_\d=\/:]\d{9,}/g)
-      matches && matches.forEach(match => {
-        match = match.substr(1)
-        const existing = phonesMap.get(match)
-        if (existing) {
-          //phoneDuplicates += `${match} appears both in ${existing.title} and in ${page.title}\n`
-        } else {
-          phonesMap.set(match, page)
-        }
-      })
-
-      page.tags && page.tags.forEach(tagsSet.add, tagsSet)
-    })
+    pagesList = pagesList.concat(result.items)
     result = result.hasNext() && await result.next()
   }
-  activePages = activePagesList
+
+  const phonesMap = new Map()
+  const tagsSet = new Set()
+  pagesList.forEach(page => {
+    const matches = page.html.replace(/[+\-.]+/g, '').match(/[^A-Z_\d=\/:]\d{9,}/g)
+    matches && matches.forEach(match => {
+      match = match.substr(1)
+      const existing = phonesMap.get(match)
+      if (!existing) {
+        phonesMap.set(match, page)
+      }
+    })
+
+    page.tags && page.tags.forEach(tagsSet.add, tagsSet)
+  })
+
+  allPages = pagesList
+  maxDate = allPages.reduce((d, p) => Math.max(p._updatedDate, d), allPages[0]._updatedDate)
+  activePages = pagesList.filter(p => !p.isDeleted)
   phones = phonesMap
   tagsList = [...tagsSet]
 }
@@ -265,12 +269,11 @@ export async function get_pages(request) {
     return loginCheck
   }
 
-  if (!activePages) {
+  if (!allPages) {
     await loadCacheData()
   }
 
-  const pages = request.query && request.query.UpdatedAfter ? activePages.filter(p => p._updatedDate.toISOString() >= request.query.UpdatedAfter) : activePages
-  const maxDate = activePages.reduce((d, p) => Math.max(p._updatedDate, d), activePages[0]._updatedDate)
+  const pages = request.query && request.query.UpdatedAfter ? allPages.filter(p => p._updatedDate.toISOString() >= request.query.UpdatedAfter) : allPages
 
   return okResponse({ pages, maxDate })
 }
