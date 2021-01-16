@@ -7,7 +7,6 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
-1. TODO: Show better "Not found" page (take sample from the old site, and suggest creating a new page with this title)
 1. TODO: Try converting English search strings to Hebrew (https://github.com/ai/convert-layout)
 1. TODO: Consider moving to tailwind.css / svelte
 1. TODO: Add "Copy" button next to phone numbers

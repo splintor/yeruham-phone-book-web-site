@@ -142,7 +142,7 @@ function AppComponent(appProps: AppProps) {
     totalCount: appProps.totalCount,
     tags: appProps.tags
   })
-  const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: '', html: '' } : appProps.page)
+  const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: appProps.initialTitle || '', html: '' } : appProps.page)
   const [search, setSearch] = useState(appProps.search || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
@@ -351,7 +351,7 @@ function AppComponent(appProps: AppProps) {
               ? <span className="loading">מחפש...</span>
               : <>
                 {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
-                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount)}</div>
+                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search)}</div>
                 {
                   tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
                 }
@@ -389,7 +389,7 @@ function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>) {
           : siteTitle
 }
 
-function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
+function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string): ReactNode {
   const pagesCount = pages && pages.length || 0
   const tagsCount = tags && tags.length || 0
 
@@ -397,7 +397,11 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount) {
     case 0:
       switch (tagsCount) {
         case 0:
-          return 'לא נמצאו תוצאות.'
+          return <div>
+            <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search}</b>.</p>
+            <p>&nbsp;</p>
+            <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>
+          </div>
         case 1:
           return 'נמצאה קטגוריה אחת:'
         default:

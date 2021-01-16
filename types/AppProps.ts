@@ -8,6 +8,7 @@ export interface AppProps extends SearchResults {
   tag?: string
   page?: PageData
   newPage?: boolean
+  initialTitle?: string
 }
 
 export interface SearchResults {
