@@ -40,6 +40,10 @@ a {
     justify-content: center;
     align-items: center;
 
+    p {
+      margin: 0;
+    }
+
     .title {
       margin: 10px auto;
       font-size: min(36px, 9vw);
