@@ -336,7 +336,7 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
 
     default:
       const suffix = totalCount > pagesCount ?
-        `${totalCount} דפים. מציג את ${pagesCount} הראשונים:` :
+        `${totalCount} דפים. מציג את ${pagesCount} הדפים הראשונים:` :
         `${pagesCount} דפים:`
       switch (tagsCount) {
         case 0:
@@ -344,7 +344,7 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
         case 1:
           return `נמצאו קטגוריה אחת ו-${suffix}`
         default:
-          return `נמצאו ${tagsCount} קטגוריות ן-${suffix}`
+          return `נמצאו ${tagsCount} קטגוריות ו-${suffix}`
       }
   }
 }
