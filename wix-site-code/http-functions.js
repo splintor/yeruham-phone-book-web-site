@@ -1,7 +1,7 @@
 import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
 import { fetch } from 'wix-fetch'
-import { adminPhoneNumber, authPassword, telegramBotApiToken } from './secret'
+import { adminPhoneNumber, authPassword, telegramBotApiToken, telegramChannelChatId } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
@@ -15,7 +15,6 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
 const siteUrl = 'https://yeruham-phone-book.now.sh/'
-const updateTelegramChannel = '@ypb_updates'
 
 let allPages
 let maxDate
@@ -184,7 +183,7 @@ export async function post_page(request) {
   }
 
   await wixData.save('pages', page, suppressAuthAndHooks)
-  await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${updateTelegramChannel}&parse_mode=Markdown&text=${encodeURIComponent(updateMessage)}`, { method: 'get' })
+  await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${telegramChannelChatId}&parse_mode=Markdown&text=${encodeURIComponent(updateMessage)}`, { method: 'get' })
   loadCacheData()
 
   return page._id ?
