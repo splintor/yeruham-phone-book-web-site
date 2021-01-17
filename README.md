@@ -8,14 +8,13 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Try to upgrade to next v10
-1. TODO: Make sure update and createt fail when title conflicts with the title of existing/deleted page 
+1. TODO: Make sure update and create fail when title conflicts with the title of existing/deleted page 
 1. TODO: Consider moving to tailwind.css / svelte
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO: Improve editing features (bold, underline, link, social media icons)
 1. TODO: Add documentation and link to it from home
 1. TODO: Enable showing all tags
-1. TODO: Send mail on change (https://github.com/kpdecker/jsdiff)
 1. TODO: Highlight search in result page
 1. TODO: Handle cross-domain authentication
 1. TODO: Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
