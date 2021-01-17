@@ -423,6 +423,10 @@ button {
     font-weight: bold;
     font-size: 1.2em;
     outline: none;
+
+    @media (max-width: 560px) {
+      margin-block-start: 30px;
+    }
   }
 
   > .buttons {
