@@ -7,6 +7,8 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
+1. TODO: Enable passing "preview=false" in URL and use it in Telegram links so it doesn't show preview on every update.
+1. TOD: Try to upgrade to next v10
 1. TODO: Update page URL when updating the page title.
 1. TODO: Make sure update and createt fail when title conflicts with the title of existing/deleted page 
 1. TODO: Consider moving to tailwind.css / svelte
