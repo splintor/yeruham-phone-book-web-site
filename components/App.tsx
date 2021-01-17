@@ -152,6 +152,13 @@ function AppComponent(appProps: AppProps) {
     processDynamicState(state)
   }
 
+  function onUpdatePageTitle(page) {
+    const props: AppProps = { ...appProps, page }
+    window.history.replaceState(props, '', pageUrl(page.title))
+    document.title = getPageTitle(props)
+    processDynamicState(props)
+  }
+
   useEffect(() => {
     window.addEventListener('popstate', (e: PopStateEvent) => {
       processDynamicState(e.state as AppProps)
@@ -261,7 +268,7 @@ function AppComponent(appProps: AppProps) {
         </div>
         : displayedPage
           ? <PageContent status={appProps.status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
-                         newPage={isNewPage} pushState={pushState} setToast={setToast}/>
+                         newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>

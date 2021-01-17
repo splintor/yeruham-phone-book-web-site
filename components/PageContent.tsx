@@ -11,6 +11,7 @@ const PageEditor = dynamic(() => import('./PageEditor'))
 
 interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'pages' | 'newPage' | 'totalCount'> {
   pushState(url: string, state: Partial<AppProps>)
+  onUpdatePageTitle(page: PageData)
   setToast(toastOptions: ToastOptions)
 }
 
@@ -29,6 +30,10 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
 
   const saveChanges = async (pageToSave: PageData) => {
     await savePage(pageToSave)
+    if (page.title !== pageToSave.title) {
+      props.onUpdatePageTitle(pageToSave)
+    }
+
     setPage(pageToSave)
     setIsEditing(false)
   }
