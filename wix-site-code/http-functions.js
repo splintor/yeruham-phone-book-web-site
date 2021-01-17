@@ -1,6 +1,7 @@
 import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
-import { adminPhoneNumber, authPassword } from './secret'
+import { fetch } from 'wix-fetch'
+import { adminPhoneNumber, authPassword, telegramBotApiToken } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
@@ -13,6 +14,8 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
+const siteUrl = 'https://yeruham-phone-book.now.sh/'
+const updateTelegramChannel = '@ypb_updates'
 
 let allPages
 let maxDate
@@ -55,7 +58,7 @@ export async function get_login(request) {
   const phoneNumber = request.path[0]
 
   if (phoneNumber === adminPhoneNumber) {
-    return okResponse({ auth: buildAuth(phoneNumber), authTitle: 'מנהל מערכת' })
+    return okResponse({ auth: buildAuth(phoneNumber), authTitle: getPhoneTitle(phoneNumber) })
   }
 
   if (!phones) {
@@ -73,6 +76,15 @@ export async function get_login(request) {
   } else {
     return unauthorizedResponse('Failed to login')
   }
+}
+
+function getPhoneTitle(phoneNumber) {
+  if (phoneNumber === adminPhoneNumber) {
+    return 'מנהל מערכת'
+  }
+
+  const page = phones.get(phoneNumber)
+  return page && page.title || phoneNumber
 }
 
 // URL: https://<wix-site-url>/_functions/checkLogin
@@ -148,6 +160,8 @@ export async function post_page(request) {
     }
   }
 
+  let updateMessage = getPhoneTitle(phoneNumber) + ' '
+
   if (page._id) {
     const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
     if (page.title === existing.title && page.html === existing.html && page.isDeleted === existing.isDeleted && (page.tags || []).join() === (existing.tags || []).join()) {
@@ -155,11 +169,20 @@ export async function post_page(request) {
     }
 
     await wixData.save('pages_history', { pageId: existing._id, changedBy: phoneNumber, oldTitle: existing.title, oldHtml: existing.html, oldTags: existing.tags }, suppressAuthAndHooks)
+    if (page.isDeleted) {
+      updateMessage = `הדף ${page.title} *נמחק* ע"י ${getPhoneTitle(phoneNumber   )}`
+    } else if (existing.isDeleted) {
+      updateMessage = `הדף [${page.title}](${siteUrl}${page.title.replace(/ /g, '_')}) *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
+    } else {
+      updateMessage = `הדף [${page.title}](${siteUrl}${page.title.replace(/ /g, '_')}) *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
+    }
   } else {
+    updateMessage = `הדף [${page.title}](${siteUrl}${page.title.replace(/ /g, '_')}) *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
     page.createdBy = phoneNumber
   }
 
   await wixData.save('pages', page, suppressAuthAndHooks)
+  await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${updateTelegramChannel}&parse_mode=Markdown&text=${encodeURIComponent(updateMessage)}`, { method: 'get' })
   loadCacheData()
 
   return page._id ?
