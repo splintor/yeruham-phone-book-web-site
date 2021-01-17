@@ -350,8 +350,10 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
 }
 
 export default function App(appProps: AppProps): ReactElement {
+  const router = useRouter()
   const { url, origin, status } = appProps
   const pageTitle = getPageTitle(appProps)
+  const showPreview = !router.query.noPreview
 
   useEffect(() => {
     const { authTitle } = parseAuthCookies()
@@ -359,13 +361,13 @@ export default function App(appProps: AppProps): ReactElement {
   }, [])
 
   return <div className="app">
-    <Head>
+    {showPreview && <Head>
       <title>{pageTitle}</title>
       <meta property="og:title" content={pageTitle} key="pageTitle"/>
       <meta property="og:url" content={url} key="url"/>
       <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
       <link rel="icon" href="/favicon.ico"/>
-    </Head>
+    </Head>}
     {status === 401 ? <LoginPage/> : <AppComponent {...appProps} />}
   </div>
 }

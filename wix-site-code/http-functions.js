@@ -142,6 +142,8 @@ export async function get_page(request) {
     : response({ headers, status: loginCheck.status, body: { title: item && item.title || titleToSearch } })
 }
 
+const getMargdownLink = title => `[${title}](${siteUrl}${title.replace(/ /g, '_')}?noPreview=1)`
+
 export async function post_page(request) {
   const loginCheck = await get_checkLogin(request)
   if (loginCheck.status !== 200) {
@@ -172,12 +174,12 @@ export async function post_page(request) {
     if (page.isDeleted) {
       updateMessage = `הדף ${page.title} *נמחק* ע"י ${getPhoneTitle(phoneNumber   )}`
     } else if (existing.isDeleted) {
-      updateMessage = `הדף [${page.title}](${siteUrl}${page.title.replace(/ /g, '_')}) *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
+      updateMessage = `הדף ${getMargdownLink(page.title)} *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
     } else {
-      updateMessage = `הדף [${page.title}](${siteUrl}${page.title.replace(/ /g, '_')}) *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
+      updateMessage = `הדף ${getMargdownLink(page.title)} *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
     }
   } else {
-    updateMessage = `הדף [${page.title}](${siteUrl}${page.title.replace(/ /g, '_')}) *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
+    updateMessage = `הדף ${getMargdownLink(page.title)} *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
     page.createdBy = phoneNumber
   }
 
