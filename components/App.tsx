@@ -41,6 +41,7 @@ export function logToGTM(dataLayer: GTMDataLayer): void {
 export interface ToastOptions {
   content: ReactNode;
   position?: 'top' | 'bottom'
+  type?: 'success' | 'fail'
   timeout?: number
 }
 
@@ -224,7 +225,7 @@ function AppComponent(appProps: AppProps) {
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
       <AccountBadge/>
-      {toast && <div className={`toast ${toast.position}`}>
+      {toast && <div className={`toast ${toast.position} ${toast.type}`}>
         {toast.content}
         <button className="close-button" onClick={() => setToast(undefined)}>X</button>
       </div>}

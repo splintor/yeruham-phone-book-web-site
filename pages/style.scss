@@ -346,6 +346,10 @@ button {
     top: 0
   }
 
+  &.fail {
+    background-color: lightcoral;
+  }
+
   b {
     margin-inline-start: 5px;
     margin-inline-end: 5px;
