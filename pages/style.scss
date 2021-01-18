@@ -259,6 +259,10 @@ a {
       font-size: 1em;
       border-radius: 5px;
       outline: 0;
+
+      @media (max-width: 500px) {
+        width: 40vw;
+      }
     }
 
     button {
