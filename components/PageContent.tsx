@@ -29,8 +29,17 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   }, [props.newPage])
 
   const saveChanges = async (pageToSave: PageData) => {
-    await savePage(pageToSave)
-    if (page.title !== pageToSave.title) {
+    const { title } = pageToSave
+    const { ok, status } = await savePage(pageToSave)
+    if (!ok) {
+      const content = status === 409
+        ? <div>דף בשם <b>{title}</b> קיים כבר בספר הטלפונים.<a href={pageUrl(title)}>פתח את הדף הקיים</a></div>
+        : <div>השמירה נכשלה...</div>
+      setToast({ position: 'bottom', timeout: 8000, content, type: 'fail' })
+      return
+    }
+
+    if (page.title !== title) {
       props.onUpdatePageTitle(pageToSave)
     }
 
