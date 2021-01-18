@@ -62,6 +62,7 @@ a {
       }
 
       .title {
+        margin-block-start: 20px;
         font-size: min(56px, 9vw);
 
         @media (max-width: 800px) {
