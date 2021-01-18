@@ -64,7 +64,7 @@ a {
       .title {
         font-size: min(56px, 9vw);
 
-        @media (max-width: 450px) {
+        @media (max-width: 800px) {
           font-size: 8vw;
         }
       }
