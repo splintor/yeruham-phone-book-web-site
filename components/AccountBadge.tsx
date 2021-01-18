@@ -4,7 +4,7 @@ import { parseAuthCookies, setAuthCookies } from '../utils/cookies'
 import { logToGTM } from './App'
 import { TitleLink } from './TitleLink'
 
-export function AccountBadge(): ReactElement {
+export function AccountBadge({ showWelcome }: { showWelcome: boolean }): ReactElement {
   const [authTitle, setAuthTitle] = useState('')
   useEffect(() => {
     const { authTitle } = parseAuthCookies()
@@ -12,7 +12,7 @@ export function AccountBadge(): ReactElement {
   }, [])
 
   return authTitle && <div className="account">
-    <button onClick={() => location.href = '/new_page'}>הוסף דף חדש</button>{' '}
+    {showWelcome || <button onClick={() => location.href = '/new_page'}>הוסף דף חדש</button>}{' '}
     מחובר כ
     <TitleLink title={authTitle}/> (
     <Link href="/">

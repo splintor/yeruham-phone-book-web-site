@@ -224,7 +224,7 @@ function AppComponent(appProps: AppProps) {
 
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
-      <AccountBadge/>
+      <AccountBadge showWelcome={showWelcome}/>
       {toast && <div className={`toast ${toast.position} ${toast.type}`}>
         {toast.content}
         <button className="close-button" onClick={() => setToast(undefined)}>X</button>
@@ -238,7 +238,7 @@ function AppComponent(appProps: AppProps) {
           }}/>
         </h1>
       </Link>
-      {showWelcome && <label htmlFor="search-box">חפש אדם, עסק או מוסד</label>}
+      {showWelcome && <label htmlFor="search-box">חפש אדם, עסק או מוסד או <a href="/new_page">הוסף דף חדש</a></label>}
       <form className="searchForm" onSubmit={performSearch}>
         <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => {
           setFromUserEdit(true)
