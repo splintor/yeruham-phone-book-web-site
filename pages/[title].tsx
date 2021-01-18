@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = asyn
       props: {
         status: 200,
         newPage: true,
-        initialTitle: query.initialTitle as string,
+        initialTitle: query.initialTitle as string || '',
         ...requestProps(req),
       }
     }
