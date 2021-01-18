@@ -64,7 +64,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
     } else {
       pushState('/', {})
     }
-    setToast({ content: <div>הדף<b>{page.title}</b> נמחק בהצלחה.<a className="toast-button" href="/" onClick={cancelDelete}>בטל מחיקה</a></div> })
+    setToast({ content: <div>הדף<b>{page.title}</b> נמחק בהצלחה.<a href="/" onClick={cancelDelete}>בטל מחיקה</a></div> })
   }, [page])
 
   switch (props.status) {

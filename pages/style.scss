@@ -351,8 +351,10 @@ button {
     margin-inline-end: 5px;
   }
 
-  .toast-button {
+  a {
     margin-inline-start: 10px;
+    color: blue;
+    text-decoration: underline;
   }
 
   .close-button {
