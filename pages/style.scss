@@ -46,7 +46,11 @@ a {
 
     .title {
       margin: 10px auto;
-      font-size: min(36px, 9vw);
+      font-size: min(36px, 8vw);
+
+      @media (max-width: 450px) {
+        font-size: 8vw;
+      }
     }
 
     &.showWelcome {
@@ -60,6 +64,10 @@ a {
 
       .title {
         font-size: min(56px, 9vw);
+
+        @media (max-width: 450px) {
+          font-size: 9vw;
+        }
       }
 
       > label {
@@ -81,6 +89,10 @@ a {
 
         @media (max-width: 700px) {
           top: 9px;
+        }
+
+        @media (max-width: 410px) {
+          top: 3vw;
         }
       }
 
@@ -234,7 +246,7 @@ a {
   flex-direction: column;
   margin: auto;
   padding: 10px;
-  max-width: calc(100vw - 30px);
+  max-width: calc(100vw - 80px);
 
   form {
     margin-block-start: 10px;

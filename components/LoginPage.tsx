@@ -63,7 +63,7 @@ export function LoginPage(): ReactElement {
     <div>ספר הטלפונים מיועד לתושבי ירוחם בלבד.</div>
     <div>כדי לוודא שהינך תושב/ת ירוחם, יש להכניס את מספר הטלפון שלך:</div>
     <form onSubmit={onSubmit} >
-      <input type="phone" disabled={isLoading} value={phoneNumber} onChange={event => setPhoneNumber(event.target.value)}/>
+      <input  type="tel" pattern="[0-9]*" disabled={isLoading} value={phoneNumber} onChange={event => setPhoneNumber(event.target.value)}/>
       <button type="submit" disabled={isLoginDisabled}>{loginTitle}</button>
     </form>
     <div className={'error ' + ErrorType[errorType]}>{renderError(errorType)}</div>
