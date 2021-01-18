@@ -37,7 +37,6 @@ a {
     margin-inline: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 
     p {
@@ -70,7 +69,7 @@ a {
         }
 
         @media (max-width: 340px) {
-          font-size: 8.6vw;
+          font-size: 8.4vw;
         }
       }
 
