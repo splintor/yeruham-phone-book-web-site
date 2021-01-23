@@ -7,16 +7,19 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
+1. TODO: Add search suggestions URL (https://developer.mozilla.org/en-US/docs/Archive/Add-ons/Supporting_search_suggestions_in_search_plugins)
+1. TODO: Try replacing draftjs with [quill](https://github.com/zenoamaro/react-quill).
 1. TODO: Try to find a workaround for detecting the last word in a line in Android (https://github.com/facebook/draft-js/issues/2676)
 1. TODO: Enable sharing public pages
-   1. Build SiteMap with public pages
+   1. Build SiteMap with public pages (https://medium.com/frontend-digest/how-to-build-a-dynamic-sitemap-for-your-next-js-app-c69836c91f8a)
    1. Enable opening public pages direct links (and log the user as guest)
    1. Send public pages' html in <Head> response
    1. Add "Login as a guest" button 
 1. TODO: Improve editing features (bold, underline, link, social media icons)
 1. TODO: Try to upgrade to next v10
+1. TODO: Make in-phonebook links load only data and not the entire page
 1. TODO: Find how to make site links open the app on Android
-1. TODO: Consider moving to tailwind.css / svelte
+1. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO: Add documentation and link to it from home
