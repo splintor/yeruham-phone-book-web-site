@@ -22,6 +22,9 @@ export const getPage = (req: IncomingMessage, titleOrOldName: string): Promise<R
 export const searchPages = (req: IncomingMessage, search: string): Promise<Response> =>
   fetch(`${urlPrefix}/search/${encodeURI(search)}`, getRequestOptions(req))
 
+export const getSearchSuggestions = (req: IncomingMessage, search: string): Promise<Response> =>
+  fetch(`${urlPrefix}/search/${encodeURI(search)}?suggestions=1`, getRequestOptions(req))
+
 export const getTagPages = (req: IncomingMessage, tag: string): Promise<Response> =>
   fetch(`${urlPrefix}/tag/${encodeURI(tag)}`, getRequestOptions(req))
 

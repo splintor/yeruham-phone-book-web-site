@@ -254,7 +254,7 @@ const resultsCompare = (searchWords) => (a, b) => {
   return a.title.localeCompare(b.title)
 }
 
-async function performSearch(search) {
+function performSearch(search) {
   const searchWords = parseToWords(search.toLowerCase()).map(s => s.trim()).filter(s => s)
   const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w))).sort(resultsCompare(searchWords))
   const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
@@ -264,7 +264,7 @@ async function performSearch(search) {
       return performSearch(mapped)
     }
   }
-  return okResponse({ pages: items.slice(0, 30), totalCount: items.length, tags, search })
+  return { pages: items.slice(0, 30), totalCount: items.length, tags, search }
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
@@ -283,7 +283,10 @@ export async function get_search(request) {
     await loadCacheData()
   }
 
-  return performSearch(param)
+  const searchResults = performSearch(param)
+  const result = request.query && request.query.suggestions ? [param, searchResults.pages.map(p => p.title)] : searchResults
+
+  return okResponse(result)
 }
 
 // URL: https://<wix-site-url>/_functions/pages
