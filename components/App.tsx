@@ -375,6 +375,7 @@ export default function App(appProps: AppProps): ReactElement {
       <meta property="og:url" content={url} key="url"/>
       <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
       <link rel="icon" href="/favicon.ico"/>
+      <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="https://yeruham-phone-book.now.sh/opensearch.xml" />
     </Head>}
     {status === 401 ? <LoginPage/> : <AppComponent {...appProps} />}
   </div>
