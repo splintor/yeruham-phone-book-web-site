@@ -3,10 +3,10 @@ import { NextApiResponse } from 'next'
 import { PageData } from '../types/PageData'
 import { parseAuthCookies } from './cookies'
 
-export async function sendResponse(response: NextApiResponse, fetchResponse: Response, logData: ReturnType<typeof getRequestLogData>): Promise<void> {
+export async function sendResponse(response: NextApiResponse, fetchResponse: Response, logData: ReturnType<typeof getRequestLogData>, contentType = 'application/json'): Promise<void> {
   console.info('sending response', logData)
   response.statusCode = fetchResponse.status
-  response.setHeader('Content-Type', 'application/json')
+  response.setHeader('Content-Type', contentType)
   response.end(await fetchResponse.text())
 }
 

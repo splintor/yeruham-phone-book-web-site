@@ -4,5 +4,5 @@ import { getSearchSuggestions } from '../../../utils/data-layer'
 
 export default async function searchSuggestions(request: NextApiRequest, response: NextApiResponse): Promise<void> {
   const { query: { searchTerm } } = request
-  return sendResponse(response, await getSearchSuggestions(request, searchTerm as string), getRequestLogData(request))
+  return sendResponse(response, await getSearchSuggestions(request, searchTerm as string), getRequestLogData(request), 'application/x-suggestions+json')
 }
