@@ -4,5 +4,5 @@
     <ShortName>ספר הטלפונים של ירוחם</ShortName>
     <Description>חיפוש מהיר בספר הטלפונים של ירוחם</Description>
     <Url type="text/html" template="https://yeruham-phone-book.now.sh/search/{searchTerms}"/>
-    <Url type="application/x-suggestions+json" rel="suggestions" method="GET" template="https://yeruham-phone-book.now.sh/api/search-suggestions/{searchTerms}" />
+    <Url type="application/x-suggestions+json" rel="suggestions" method="GET" template="https://yeruham-phone-book.now.sh/search-suggestions/{searchTerms}" />
 </OpenSearchDescription>
