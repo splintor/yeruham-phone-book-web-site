@@ -3,7 +3,7 @@
         xmlns:moz="http://www.mozilla.org/2006/browser/search/">
     <ShortName>Yeruham Phonebook</ShortName>
     <Description>Search Yeruham Phonebook</Description>
-    <Url type="application/rss+xml" template="https://yeruham-phone-book.now.sh/search/{searchTerms}"/>
+    <Url type="text/html" template="https://yeruham-phone-book.now.sh/search/{searchTerms}"/>
     <Url type="application/x-suggestions+json"
          rel="suggestions" method="GET"
          template="https://yeruham-phone-book.now.sh/api/search-suggestions/{searchTerms}" />
