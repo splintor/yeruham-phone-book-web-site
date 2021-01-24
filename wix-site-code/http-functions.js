@@ -269,9 +269,12 @@ function performSearch(search) {
 
 // URL: https://<wix-site-url>/_functions/search/<search>
 export async function get_search(request) {
-  const loginCheck = await get_checkLogin(request)
-  if (loginCheck.status !== 200) {
-    return loginCheck
+  const isSuggestionsRequest = Boolean(request.query && request.query.suggestions)
+  if (!isSuggestionsRequest) {
+    const loginCheck = await get_checkLogin(request)
+    if (loginCheck.status !== 200) {
+      return loginCheck
+    }
   }
 
   const param = decodeURI(request.path[0])
@@ -284,7 +287,7 @@ export async function get_search(request) {
   }
 
   const searchResults = performSearch(param)
-  const result = request.query && request.query.suggestions ? [param, searchResults.pages.map(p => p.title)] : searchResults
+  const result = isSuggestionsRequest ? [param, searchResults.pages.map(p => p.title)] : searchResults
 
   return okResponse(result)
 }
