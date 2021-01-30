@@ -37,7 +37,7 @@ export async function getAllTags(force = false): Promise<string[]> {
 }
 
 export const savePage = (page: PageData): Promise<Response> =>
-  fetch(`/api/save`, {
+  fetch(`/api/page`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: `auth=${parseAuthCookies().auth}` },
     body: JSON.stringify({ page })
