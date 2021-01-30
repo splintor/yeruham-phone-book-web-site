@@ -16,8 +16,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
    1. Send public pages' html in <Head> response
    1. Add "Login as a guest" button 
 1. TODO: Improve editing features (bold, underline, link, social media icons)
-1. TODO: Try to upgrade to next v10
-   1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
+1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
 1. TODO: Make in-phonebook links load only data and not the entire page
 1. TODO: Find how to make site links open the app on Android
 1. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
