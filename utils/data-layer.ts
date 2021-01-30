@@ -10,9 +10,6 @@ function getRequestOptions(req: IncomingMessage) {
   return { headers: { Authorization: auth } }
 }
 
-export const login = (phoneNumber: string): Promise<Response> =>
-  fetch(`${urlPrefix}/login/${phoneNumber}`)
-
 export const checkLogin = (req: IncomingMessage): Promise<Response> =>
   fetch(`${urlPrefix}/checkLogin`, getRequestOptions(req))
 

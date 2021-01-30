@@ -7,7 +7,6 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
-1. TODO: make API requests use rewrites() in next.config.js (like search-suggestions)
 1. TODO: Try replacing draftjs with [quill](https://github.com/zenoamaro/react-quill).
 1. TODO: Try to find a workaround for detecting the last word in a line in Android (https://github.com/facebook/draft-js/issues/2676)
 1. TODO: Add <help> link to login page
