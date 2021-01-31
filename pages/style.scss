@@ -486,6 +486,15 @@ button {
     min-height: 30%;
     max-height: calc(100% - 110px);
     overflow: auto;
+
+    .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) .ql-picker-label svg {
+      left: 0;
+      right: unset;
+    }
+
+    .ql-editor {
+      text-align: right;
+    }
   }
 
   .tags-footer {

@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
-import { Editor, EditorState, CompositeDecorator } from 'draft-js'
-import { stateFromHTML } from 'draft-js-import-html'
-import { stateToHTML } from 'draft-js-export-html'
+import 'react-quill/dist/quill.snow.css'
+import ReactQuill from 'react-quill'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
@@ -12,29 +11,14 @@ interface EditorProps {
   onCancel(): void
 }
 
-function findLinkEntities(contentBlock, callback, contentState) {
-  contentBlock.findEntityRanges(character => {
-      const entityKey = character.getEntity()
-      return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK'
-    },
-    callback,
-  )
-}
-
-function Link(props) {
-  const { url } = props.contentState.getEntity(props.entityKey).getData()
-  return <a href={url}>{props.children}</a>
-}
-
-const customDecorators = new CompositeDecorator([{ strategy: findLinkEntities, component: Link }])
-
 export default function PageEditor({ page, onCancel, onSave }: EditorProps): ReactElement {
   const [title, setTitle] = useState(page.title)
   const [tags, setTags] = useState(page.tags)
   const [showAddTag, setShowAddTag] = useState(false)
   const [newTag, setNewTag] = useState('')
-  const [editorState, setEditorState] = useState(() => EditorState.createWithContent(stateFromHTML(page.html), customDecorators))
+  const [editorValue, setEditorValue] = useState(page.html)
   const [isSaving, setIsSaving] = useState(false)
+  const editorRef = useRef<ReactQuill>()
   const allTagsRef = useRef<string[]>()
   const enterPressed = useKeyPress('Enter')
   const escapePressed = useKeyPress('Escape')
@@ -43,7 +27,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
     try {
       const tagsWereUpdated = page.tags !== tags
       setIsSaving(true)
-      await onSave({ ...page, title, html: stateToHTML(editorState.getCurrentContent()), tags })
+      await onSave({ ...page, title: title.trim(), html: editorValue, tags })
       if (tagsWereUpdated) {
         await getAllTags(true)
       }
@@ -89,12 +73,14 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
 
   return <div className="results page-editor">
     <div className="buttons">
-      <button className="OK" onClick={save} disabled={!title || !editorState.getCurrentContent().hasText()}>{isSaving ? 'שומר...' : 'שמירה'}</button>
+      <button className="OK" onClick={save} disabled={!title.trim() || !editorRef.current?.getEditor().getText().trim()}>
+        {isSaving ? 'שומר...' : 'שמירה'}
+      </button>
       <button className="delete" onClick={onCancel}>ביטול</button>
     </div>
     <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>
-      <Editor editorState={editorState} onChange={setEditorState} textDirectionality="RTL"/>
+      <ReactQuill ref={editorRef} theme="snow" value={editorValue} onChange={setEditorValue}/>
     </div>
     <div className="tags-footer">
       {
