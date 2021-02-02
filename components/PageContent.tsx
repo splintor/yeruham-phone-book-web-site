@@ -7,7 +7,7 @@ import { pageUrl } from '../utils/url'
 import { deletedPageTitleKey, ToastOptions } from './App'
 import { Modal } from './Modal'
 
-const PageEditor = dynamic(() => import('./PageEditor'))
+const PageEditor = dynamic(() => import('./PageEditor'), { ssr: false })
 
 interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'pages' | 'newPage' | 'totalCount'> {
   pushState(url: string, state: Partial<AppProps>)
