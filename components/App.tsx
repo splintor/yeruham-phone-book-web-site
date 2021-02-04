@@ -74,8 +74,7 @@ function AppComponent(appProps: AppProps) {
     if (searchInput.current) {
       searchInput.current.focus()
       if (search === appProps.search) {
-        console.log('setting selectionStart to', search.length, search)
-        searchInput.current.selectionStart = search.length
+        searchInput.current.selectionStart = searchInput.current.value.length
       }
     }
   }
