@@ -5,6 +5,7 @@ import { adminPhoneNumber, authPassword, telegramBotApiToken, telegramChannelCha
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
+const publicTagName = 'ציבורי'
 const headers = { 'Content-Type': 'application/json' }
 const okResponse = body => ok({ headers, body })
 const removePhoneDelimiters = s => s.replace(/[+\-.]+/g, '')
@@ -134,7 +135,7 @@ export async function get_page(request) {
   const titleToSearch = param.replace(/_/g, ' ')
   const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
 
-  return loginCheck.status === 200
+  return loginCheck.status === 200 || (item && item.tags && item.tags.includes(publicTagName))
     ? item
       ? okResponse(item)
       : notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
@@ -270,12 +271,7 @@ function performSearch(search) {
 // URL: https://<wix-site-url>/_functions/search/<search>
 export async function get_search(request) {
   const isSuggestionsRequest = Boolean(request.query && request.query.suggestions)
-  if (!isSuggestionsRequest) {
-    const loginCheck = await get_checkLogin(request)
-    if (loginCheck.status !== 200) {
-      return loginCheck
-    }
-  }
+  const isLoggedIn = isSuggestionsRequest ? true : (await get_checkLogin(request)).status === 200
 
   const param = decodeURI(request.path[0])
   if (!param || !param.trim()) {
@@ -287,7 +283,9 @@ export async function get_search(request) {
   }
 
   const searchResults = performSearch(param)
-  const result = isSuggestionsRequest ? [param, searchResults.pages.map(p => p.title)] : searchResults
+  const result = isSuggestionsRequest
+    ? [param, searchResults.pages.map(p => p.title)]
+    : isLoggedIn ? searchResults : searchResults.filter(p => p.tags.includes(publicTagName))
 
   return okResponse(result)
 }
@@ -310,23 +308,24 @@ export async function get_pages(request) {
 
 // URL: https://<wix-site-url>/_functions/tag/<tag>
 export async function get_tag(request) {
-  const loginCheck = await get_checkLogin(request)
-  if (loginCheck.status !== 200) {
-    return loginCheck
+  const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
+  if (searchedTag !== publicTagName) {
+    const loginCheck = await get_checkLogin(request)
+    if (loginCheck.status !== 200) {
+      return loginCheck
+    }
   }
 
-  const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
-  const { items } = activePages.filter(p => p.tags.includes(searchedTag))
-  return okResponse({ pages: items })
+  if (!allPages) {
+    await loadCacheData()
+  }
+
+  const pages = activePages.filter(p => p.tags && p.tags.includes(searchedTag))
+  return okResponse({ pages })
 }
 
 // URL: https://<wix-site-url>/_functions/tags
 export async function get_tags(request) {
-  const loginCheck = await get_checkLogin(request)
-  if (loginCheck.status !== 200) {
-    return loginCheck
-  }
-
   if (!tagsList) {
     await loadCacheData()
   }
