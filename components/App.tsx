@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { BaseSyntheticEvent, ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 import TagManager from 'react-gtm-module'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
@@ -65,6 +65,19 @@ function AppComponent(appProps: AppProps) {
   const searchInput = useRef(null)
   const router = useRouter()
   const showWelcome = !isSearching && !displayedPage && !pages
+  const [authTitle, setAuthTitle] = useState('')
+  const [isGuestLogin, setIsGuestLogin] = useState(true)
+
+  useEffect(() => {
+    const { authTitle, isGuestLogin } = parseAuthCookies()
+    setAuthTitle(authTitle)
+    setIsGuestLogin(isGuestLogin)
+    TagManager.initialize({ gtmId: 'GTM-TCN5G8S', dataLayer: { event: 'load', url: appProps.url, status, authTitle } })
+    if (isAuthTitleNew()) {
+      setToast({ position: 'top', timeout: 4000, content: <div>ברוך הבא לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
+    }
+  }, [])
+
 
   function focusSearchInput(element = null) {
     if (element) {
@@ -78,13 +91,6 @@ function AppComponent(appProps: AppProps) {
       }
     }
   }
-
-  useEffect(() => {
-    if (isAuthTitleNew()) {
-      const { authTitle } = parseAuthCookies()
-      setToast({ position: 'top', timeout: 4000, content: <div>ברוך הבא לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
-    }
-  })
 
   useEffect(() => {
     lastSearch.current = search
@@ -134,7 +140,7 @@ function AppComponent(appProps: AppProps) {
     }
   }, [setSearchResults, pages, tags, totalCount])
 
-  const processDynamicState = useCallback((state: Partial<AppProps>) => {
+  const processDynamicState = (state: Partial<AppProps>) => {
     const { search, page, pages, tags, tag, totalCount } = state
     setSearch(search || '')
     setDisplayedPage(page || null)
@@ -142,10 +148,9 @@ function AppComponent(appProps: AppProps) {
     setSearchResults({ pages, tags, totalCount, search })
     setTag(tag)
     setIsNewPage(state.newPage || false)
-    const { authTitle } = parseAuthCookies()
     logToGTM({ event: 'navigation', authTitle, ...state })
     focusSearchInput()
-  }, [setDisplayedPage, setSearchResults, setIsSearching, setTag])
+  }
 
   function pushState(url: string, state: Partial<AppProps>) {
     window.history.pushState(state, '', url)
@@ -165,7 +170,7 @@ function AppComponent(appProps: AppProps) {
       processDynamicState(e.state as AppProps)
       return false
     })
-  }, [processDynamicState])
+  }, [])
 
   useEffect(() => {
     const activeSearch = router.query.search as string
@@ -182,7 +187,7 @@ function AppComponent(appProps: AppProps) {
     pushState(getSearchUrl(search), { search, ...results })
   }
 
-  const performSearch = useCallback(async (e: BaseSyntheticEvent) => {
+  const performSearch = async (e: BaseSyntheticEvent) => {
     e.preventDefault()
     if (!search) {
       return
@@ -191,7 +196,7 @@ function AppComponent(appProps: AppProps) {
     setIsSearching(true)
     setFromUserEdit(false)
     updateSearchInPage(await searchForPages(search))
-  }, [search, fromUserEdit])
+  }
 
   useEffect(() => {
     if (showWelcome) {
@@ -222,9 +227,10 @@ function AppComponent(appProps: AppProps) {
     })
   }, [displayedPage, pages, isSearching])
 
+  // noinspection HtmlUnknownTarget
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
-      <AccountBadge showWelcome={showWelcome}/>
+      <AccountBadge showWelcome={showWelcome} authTitle={authTitle} isGuestLogin={isGuestLogin}/>
       {toast && <div className={`toast ${toast.position} ${toast.type}`}>
         {toast.content}
         <button className="close-button" onClick={() => setToast(undefined)}>X</button>
@@ -238,7 +244,9 @@ function AppComponent(appProps: AppProps) {
           }}/>
         </h1>
       </Link>
-      {showWelcome && <label htmlFor="search-box">חפש אדם, עסק או מוסד או <a href="/new_page">הוסף דף חדש</a></label>}
+      {showWelcome && (isGuestLogin
+        ? <label htmlFor="search-box">חפש עסק או מוסד ציבורי</label>
+        : <label htmlFor="search-box">חפש אדם, עסק או מוסד או <a href="/new_page">הוסף דף חדש</a></label>)}
       <form className="searchForm" onSubmit={performSearch}>
         <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => {
           setFromUserEdit(true)
@@ -269,13 +277,13 @@ function AppComponent(appProps: AppProps) {
         </div>
         : displayedPage
           ? <PageContent status={appProps.status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
-                         newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle}/>
+                         newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>
               : <>
                 {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
-                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search)}</div>
+                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, isGuestLogin)}</div>
                 {
                   tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
                 }
@@ -313,7 +321,7 @@ function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>) {
           : siteTitle
 }
 
-function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string): ReactNode {
+function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string, isGuestLogin: boolean): ReactNode {
   const pagesCount = pages && pages.length || 0
   const tagsCount = tags && tags.length || 0
 
@@ -324,7 +332,7 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
           return <div>
             <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search}</b>.</p>
             <p>&nbsp;</p>
-            <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>
+            {isGuestLogin || <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>}
           </div>
         case 1:
           return 'נמצאה קטגוריה אחת:'
@@ -363,11 +371,6 @@ export default function App(appProps: AppProps): ReactElement {
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
   const isPublicPage = page?.tags?.includes(publicTagName)
-
-  useEffect(() => {
-    const { authTitle } = parseAuthCookies()
-    TagManager.initialize({ gtmId: 'GTM-TCN5G8S', dataLayer: { event: 'load', url, status, authTitle } })
-  }, [])
 
   return <div className="app">
     {showPreview && <Head>

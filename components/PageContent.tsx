@@ -13,6 +13,7 @@ interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' |
   pushState(url: string, state: Partial<AppProps>)
   onUpdatePageTitle(page: PageData)
   setToast(toastOptions: ToastOptions)
+  isGuestLogin: boolean
 }
 
 export function PageContent({ search, tag, pushState, setToast, pages, totalCount, ...props }: PageContentProps): ReactElement {
@@ -85,10 +86,11 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
     default:
       return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges}/> :
         <div className="results page">
+          {props.isGuestLogin ||
           <div className="buttons">
             <button className="delete" onClick={() => setShowDeleteConfirmation(true)}>מחיקה</button>
             <button onClick={() => setIsEditing(true)}>עריכה</button>
-          </div>
+          </div>}
           <Modal title={`מחיקת הדף ${title}`}
                  show={showDeleteConfirmation}
                  setShow={setShowDeleteConfirmation}

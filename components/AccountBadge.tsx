@@ -1,20 +1,19 @@
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement} from 'react'
 import Link from 'next/link'
-import { parseAuthCookies, setAuthCookies } from '../utils/cookies'
+import { setAuthCookies } from '../utils/cookies'
 import { logToGTM } from './App'
 import { TitleLink } from './TitleLink'
 
-export function AccountBadge({ showWelcome }: { showWelcome: boolean }): ReactElement {
-  const [authTitle, setAuthTitle] = useState('')
-  useEffect(() => {
-    const { authTitle } = parseAuthCookies()
-    setAuthTitle(authTitle)
-  }, [])
-
+interface AccountBadgeProps {
+  showWelcome: boolean;
+  authTitle: string;
+  isGuestLogin: boolean;
+}
+export function AccountBadge({ authTitle, isGuestLogin, showWelcome }: AccountBadgeProps): ReactElement {
   return authTitle && <div className="account">
-    {showWelcome || <button onClick={() => location.href = '/new_page'}>הוסף דף חדש</button>}{' '}
+    {showWelcome || isGuestLogin || <button onClick={() => location.href = '/new_page'}>הוסף דף חדש</button>}{' '}
     מחובר כ
-    <TitleLink title={authTitle}/> (
+    {isGuestLogin ? <b>{authTitle}</b> : <TitleLink title={authTitle}/>} (
     <Link href="/">
       <a onClick={() => {
         setAuthCookies('', '')

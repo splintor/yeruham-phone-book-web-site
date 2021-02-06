@@ -1,6 +1,6 @@
-import React, { FormEvent, ReactElement, useCallback, useState } from 'react'
+import React, { FormEvent, ReactElement, useState } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
-import { setAuthCookies } from '../utils/cookies'
+import { guestAuthString, setAuthCookies } from '../utils/cookies'
 import { GitHubCorner } from './GitHubCorner'
 
 enum ErrorType {
@@ -36,7 +36,7 @@ export function LoginPage(): ReactElement {
   const isLoginDisabled = phoneNumber?.replace(/[-+]/g, '').length < 9 || isLoading
   const loginTitle = isLoading ? 'בודק...' : 'אישור'
 
-  const onSubmit = useCallback(async (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setErrorType(ErrorType.None)
     setIsLoading(true)
@@ -55,7 +55,14 @@ export function LoginPage(): ReactElement {
       setErrorType(ErrorType.NetworkError)
     }
     setIsLoading(false)
-  }, [phoneNumber])
+  }
+
+  const onGuestLogin = async (e: FormEvent) => {
+    e.preventDefault()
+    setErrorType(ErrorType.None)
+    setAuthCookies(guestAuthString, 'אורח')
+    location.reload()
+  }
 
   return <div className="loginPage">
     <GitHubCorner/>
@@ -64,7 +71,12 @@ export function LoginPage(): ReactElement {
     <div>כדי לוודא שהינך תושב/ת ירוחם, יש להכניס את מספר הטלפון שלך:</div>
     <form onSubmit={onSubmit} >
       <input  type="tel" pattern="[0-9]*" disabled={isLoading} value={phoneNumber} onChange={event => setPhoneNumber(event.target.value)}/>
-      <button type="submit" disabled={isLoginDisabled}>{loginTitle}</button>
+      <div><button type="submit" disabled={isLoginDisabled}>{loginTitle}</button></div>
+    </form>
+
+    <div>אם אינך ירוחמי, תוכל להכנס כאורח ולראות עסקים ומוסדות ציבור.</div>
+    <form onSubmit={onGuestLogin}>
+      <div><button type="submit">כניסה כאורח</button></div>
     </form>
     <div className={'error ' + ErrorType[errorType]}>{renderError(errorType)}</div>
   </div>
