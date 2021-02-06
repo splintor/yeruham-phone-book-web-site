@@ -362,7 +362,7 @@ export default function App(appProps: AppProps): ReactElement {
   const { url, origin, status, page } = appProps
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
-  const isPublicPage = page.tags?.includes(publicTagName)
+  const isPublicPage = page?.tags?.includes(publicTagName)
 
   useEffect(() => {
     const { authTitle } = parseAuthCookies()
