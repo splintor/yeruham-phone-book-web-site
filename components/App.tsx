@@ -363,7 +363,7 @@ export default function App(appProps: AppProps): ReactElement {
 
   useEffect(() => setAuthData(parseAuthCookies()), [])
   const isPageAllowed = () =>
-    authData.auth && status === 200 && (!authData.isGuestLogin || !newPage)
+    authData.auth && status !== 401 && (!authData.isGuestLogin || !newPage)
 
   return <div className="app">
     {showPreview && <Head>
