@@ -8,9 +8,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Add <help> link to login page
-1. TODO: Enable sharing public pages
-   1. Add "Login as a guest" button 
-   1. Enable opening public pages direct links (and log the user as guest)
 1. TODO: Improve editing features (bold, underline, link, social media icons)
 1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
 1. TODO: Make in-phonebook links load only data and not the entire page
