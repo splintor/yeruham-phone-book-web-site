@@ -135,11 +135,9 @@ export async function get_page(request) {
   const titleToSearch = param.replace(/_/g, ' ')
   const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
 
-  return loginCheck.status === 200 || (item && item.tags && item.tags.includes(publicTagName))
-    ? item
-      ? okResponse(item)
-      : notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
-    : response({ headers, status: loginCheck.status, body: { title: item && item.title || titleToSearch } })
+  return item && (loginCheck.status === 200 || (item && item.tags && item.tags.includes(publicTagName)))
+    ? okResponse(item)
+    : notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
 }
 
 const getMargdownLink = title => `[${title}](${siteUrl}${title.replace(/ /g, '_')}?noPreview=1)`
@@ -255,17 +253,19 @@ const resultsCompare = (searchWords) => (a, b) => {
   return a.title.localeCompare(b.title)
 }
 
-function performSearch(search) {
+function performSearch(search, isLoggedIn) {
   const searchWords = parseToWords(search.toLowerCase()).map(s => s.trim()).filter(s => s)
   const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w))).sort(resultsCompare(searchWords))
   const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
   if (items.length === 0 && tags.length === 0) {
     const mapped = mappedString(search)
     if (mapped) {
-      return performSearch(mapped)
+      return performSearch(mapped, isLoggedIn)
     }
   }
-  return { pages: items.slice(0, 30), totalCount: items.length, tags, search }
+
+  const itemsToReturn = isLoggedIn ? items : items.filter(p => p.tags && p.tags.includes(publicTagName))
+  return { pages: itemsToReturn.slice(0, 30), totalCount: itemsToReturn.length, tags, search }
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
@@ -282,10 +282,10 @@ export async function get_search(request) {
     await loadCacheData()
   }
 
-  const searchResults = performSearch(param)
+  const searchResults = performSearch(param, isLoggedIn)
   const result = isSuggestionsRequest
     ? [param, searchResults.pages.map(p => p.title)]
-    : isLoggedIn ? searchResults : searchResults.filter(p => p.tags.includes(publicTagName))
+    : searchResults
 
   return okResponse(result)
 }
