@@ -68,6 +68,7 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
   const { authTitle, isGuestLogin } = appProps.authData
 
   useEffect(() => {
+    window.history.replaceState(appProps, '', location.href)
     TagManager.initialize({ gtmId: 'GTM-TCN5G8S', dataLayer: { event: 'load', url: appProps.url, status, authTitle } })
     if (isAuthTitleNew()) {
       setToast({ position: 'top', timeout: 4000, content: <div>ברוך הבא לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
@@ -94,15 +95,6 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
       stringBeingSearched.current = search
     }
   }, [search])
-
-  useEffect(() => {
-    if (pages) {
-      const { state } = window.history.state || {}
-      if (!state) {
-        window.history.replaceState(appProps, '', location.href)
-      }
-    }
-  }, [])
 
   useEffect(() => {
     if (toast) {
