@@ -309,18 +309,13 @@ export async function get_pages(request) {
 // URL: https://<wix-site-url>/_functions/tag/<tag>
 export async function get_tag(request) {
   const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
-  if (searchedTag !== publicTagName) {
-    const loginCheck = await get_checkLogin(request)
-    if (loginCheck.status !== 200) {
-      return loginCheck
-    }
-  }
 
   if (!allPages) {
     await loadCacheData()
   }
 
-  const pages = activePages.filter(p => p.tags && p.tags.includes(searchedTag))
+  const isLoggedIn = searchedTag === publicTagName || (await get_checkLogin(request).status === 200)
+  const pages = activePages.filter(p => p.tags && p.tags.includes(searchedTag) && (isLoggedIn || p.tags.includes(publicTagName)))
   return okResponse({ pages })
 }
 
