@@ -23,7 +23,13 @@ export function isAuthTitleNew(): boolean {
   return false
 }
 
-export function parseAuthCookies(request?: IncomingMessage): { auth: string, authTitle: string, isGuestLogin: boolean } {
+export interface AuthData {
+  auth: string
+  authTitle: string
+  isGuestLogin: boolean
+}
+
+export function parseAuthCookies(request?: IncomingMessage): AuthData {
   const { auth } = parse((request ? request.headers.cookie : document.cookie) || '')
   const authTitle = !request && auth && localStorage.getItem(authTitleKey) || ''
   return { auth, authTitle, isGuestLogin: auth === guestAuthString  }

@@ -7,7 +7,7 @@ import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { adminEmail, publicTagName, siteTitle } from '../utils/consts'
-import { isAuthTitleNew, parseAuthCookies } from '../utils/cookies'
+import { AuthData, isAuthTitleNew, parseAuthCookies } from '../utils/cookies'
 import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
 import { GitHubCorner } from './GitHubCorner'
@@ -30,8 +30,8 @@ async function searchForPages(search: string) {
 }
 
 interface GTMDataLayer extends Partial<AppProps> {
-  event: string;
-  authTitle: string;
+  event: string
+  authTitle: string
 }
 
 export function logToGTM(dataLayer: GTMDataLayer): void {
@@ -39,13 +39,13 @@ export function logToGTM(dataLayer: GTMDataLayer): void {
 }
 
 export interface ToastOptions {
-  content: ReactNode;
+  content: ReactNode
   position?: 'top' | 'bottom'
   type?: 'success' | 'fail'
   timeout?: number
 }
 
-function AppComponent(appProps: AppProps) {
+function AppComponent(appProps: AppProps & { authData: AuthData }) {
   const [fromUserEdit, setFromUserEdit] = useState(false)
   const [{ pages, tags, totalCount, search: searchFromResults }, setSearchResults] = useState<SearchResults>({
     pages: appProps.pages,
@@ -65,13 +65,9 @@ function AppComponent(appProps: AppProps) {
   const searchInput = useRef(null)
   const router = useRouter()
   const showWelcome = !isSearching && !displayedPage && !pages
-  const [authTitle, setAuthTitle] = useState('')
-  const [isGuestLogin, setIsGuestLogin] = useState(true)
+  const { authTitle, isGuestLogin } = appProps.authData
 
   useEffect(() => {
-    const { authTitle, isGuestLogin } = parseAuthCookies()
-    setAuthTitle(authTitle)
-    setIsGuestLogin(isGuestLogin)
     TagManager.initialize({ gtmId: 'GTM-TCN5G8S', dataLayer: { event: 'load', url: appProps.url, status, authTitle } })
     if (isAuthTitleNew()) {
       setToast({ position: 'top', timeout: 4000, content: <div>ברוך הבא לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
@@ -371,6 +367,9 @@ export default function App(appProps: AppProps): ReactElement {
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
   const isPublicPage = page?.tags?.includes(publicTagName)
+  const [authData, setAuthData] = useState<AuthData>()
+
+  useEffect(() => setAuthData(parseAuthCookies()), [])
 
   return <div className="app">
     {showPreview && <Head>
@@ -382,6 +381,6 @@ export default function App(appProps: AppProps): ReactElement {
       <link rel="icon" href="/favicon.ico"/>
       <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="opensearch.xml" />
     </Head>}
-    {status === 401 ? <LoginPage/> : <AppComponent {...appProps} />}
+    {authData ? !authData.auth || status === 401 ? <LoginPage/> : <AppComponent authData={authData} {...appProps} /> : ''}
   </div>
 }

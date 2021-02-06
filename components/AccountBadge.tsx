@@ -5,9 +5,9 @@ import { logToGTM } from './App'
 import { TitleLink } from './TitleLink'
 
 interface AccountBadgeProps {
-  showWelcome: boolean;
-  authTitle: string;
-  isGuestLogin: boolean;
+  showWelcome: boolean
+  authTitle: string
+  isGuestLogin: boolean
 }
 export function AccountBadge({ authTitle, isGuestLogin, showWelcome }: AccountBadgeProps): ReactElement {
   return authTitle && <div className="account">
