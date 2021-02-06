@@ -363,13 +363,15 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
 
 export default function App(appProps: AppProps): ReactElement {
   const router = useRouter()
-  const { url, origin, status, page } = appProps
+  const { url, origin, status, page, newPage } = appProps
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
   const isPublicPage = page?.tags?.includes(publicTagName)
   const [authData, setAuthData] = useState<AuthData>()
 
   useEffect(() => setAuthData(parseAuthCookies()), [])
+  const isPageAllowed = () =>
+    authData.auth && status === 200 && (!authData.isGuestLogin || !newPage)
 
   return <div className="app">
     {showPreview && <Head>
@@ -381,6 +383,6 @@ export default function App(appProps: AppProps): ReactElement {
       <link rel="icon" href="/favicon.ico"/>
       <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="opensearch.xml" />
     </Head>}
-    {authData ? !authData.auth || status === 401 ? <LoginPage/> : <AppComponent authData={authData} {...appProps} /> : ''}
+    {authData ? isPageAllowed() ? <AppComponent authData={authData} {...appProps} /> : <LoginPage/> : ''}
   </div>
 }
