@@ -6,6 +6,8 @@ import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { deletedPageTitleKey, ToastOptions } from './App'
 import { Modal } from './Modal'
+import { PageHtmlRenderer } from './PageHtmlRenderer'
+import { TagLink } from './TagLink'
 
 const PageEditor = dynamic(() => import('./PageEditor'), { ssr: false })
 
@@ -20,7 +22,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   const [isEditing, setIsEditing] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [page, setPage] = useState(props.page)
-  const { html, title, tags } = page
+  const { title, tags } = page
   const backUrl = pages && (search ? `/search/${search}` : tag && `/tag/${tag}`) || null
 
   useEffect(() => {
@@ -28,6 +30,8 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
       setIsEditing(true)
     }
   }, [props.newPage])
+
+  useEffect(() => setPage(props.page), [props.page])
 
   const saveChanges = async (pageToSave: PageData) => {
     const { title } = pageToSave
@@ -106,9 +110,9 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
             }}>&#8658;</a>}
             <a href={pageUrl(title)}>{title}</a>
           </h1>
-          <div dangerouslySetInnerHTML={{ __html: html }}/>
+          <PageHtmlRenderer pushState={pushState} page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
           <div className="tags">
-            {tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)}
+            {tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} className="titleLink tag"/>)}
           </div>
         </div>
   }

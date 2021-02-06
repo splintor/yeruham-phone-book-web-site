@@ -13,6 +13,8 @@ import { AccountBadge } from './AccountBadge'
 import { GitHubCorner } from './GitHubCorner'
 import { LoginPage } from './LoginPage'
 import { PageContent } from './PageContent'
+import { PageHtmlRenderer } from './PageHtmlRenderer'
+import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
 
 export const deletedPageTitleKey = 'deleted-page-title'
@@ -47,6 +49,7 @@ export interface ToastOptions {
 
 function AppComponent(appProps: AppProps & { authData: AuthData }) {
   const [fromUserEdit, setFromUserEdit] = useState(false)
+  const { status } = appProps
   const [{ pages, tags, totalCount, search: searchFromResults }, setSearchResults] = useState<SearchResults>({
     pages: appProps.pages,
     totalCount: appProps.totalCount,
@@ -264,16 +267,16 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
           </div>
         </div>
         : displayedPage
-          ? <PageContent status={appProps.status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
+          ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
                          newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>
               : <>
-                {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
+                {tag && <h1><TagLink tag={tag} pushState={pushState}/></h1>}
                 <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, isGuestLogin)}</div>
                 {
-                  tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
+                  tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} className="titleLink tag"/>)
                 }
                 {
                   pages && pages.map((page, i) => <div className="result" key={i}>
@@ -282,7 +285,7 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
                       pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
                     }}/>
                     <input type="checkbox" id={page.title}/>
-                    <div dangerouslySetInnerHTML={{ __html: page.html }} className="preview"/>
+                    <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
                     <label htmlFor={page.title} role="button">הצג עוד</label>
                   </div>)
                 }
