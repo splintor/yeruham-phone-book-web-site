@@ -373,7 +373,7 @@ export default function App(appProps: AppProps): ReactElement {
     {showPreview && <Head>
       <title>{pageTitle}</title>
       <meta property="og:title" content={pageTitle} key="pageTitle"/>
-      {isPublicPage && <meta property="og:description" content={page.html} key="pageHtml"/>}
+      {isPublicPage && <meta property="og:description" content={page.html.replace(/<[^>]+>/g, '')} key="pageHtml"/>}
       <meta property="og:url" content={url} key="url"/>
       <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
       <link rel="icon" href="/favicon.ico"/>
