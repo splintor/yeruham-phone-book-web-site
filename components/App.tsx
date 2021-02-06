@@ -283,7 +283,7 @@ function AppComponent(appProps: AppProps) {
               ? <span className="loading">מחפש...</span>
               : <>
                 {tag && <h1><a href={`/tag/${tag}`}>{tag}</a></h1>}
-                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, isGuestLogin)}</div>
+                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, isGuestLogin)}</div>
                 {
                   tags && tags.map(t => <a className="titleLink tag" key={t} href={`/tag/${t}`}>{t}</a>)
                 }
@@ -321,7 +321,7 @@ function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>) {
           : siteTitle
 }
 
-function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string, isGuestLogin: boolean): ReactNode {
+function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string, tag: string, isGuestLogin: boolean): ReactNode {
   const pagesCount = pages && pages.length || 0
   const tagsCount = tags && tags.length || 0
 
@@ -330,7 +330,7 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
       switch (tagsCount) {
         case 0:
           return <div>
-            <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search}</b>.</p>
+            <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search || tag}</b>.</p>
             <p>&nbsp;</p>
             {isGuestLogin || <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>}
           </div>
