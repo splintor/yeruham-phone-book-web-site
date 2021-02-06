@@ -6,7 +6,7 @@ import TagManager from 'react-gtm-module'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
-import { adminEmail, siteTitle } from '../utils/consts'
+import { adminEmail, publicTagName, siteTitle } from '../utils/consts'
 import { isAuthTitleNew, parseAuthCookies } from '../utils/cookies'
 import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
@@ -359,9 +359,10 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
 
 export default function App(appProps: AppProps): ReactElement {
   const router = useRouter()
-  const { url, origin, status } = appProps
+  const { url, origin, status, page } = appProps
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
+  const isPublicPage = page.tags?.includes(publicTagName)
 
   useEffect(() => {
     const { authTitle } = parseAuthCookies()
@@ -372,6 +373,7 @@ export default function App(appProps: AppProps): ReactElement {
     {showPreview && <Head>
       <title>{pageTitle}</title>
       <meta property="og:title" content={pageTitle} key="pageTitle"/>
+      {isPublicPage && <meta property="og:description" content={page.html} key="pageHtml"/>}
       <meta property="og:url" content={url} key="url"/>
       <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
       <link rel="icon" href="/favicon.ico"/>
