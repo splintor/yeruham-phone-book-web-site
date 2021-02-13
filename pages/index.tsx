@@ -7,8 +7,8 @@ import { parseAuthCookies } from '../utils/cookies'
 import { checkLogin } from '../utils/data-layer'
 
 // noinspection JSUnusedGlobalSymbols
-export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req}) => {
-  const { isGuestLogin } = parseAuthCookies(req)
+export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, query}) => {
+  const isGuestLogin = query.guestLogin !== undefined
   const { status } = isGuestLogin ? { status: 200 } : await checkLogin(req)
   const { origin } = absoluteUrl(req)
 

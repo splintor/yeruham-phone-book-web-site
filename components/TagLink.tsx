@@ -4,13 +4,13 @@ import { parseAuthCookies } from '../utils/cookies'
 
 interface TagLinkProps {
   pushState(url: string, state: Partial<AppProps>)
-  className: string
+  className?: string
   tag: string
 }
 
 async function getTagPages(tag: string) {
   const { auth } = parseAuthCookies()
-  if (auth && tag) {
+  if (tag) {
     const res = await fetch(`/api/pages/tag/${tag}`, { headers: { Cookie: `auth=${auth}` } })
     if (res.ok) {
       return res.json()

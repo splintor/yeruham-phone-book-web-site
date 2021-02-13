@@ -1,7 +1,6 @@
 import { parse } from 'cookie'
 import { IncomingMessage } from 'http'
 
-export const guestAuthString = 'guest'
 const authTitleKey = 'authTitle'
 const authTitleIsNewKey = 'authTitleIsNew'
 export function setAuthCookies(auth: string, authTitle: string): void {
@@ -26,11 +25,10 @@ export function isAuthTitleNew(): boolean {
 export interface AuthData {
   auth: string
   authTitle: string
-  isGuestLogin: boolean
 }
 
 export function parseAuthCookies(request?: IncomingMessage): AuthData {
   const { auth } = parse((request ? request.headers.cookie : document.cookie) || '')
   const authTitle = !request && auth && localStorage.getItem(authTitleKey) || ''
-  return { auth, authTitle, isGuestLogin: auth === guestAuthString  }
+  return { auth, authTitle }
 }

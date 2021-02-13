@@ -10,7 +10,7 @@ interface PageHtmlRendererProps extends Pick<AppProps, 'page' | 'search' | 'tags
 
 async function getPage(title: string) {
   const { auth } = parseAuthCookies()
-  if (auth && title) {
+  if (title) {
     const res = await fetch(`/api/page/${title}`, { headers: { Cookie: `auth=${auth}` } })
     if (res.ok) {
       return res.json()

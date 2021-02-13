@@ -1,6 +1,6 @@
 import React, { FormEvent, ReactElement, useState } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
-import { guestAuthString, setAuthCookies } from '../utils/cookies'
+import { setAuthCookies } from '../utils/cookies'
 import { GitHubCorner } from './GitHubCorner'
 
 enum ErrorType {
@@ -60,8 +60,7 @@ export function LoginPage(): ReactElement {
   const onGuestLogin = async (e: FormEvent) => {
     e.preventDefault()
     setErrorType(ErrorType.None)
-    setAuthCookies(guestAuthString, 'אורח')
-    location.reload()
+    location.href = '/?guestLogin'
   }
 
   return <div className="loginPage">

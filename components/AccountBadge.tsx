@@ -7,18 +7,19 @@ import { TitleLink } from './TitleLink'
 interface AccountBadgeProps {
   showWelcome: boolean
   authTitle: string
-  isGuestLogin: boolean
+  isNewPage: boolean
 }
-export function AccountBadge({ authTitle, isGuestLogin, showWelcome }: AccountBadgeProps): ReactElement {
-  return authTitle && <div className="account">
-    {showWelcome || isGuestLogin || <button onClick={() => location.href = '/new_page'}>הוסף דף חדש</button>}{' '}
-    מחובר כ
-    {isGuestLogin ? <b>{authTitle}</b> : <TitleLink title={authTitle}/>} (
+
+export function AccountBadge({ authTitle, showWelcome, isNewPage }: AccountBadgeProps): ReactElement {
+  const isGuestLogin = !authTitle
+  return <div className="account">
+    {showWelcome || isGuestLogin || isNewPage || <button onClick={() => location.href = '/new_page'}>הוספת דף חדש</button>}{' '}
+    {authTitle ? <TitleLink title={authTitle}/> : <b>אורח</b>} (
     <Link href="/">
       <a onClick={() => {
         setAuthCookies('', '')
         logToGTM({ event: 'logout', authTitle })
-      }}>התנתק</a>
+      }}>{isGuestLogin ? 'כניסה' : 'יציאה'}</a>
     </Link>
     )
   </div>

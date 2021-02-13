@@ -21,7 +21,7 @@ export const deletedPageTitleKey = 'deleted-page-title'
 
 async function searchForPages(search: string) {
   const { auth } = parseAuthCookies()
-  if (auth && search) {
+  if (search) {
     const res = await fetch(`/api/pages/search/${search}`, { headers: { Cookie: `auth=${auth}` } })
     if (res.ok) {
       return res.json()
@@ -68,13 +68,13 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
   const searchInput = useRef(null)
   const router = useRouter()
   const showWelcome = !isSearching && !displayedPage && !pages
-  const { authTitle, isGuestLogin } = appProps.authData
+  const { authTitle } = appProps.authData
 
   useEffect(() => {
     window.history.replaceState(appProps, '', location.href)
     TagManager.initialize({ gtmId: 'GTM-TCN5G8S', dataLayer: { event: 'load', url: appProps.url, status, authTitle } })
     if (isAuthTitleNew()) {
-      setToast({ position: 'top', timeout: 4000, content: <div>ברוך הבא לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
+      setToast({ position: 'top', timeout: 4000, content: <div>איזה כיף שהתחברת לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
     }
   }, [])
 
@@ -221,23 +221,23 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
   // noinspection HtmlUnknownTarget
   return (
     <main className={showWelcome ? 'showWelcome' : ''}>
-      <AccountBadge showWelcome={showWelcome} authTitle={authTitle} isGuestLogin={isGuestLogin}/>
+      <AccountBadge showWelcome={showWelcome} authTitle={authTitle} isNewPage={isNewPage}/>
       {toast && <div className={`toast ${toast.position} ${toast.type}`}>
         {toast.content}
         <button className="close-button" onClick={() => setToast(undefined)}>X</button>
       </div>}
       <Link href="/">
         <h1 className="title">
-          <TitleLink title={siteTitle} onClick={e => {
+          <TitleLink title={siteTitle} href="/" onClick={e => {
             e.preventDefault()
             pushState('/', {})
             focusSearchInput()
           }}/>
         </h1>
       </Link>
-      {showWelcome && (isGuestLogin
-        ? <label htmlFor="search-box">חפש עסק או מוסד ציבורי</label>
-        : <label htmlFor="search-box">חפש אדם, עסק או מוסד או <a href="/new_page">הוסף דף חדש</a></label>)}
+      {showWelcome && (authTitle
+        ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</label>
+        : <label htmlFor="search-box">חיפוש עסק או מוסד ציבורי</label>)}
       <form className="searchForm" onSubmit={performSearch}>
         <input name="search-box" type="text" value={search} ref={focusSearchInput} onChange={e => {
           setFromUserEdit(true)
@@ -268,13 +268,13 @@ function AppComponent(appProps: AppProps & { authData: AuthData }) {
         </div>
         : displayedPage
           ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
-                         newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}/>
+                         newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
           : <div className="results">
             {isSearching
               ? <span className="loading">מחפש...</span>
               : <>
                 {tag && <h1><TagLink tag={tag} pushState={pushState}/></h1>}
-                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, isGuestLogin)}</div>
+                <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</div>
                 {
                   tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} className="titleLink tag"/>)
                 }
@@ -323,7 +323,9 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
           return <div>
             <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search || tag}</b>.</p>
             <p>&nbsp;</p>
-            {isGuestLogin || <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>}
+            {isGuestLogin
+              ? <p>יכול להיות שזה מפני ש  <a href={`/`}>אינך מחובר/ת</a>.</p>
+              : <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>}
           </div>
         case 1:
           return 'נמצאה קטגוריה אחת:'
@@ -365,8 +367,7 @@ export default function App(appProps: AppProps): ReactElement {
   const [authData, setAuthData] = useState<AuthData>()
 
   useEffect(() => setAuthData(parseAuthCookies()), [])
-  const isPageAllowed = () =>
-    authData.auth && status !== 401 && (!authData.isGuestLogin || !newPage)
+  const isPageAllowed = status !== 401 && (authData?.auth || !newPage)
 
   return <div className="app">
     {showPreview && <Head>
@@ -378,6 +379,6 @@ export default function App(appProps: AppProps): ReactElement {
       <link rel="icon" href="/favicon.ico"/>
       <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="opensearch.xml" />
     </Head>}
-    {authData ? isPageAllowed() ? <AppComponent authData={authData} {...appProps} /> : <LoginPage/> : ''}
+    {authData ? isPageAllowed ? <AppComponent authData={authData} {...appProps} /> : <LoginPage/> : ''}
   </div>
 }
