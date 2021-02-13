@@ -135,7 +135,7 @@ export async function get_page(request) {
   const titleToSearch = param.replace(/_/g, ' ')
   const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
 
-  return item && (loginCheck.status === 200 || (item && item.tags && item.tags.includes(publicTagName)))
+  return item && (loginCheck.status === 200 || (item.tags && item.tags.includes(publicTagName)))
     ? okResponse(item)
     : notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
 }
