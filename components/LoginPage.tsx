@@ -73,9 +73,9 @@ export function LoginPage(): ReactElement {
       <div><button type="submit" disabled={isLoginDisabled}>{loginTitle}</button></div>
     </form>
 
-    <div>אם אינך ירוחמי, תוכל להכנס כאורח ולראות עסקים ומוסדות ציבור.</div>
+    <div>אם אינך מירוחם, תוכל/י להכנס כאורח/ת ולראות עסקים ומוסדות ציבור.</div>
     <form onSubmit={onGuestLogin}>
-      <div><button type="submit">כניסה כאורח</button></div>
+      <div><button type="submit">כניסה כאורח/ת</button></div>
     </form>
     <div className={'error ' + ErrorType[errorType]}>{renderError(errorType)}</div>
   </div>
