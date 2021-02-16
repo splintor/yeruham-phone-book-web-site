@@ -284,7 +284,7 @@ export async function get_search(request) {
 
   const searchResults = performSearch(param, isLoggedIn)
   const result = isSuggestionsRequest
-    ? [param, searchResults.pages.map(p => p.title)]
+    ? [param, searchResults.pages.length > 0 ? searchResults.pages.map(p => p.title) : [`{ לא נמצאו תוצאות חיפוש עבור "${param}" }`]]
     : searchResults
 
   return okResponse(result)
