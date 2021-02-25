@@ -30,7 +30,11 @@ export function LoginPage(): ReactElement {
   const [isLoading, setIsLoading] = useState(false)
   const [errorType, setErrorType] = useState(ErrorType.None)
   const phoneInputRef = useRef<HTMLInputElement>()
-  
+
+  useEffect(() => {
+    setTimeout(() => phoneInputRef.current?.focus(), 0)
+  }, [])
+
   useEffect(() => {
     if (errorType !== ErrorType.None) {
       setTimeout(() => {
