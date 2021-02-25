@@ -1,7 +1,7 @@
 import React, { ReactElement} from 'react'
 import Link from 'next/link'
 import { setAuthCookies } from '../utils/cookies'
-import { logToGTM } from './App'
+import { logToGTM } from '../utils/tag-manager'
 import { TitleLink } from './TitleLink'
 
 interface AccountBadgeProps {
