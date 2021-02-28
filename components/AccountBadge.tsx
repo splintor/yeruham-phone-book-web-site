@@ -16,7 +16,7 @@ export function AccountBadge({ authTitle, showWelcome, isNewPage }: AccountBadge
     {showWelcome || isGuestLogin || isNewPage || <button onClick={() => location.href = '/new_page'}>הוספת דף חדש</button>}{' '}
     {authTitle ? <TitleLink title={authTitle}/> : <b>אורח/ת</b>} (
     <Link href="/">
-      <a onClick={() => {
+      <a className="nav-link" onClick={() => {
         setAuthCookies('', '')
         logToGTM({ event: 'logout', authTitle })
       }}>{isGuestLogin ? 'כניסה' : 'יציאה'}</a>
