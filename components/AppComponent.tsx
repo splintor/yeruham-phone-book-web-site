@@ -11,6 +11,7 @@ import { initTagManager, logToGTM } from '../utils/tag-manager'
 import { pageUrl } from '../utils/url'
 import { AccountBadge } from './AccountBadge'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
+import { AppMenu } from './AppMenu'
 import { GitHubCorner } from './GitHubCorner'
 import { PageContent } from './PageContent'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
@@ -264,22 +265,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
             </a>
         </form>
         <div className="collapse nav-collapse d-sm-none" id="navBarDropdown">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <TitleLink className="nav-link active text-nowrap" title="הוספת דף חדש"/>
-            </li>
-            <li className="nav-item">
-              {authTitle ? <TitleLink className="nav-link active text-nowrap" title={authTitle}/> : <b className="nav-link text-light">אורח/ת</b>}
-            </li>
-            <li className="nav-item">
-              <Link href="/">
-                <a className="nav-link active me-auto" onClick={() => {
-                  setAuthCookies('', '')
-                  logToGTM({ event: 'logout', authTitle })
-                }}>{authTitle ? 'יציאה' : 'כניסה'}</a>
-              </Link>
-            </li>
-          </ul>
+          <AppMenu authTitle={authTitle}/>
         </div>
         <ul className="navbar-nav ms-auto">
           <li className="nav-item d-none d-sm-block">
@@ -287,19 +273,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
           </li>
           <li>
             <div className="dropdown d-none d-sm-block">
-              <button className="btn btn-primary px-2" type="button" id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown" aria-expanded="false">
+              <button className="btn btn-primary px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <span className="navbar-toggler-icon"/>
               </button>
-              <ul className="dropdown-menu dropdown-menu-start" aria-labelledby="dropdownMenuButton1">
-                <li><TitleLink className="dropdown-item" title="הוספת דף חדש"/></li>
-                <li><Link href="/">
-                  <a className="dropdown-item" onClick={() => {
-                    setAuthCookies('', '')
-                    logToGTM({ event: 'logout', authTitle })
-                  }}>{authTitle ? 'יציאה' : 'כניסה'}</a>
-                </Link></li>
-              </ul>
+              <AppMenu authTitle={authTitle} dropdown/>
             </div>
           </li>
         </ul>
