@@ -1,3 +1,2 @@
-export function pageUrl(title: string): string {
-  return '/' + title.replace(/ /g, '_')
-}
+export const pageUrl = (title: string) => '/' + title.replace(/ /g, '_')
+export const getSearchUrl = (search: string) => search ? `/search/${search}` : '/'

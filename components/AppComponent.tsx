@@ -1,20 +1,19 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { BaseSyntheticEvent, ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { adminEmail, siteTitle } from '../utils/consts'
-import { AuthData, isAuthTitleNew, setAuthCookies } from '../utils/cookies'
+import { AuthData, isAuthTitleNew } from '../utils/cookies'
 import { searchForPages } from '../utils/requests.client'
 import { initTagManager, logToGTM } from '../utils/tag-manager'
-import { pageUrl } from '../utils/url'
-import { AccountBadge } from './AccountBadge'
+import { getSearchUrl, pageUrl } from '../utils/url'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
-import { AppMenu } from './AppMenu'
 import { GitHubCorner } from './GitHubCorner'
+import { NavBar } from './NavBar'
 import { PageContent } from './PageContent'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
+import { SearchBox } from './SearchBox'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
 
@@ -66,6 +65,7 @@ function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: num
 
 export function AppComponent(appProps: AppProps & { authData: AuthData }): ReactElement {
   const [fromUserEdit, setFromUserEdit] = useState(false)
+  const [searchFocusId, setSearchFocusId] = useState(0)
   const { status } = appProps
   const [{ pages, tags, totalCount, search: searchFromResults }, setSearchResults] = useState<SearchResults>({
     pages: appProps.pages,
@@ -82,7 +82,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
-  const searchInput = useRef(null)
   const router = useRouter()
   const showWelcome = !isSearching && !displayedPage && !pages
   const { authTitle } = appProps.authData
@@ -94,20 +93,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       setToast({ position: 'top', timeout: 4000, content: <div>איזה כיף שהתחברת לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
     }
   }, [])
-
-
-  function focusSearchInput(element = null) {
-    if (element) {
-      searchInput.current = element
-    }
-
-    if (searchInput.current) {
-      searchInput.current.focus()
-      if (search === appProps.search) {
-        searchInput.current.selectionStart = searchInput.current.value.length
-      }
-    }
-  }
 
   useEffect(() => {
     lastSearch.current = search
@@ -157,13 +142,18 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     setTag(tag)
     setIsNewPage(state.newPage || false)
     logToGTM({ event: 'navigation', authTitle, ...state })
-    focusSearchInput()
+    setSearchFocusId(Date.now())
   }
 
   function pushState(url: string, state: Partial<AppProps>) {
     window.history.pushState(state, '', url)
     document.title = getPageTitle(state)
     processDynamicState(state)
+  }
+
+  function goToHome() {
+    pushState('/', {})
+    setSearchFocusId(Date.now())
   }
 
   function onUpdatePageTitle(page) {
@@ -188,7 +178,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     }
   }, [router, search, tag])
 
-  const getSearchUrl = (search: string) => search ? `/search/${search}` : '/'
   const updateSearchInPage = ({ search, ...results }: SearchResults) => {
     setFromUserEdit(false)
     stringBeingSearched.current = search
@@ -235,78 +224,27 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     })
   }, [displayedPage, pages, isSearching])
 
+  const markUserEdit = () => setFromUserEdit(true)
+
   // noinspection HtmlUnknownTarget
   return (<>
-    <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
-      <div className="container-fluid pe-0">
-        <div className="text-nowrap">
-          <a className="navbar-brand app-icon" href="#">
-            <img src="/logo.png" alt={siteTitle} width="40" height="40"/>
-          </a>
-          <TitleLink title={siteTitle} href="/" className="navbar-brand" onClick={e => {
-            e.preventDefault()
-            pushState('/', {})
-            focusSearchInput()
-          }}/>
-        </div>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarDropdown">
-          <span className="navbar-toggler-icon"/>
-        </button>
-        <form className="input-group pe-2 py-2 py-sm-0 navbar-search-form" onSubmit={performSearch}>
-            <input className="form-control py-2 border-right-0 border" type="search" value={search} ref={focusSearchInput} onChange={e => {
-              setFromUserEdit(true)
-              setSearch(e.target.value)
-            }}/>
-            <a href={getSearchUrl(search)} className="btn btn-secondary px-2" onClick={performSearch}>
-              <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style={{ width: '20px' }}>
-                <path style={{ fill: search ? 'white' : 'darkgrey'}}
-                      d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-              </svg>
-            </a>
-        </form>
-        <div className="collapse nav-collapse d-sm-none" id="navBarDropdown">
-          <AppMenu authTitle={authTitle}/>
-        </div>
-        <ul className="navbar-nav ms-auto">
-          <li className="nav-item d-none d-sm-block">
-            {authTitle ? <TitleLink className="nav-link active text-nowrap" title={authTitle}/> : <b className="nav-link text-light">אורח/ת</b>}
-          </li>
-          <li>
-            <div className="dropdown d-none d-sm-block">
-              <button className="btn btn-primary px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span className="navbar-toggler-icon"/>
-              </button>
-              <AppMenu authTitle={authTitle} dropdown/>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <NavBar authTitle={authTitle} showWelcome={showWelcome}
+            search={search} goToHome={goToHome} performSearch={performSearch}
+            markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
     <main className={showWelcome ? 'container showWelcome' : 'container'}>
       {1 === 1 || <>
     {toast && <div className={`alert alert-danger ${toast.position} ${toast.type}`}>
       {toast.content}
       <button className="close-button" onClick={() => setToast(undefined)}>X</button>
     </div>}
-    {showWelcome && (authTitle
-      ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</label>
-      : <label htmlFor="search-box">חיפוש עסק או מוסד ציבורי</label>)}
-    <form className="d-flex" onSubmit={performSearch}>
-      <input name="search-box" type="search" value={search} ref={focusSearchInput} onChange={e => {
-        setFromUserEdit(true)
-        setSearch(e.target.value)
-      }}/>
-      <a href={getSearchUrl(search)} className="searchIcon" style={{ display: 'none' }} onClick={performSearch}>
-        <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path style={{ fill: search ? 'black' : 'darkgrey'}}
-                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-        </svg>
-      </a>
-    </form>
 
     {showWelcome
-      ? <div className="welcome">
+      ? <>
         <GitHubCorner/>
+        {authTitle
+          ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</label>
+          : <label htmlFor="search-box">חיפוש עסק או מוסד ציבורי</label>}
+        <SearchBox search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
         <div>
           האתר זמין גם כ<a href="https://play.google.com/store/apps/details?id=com.splintor.yeruhamphonebook">אפליקצית
           אנדרואיד</a> וכ<a href="https://groups.google.com/d/msg/yerucham1/QWQYnxeXNfU/Q104gimvAAAJ">בוט בטלגרם</a>
@@ -318,7 +256,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         <div>
           הערות והצעות <a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>כדאי לשלוח במייל</a>
         </div>
-      </div>
+      </>
       : displayedPage
         ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
                        newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
