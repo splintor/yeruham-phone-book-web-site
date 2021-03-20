@@ -224,7 +224,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     })
   }, [displayedPage, pages, isSearching])
 
-  const markUserEdit = () => setFromUserEdit(true)
+  const markUserEdit = (userSearch: string) => {
+    setFromUserEdit(true)
+    setSearch(userSearch)
+  }
 
   // noinspection HtmlUnknownTarget
   return (<>

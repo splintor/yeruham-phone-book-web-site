@@ -11,7 +11,7 @@ interface NavBarProps {
   showWelcome: boolean
   goToHome()
   performSearch(e: BaseSyntheticEvent)
-  markUserEdit(): void
+  markUserEdit(userSearch: string): void
   searchFocusId: number
 }
 export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch, markUserEdit, searchFocusId }: NavBarProps) => (

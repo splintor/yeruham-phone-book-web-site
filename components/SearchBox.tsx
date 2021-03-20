@@ -1,15 +1,14 @@
-import React, { BaseSyntheticEvent, ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef } from 'react'
 import { getSearchUrl } from '../utils/url'
 
 interface SearchBoxProps {
   search: string
   performSearch(e: BaseSyntheticEvent)
-  markUserEdit(): void
+  markUserEdit(userSearch: string): void
   searchFocusId: number
 }
 
-export function SearchBox(props: SearchBoxProps): ReactElement {
-  const [search, setSearch] = useState(props.search || '')
+export function SearchBox({ search, ...props }: SearchBoxProps): ReactElement {
   const searchInput = useRef(null)
   const focusSearchInput = (element = null) => {
     if (element) {
@@ -18,21 +17,13 @@ export function SearchBox(props: SearchBoxProps): ReactElement {
 
     if (searchInput.current) {
       searchInput.current.focus()
-      if (search === props.search) {
-        searchInput.current.selectionStart = searchInput.current.value.length
-      }
     }
-  }
-
-  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-    props.markUserEdit()
   }
 
   useEffect(focusSearchInput, [props.searchFocusId])
 
   return <form className="input-group pe-2 py-2 py-sm-0 navbar-search-form" onSubmit={props.performSearch}>
-    <input className="form-control py-2 border-right-0 border" type="search" value={search} ref={focusSearchInput} onChange={onSearchChange}/>
+    <input className="form-control py-2 border-right-0 border" type="search" value={search} ref={focusSearchInput} onChange={e => props.markUserEdit(e.target.value)}/>
     <a href={getSearchUrl(search)} className="btn btn-secondary px-2" onClick={props.performSearch}>
       <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style={{ width: '20px' }}>
         <path style={{ fill: search ? 'white' : 'darkgrey'}}
