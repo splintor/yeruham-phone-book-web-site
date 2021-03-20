@@ -33,12 +33,12 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch
       <div className="collapse nav-collapse d-sm-none" id="navBarDropdown">
         <AppMenu authTitle={authTitle}/>
       </div>
-      <ul className="navbar-nav ms-auto">
-        <li className="nav-item d-none d-sm-block">
+      <ul className="navbar-nav ms-auto d-none d-sm-flex">
+        <li className="nav-item">
           {authTitle ? <TitleLink className="nav-link active text-nowrap" title={authTitle}/> : <b className="nav-link text-light">אורח/ת</b>}
         </li>
         <li>
-          <div className="dropdown d-none d-sm-block">
+          <div className="dropdown">
             <button className="btn btn-primary px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <span className="navbar-toggler-icon"/>
             </button>
