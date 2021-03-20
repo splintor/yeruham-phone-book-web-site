@@ -8,6 +8,11 @@
   width: auto !important; // override input-group width
 }
 
+.card .navbar-search-form .btn {
+  margin-right: -39px !important;
+  z-index: 10;
+}
+
 @media (max-width: 575px) {
   .navbar-search-form {
     width: 100% !important; // override width-auto above
