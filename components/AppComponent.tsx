@@ -240,7 +240,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
 
     {showWelcome
       ? <>
-        <GitHubCorner/>
         {authTitle
           ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</label>
           : <label htmlFor="search-box">חיפוש עסק או מוסד ציבורי</label>}

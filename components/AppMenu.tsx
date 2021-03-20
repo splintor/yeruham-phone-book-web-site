@@ -10,6 +10,7 @@ export function AppMenu({ dropdown, authTitle }: { dropdown?: boolean, authTitle
   return <ul className={ulClassName}>
     <li className={liClassName}><TitleLink className={linkClassName} href="/new_page" title="הוספת דף חדש"/></li>
     <li className={liClassName}><TitleLink className={linkClassName} href="/help" title="הסבר על האתר"/></li>
+    <li className={liClassName}><TitleLink className={linkClassName} href="https://github.com/splintor/yeruham-phone-book-web-site" title="קוד מקור"/></li>
     {dropdown || <li className={liClassName}>
       {authTitle ? <TitleLink className={linkClassName} title={authTitle}/> : <b className="nav-link text-light">אורח/ת</b>}
     </li>}
