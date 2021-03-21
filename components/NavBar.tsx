@@ -1,5 +1,4 @@
-import React, { BaseSyntheticEvent } from 'react'
-import { AppProps } from '../types/AppProps'
+import React, { BaseSyntheticEvent, ReactElement } from 'react'
 import { siteTitle } from '../utils/consts'
 import { AppMenu } from './AppMenu'
 import { SearchBox } from './SearchBox'
@@ -14,7 +13,7 @@ interface NavBarProps {
   markUserEdit(userSearch: string): void
   searchFocusId: number
 }
-export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch, markUserEdit, searchFocusId }: NavBarProps) => (
+export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch, markUserEdit, searchFocusId }: NavBarProps): ReactElement => (
   <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
     <div className="container-fluid pe-0">
       <div className="text-nowrap">

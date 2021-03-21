@@ -320,7 +320,7 @@ export async function get_tag(request) {
 }
 
 // URL: https://<wix-site-url>/_functions/tags
-export async function get_tags(request) {
+export async function get_tags() {
   if (!tagsList) {
     await loadCacheData()
   }
