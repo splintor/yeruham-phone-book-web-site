@@ -244,7 +244,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         <div className="row align-self-center card border-primary mx-auto px-1 py-3">
           <div className="mb-2">
             {authTitle
-              ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</label>
+              ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד<span className="d-md-inline d-none"> (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</span>:</label>
               : <label htmlFor="search-box">חיפוש עסק או מוסד ציבורי</label>}
           </div>
           <SearchBox search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
