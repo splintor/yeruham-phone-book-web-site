@@ -28,7 +28,7 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch
       <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarDropdown">
         <span className="navbar-toggler-icon"/>
       </button>
-      {showWelcome || <SearchBox search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>}
+      {showWelcome || <SearchBox className="py-2 py-md-0" search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>}
       <div className="collapse nav-collapse d-sm-none" id="navBarDropdown">
         <AppMenu authTitle={authTitle}/>
       </div>
