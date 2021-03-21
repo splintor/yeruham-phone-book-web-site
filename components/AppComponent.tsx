@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router'
-import React, { BaseSyntheticEvent, ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
+import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
-import { PageData } from '../types/PageData'
-import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { AuthData, isAuthTitleNew } from '../utils/cookies'
+import { getSearchResultTitle } from '../utils/getSearchResultTitle'
 import { searchForPages } from '../utils/requests.client'
 import { initTagManager, logToGTM } from '../utils/tag-manager'
 import { getSearchUrl, pageUrl } from '../utils/url'
@@ -12,56 +11,9 @@ import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
 import { NavBar } from './NavBar'
 import { PageContent } from './PageContent'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
-import { SearchBox } from './SearchBox'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
 import { WelcomePage } from './WelcomePage'
-
-function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string, tag: string, isGuestLogin: boolean): ReactNode {
-  const pagesCount = pages && pages.length || 0
-  const tagsCount = tags && tags.length || 0
-
-  switch (pagesCount) {
-    case 0:
-      switch (tagsCount) {
-        case 0:
-          return <div>
-            <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search || tag}</b>.</p>
-            <p>&nbsp;</p>
-            {isGuestLogin
-              ? <p>יכול להיות שזה מפני ש  <a href={`/`}>אינך מחובר/ת</a>.</p>
-              : <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>}
-          </div>
-        case 1:
-          return 'נמצאה קטגוריה אחת:'
-        default:
-          return `נמצאו ${tagsCount} קטגוריות:`
-      }
-
-    case 1:
-      switch (tagsCount) {
-        case 0:
-          return 'נמצא דף אחד:'
-        case 1:
-          return 'נמצאו קטגוריה אחת ודף אחד:'
-        default:
-          return `נמצאו ${tagsCount} קטגוריות ודף אחד:`
-      }
-
-    default:
-      const suffix = totalCount > pagesCount ?
-        `${totalCount} דפים. מציג את ${pagesCount} הדפים הראשונים:` :
-        `${pagesCount} דפים:`
-      switch (tagsCount) {
-        case 0:
-          return `נמצאו ${suffix}`
-        case 1:
-          return `נמצאו קטגוריה אחת ו-${suffix}`
-        default:
-          return `נמצאו ${tagsCount} קטגוריות ו-${suffix}`
-      }
-  }
-}
 
 export function AppComponent(appProps: AppProps & { authData: AuthData }): ReactElement {
   const [fromUserEdit, setFromUserEdit] = useState(false)
