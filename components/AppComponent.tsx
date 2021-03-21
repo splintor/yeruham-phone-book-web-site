@@ -259,7 +259,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
             הערות והצעות <a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>כדאי לשלוח במייל</a>
           </div>
           <a href="/" className="mt-3 d-flex justify-content-center">
-            <img src="/logo.png" alt={siteTitle} width="75%"/>
+            <img src="/logo.png" alt={siteTitle} width={'75%'}/>
           </a>
         </div>
       </div>
