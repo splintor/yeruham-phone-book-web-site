@@ -3,7 +3,7 @@ import React, { BaseSyntheticEvent, ReactElement, ReactNode, useEffect, useRef, 
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
-import { adminEmail, siteTitle } from '../utils/consts'
+import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { AuthData, isAuthTitleNew } from '../utils/cookies'
 import { searchForPages } from '../utils/requests.client'
 import { initTagManager, logToGTM } from '../utils/tag-manager'
@@ -256,7 +256,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
             הסבר על השימוש באתר אפשר למצוא כאן
           </div>
           <div className="mt-2">
-            הערות והצעות <a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>כדאי לשלוח במייל</a>
+            הערות והצעות כדאי לשלוח ב<a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>מייל</a> או ב<a href={`https://wa.me/${adminPhone.replace(/^0/, '+972-')}`}>ווטסאפ</a>
           </div>
           <a href="/" className="mt-3 d-flex justify-content-center">
             <img src="/logo.png" alt={siteTitle} width={'75%'}/>
