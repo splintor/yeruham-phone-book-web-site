@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef } from 'react'
 import { getSearchUrl } from '../utils/url'
 
-interface SearchBoxProps {
+export interface SearchBoxProps {
   search: string
   performSearch(e: BaseSyntheticEvent)
   markUserEdit(userSearch: string): void
