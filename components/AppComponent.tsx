@@ -186,7 +186,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     <NavBar authTitle={authTitle} showWelcome={showWelcome}
             search={search} goToHome={goToHome} performSearch={performSearch}
             markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
-    <main className={showWelcome ? 'container showWelcome' : 'container'}>
+    <main className={'container mw-100' + showWelcome ? ' showWelcome' : ''}>
     {toast && <div className={`alert alert-danger ${toast.position} ${toast.type}`}>
       {toast.content}
       <button className="close-button" onClick={() => setToast(undefined)}>X</button>
@@ -199,7 +199,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                        newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
         : <div className="results">
           {isSearching
-            ? <span className="loading">מחפש...</span>
+            ? <div className="p-3 text-primary justify-content-center">
+                <span className="spinner-border spinner-border-sm me-1" role="status"/>
+                  מחפש...
+              </div>
             : <>
               {tag && <h1><TagLink tag={tag} pushState={pushState}/></h1>}
               <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</div>
