@@ -10,7 +10,7 @@ export function getSearchResultTitle(pages: PageData[], tags: string[], totalCou
       switch (tagsCount) {
         case 0:
           return <div>
-            <p>לא נמצאו דפים תואמים לחיפוש שלך אחר <b>{search || tag}</b>.</p>
+            <p>לא נמצאו דפים שמכילים <b>{search || tag}</b>.</p>
             <p>&nbsp;</p>
             {isGuestLogin
               ? <p>יכול להיות שזה מפני ש  <a href={`/`}>אינך מחובר/ת</a>.</p>
