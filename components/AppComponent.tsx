@@ -65,7 +65,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
         for (let i = p.children.length - 1; i >= 0; --i) {
           const c = p.children[i] as HTMLElement
-          if (!c.innerText?.trim()) {
+          if (!c.innerText?.trim() && !c.querySelector('img')) {
             c.remove()
           }
         }
