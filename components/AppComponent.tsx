@@ -70,9 +70,11 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
           }
         }
 
-        if (p.scrollHeight > p.offsetHeight) {
-          p.classList.add('truncated')
-        }
+        setTimeout(() => {
+          if (p.scrollHeight > p.offsetHeight) {
+            p.classList.add('truncated')
+          }
+        }, 0)
       })
     }
   }, [pages])
