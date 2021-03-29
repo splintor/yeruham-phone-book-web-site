@@ -4,6 +4,7 @@ import ReactQuill from 'react-quill'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
+import { getTagUrl } from '../utils/url'
 
 interface EditorProps {
   page: PageData
@@ -84,7 +85,7 @@ export default function PageEditor({ page, onCancel, onSave }: EditorProps): Rea
     </div>
     <div className="tags-footer">
       {
-        tags?.map(t => <a className="titleLink tag" key={t} target="_blank" href={`/tag/${t}`}>
+        tags?.map(t => <a className="titleLink tag" key={t} target="_blank" href={getTagUrl(t)}>
           <span className="tagName">{t}</span>
           <span className="delete" onClick={e => {
             e.stopPropagation()

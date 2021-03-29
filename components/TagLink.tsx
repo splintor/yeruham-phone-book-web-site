@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 import { AppProps } from '../types/AppProps'
 import { getTagPages } from '../utils/requests.client'
+import { getTagUrl } from '../utils/url'
 
 interface TagLinkProps {
   pushState(url: string, state: Partial<AppProps>)
@@ -14,7 +15,7 @@ export const TagLink = ({ tag, ...props }: TagLinkProps): ReactElement => {
     const { href } = e.target
     const { pages } = await getTagPages(href.replace(location.origin + '/tag/', ''))
     if (pages) {
-      props.pushState(`/tag/${tag}`, { pages, totalCount: pages.length, tag })
+      props.pushState(getTagUrl(tag), { pages, totalCount: pages.length, tag })
     } else {
       location.href = href
     }
