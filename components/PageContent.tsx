@@ -23,7 +23,6 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [page, setPage] = useState(props.page)
   const { title, tags } = page
-  const backUrl = pages && (search ? `/search/${search}` : tag && `/tag/${tag}`) || null
 
   useEffect(() => {
     if (!isEditing && props.newPage) {
@@ -72,7 +71,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
       })
     }
 
-    if (backUrl && pages?.length && (pages.length > 1 || pages[0].title !== page.title)) {
+    if (pages?.length && (pages.length > 1 || pages[0].title !== page.title)) {
       sessionStorage.setItem(deletedPageTitleKey, page.title)
       history.back()
     } else {
@@ -103,13 +102,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
           >
             האם ברצונך למחוק את הדף <b>{title}</b>?
           </Modal>
-          <h1>
-            {backUrl && <a className="backButton" href={backUrl} onClick={e => {
-              e.preventDefault()
-              history.back()
-            }}>&#8658;</a>}
-            <a href={pageUrl(title)}>{title}</a>
-          </h1>
+          <h1><a href={pageUrl(title)}>{title}</a></h1>
           <PageHtmlRenderer pushState={pushState} page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
           <div className="tags">
             {tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} className="titleLink tag"/>)}

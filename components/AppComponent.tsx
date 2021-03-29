@@ -1,12 +1,14 @@
 import { useRouter } from 'next/router'
 import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
+import { useKeyPress } from '../hooks/useKeyPress'
 import { AppProps, SearchResults } from '../types/AppProps'
+import { PageData } from '../types/PageData'
 import { AuthData, isAuthTitleNew } from '../utils/cookies'
 import { getSearchResultTitle } from '../utils/getSearchResultTitle'
 import { searchForPages } from '../utils/requests.client'
 import { initTagManager, logToGTM } from '../utils/tag-manager'
-import { getSearchUrl, pageUrl } from '../utils/url'
+import { getSearchUrl, getTagUrl, pageUrl } from '../utils/url'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
 import { NavBar } from './NavBar'
 import { PageContent } from './PageContent'
@@ -25,12 +27,15 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     tags: appProps.tags,
     search: appProps.search,
   })
+  const [focusedPage, setFocusedPage] = useState<PageData>(null)
+  const pagesToShow = focusedPage ? [focusedPage] : pages
   const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: appProps.initialTitle || '', html: '' } : appProps.page)
   const [search, setSearch] = useState(searchFromResults || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
   const [isNewPage, setIsNewPage] = useState(appProps.newPage)
   const [toast, setToast] = useState<ToastOptions>()
+  const escapePressed = useKeyPress('Escape')
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
@@ -71,13 +76,15 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         }
 
         setTimeout(() => {
-          if (p.scrollHeight > p.offsetHeight) {
+          if (!focusedPage && p.scrollHeight > p.offsetHeight) {
             p.classList.add('truncated')
+          } else {
+            p.classList.remove('truncated')
           }
         }, 0)
       })
     }
-  }, [pages])
+  }, [pagesToShow])
 
   useEffect(() => {
     const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
@@ -144,6 +151,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       return
     }
 
+    setFocusedPage(null)
     setIsSearching(true)
     setFromUserEdit(false)
     updateSearchInPage(await searchForPages(search))
@@ -183,6 +191,15 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     setSearch(userSearch)
   }
 
+  const cancelFocusPage = focusedPage ? () => {
+    setFocusedPage(null)
+    pushState(tag ? getTagUrl(tag) : getSearchUrl(search), { pages, totalCount, tags, tag, search })
+  } : () => void 0
+
+  if (escapePressed) {
+    cancelFocusPage()
+  }
+
   // noinspection HtmlUnknownTarget
   return (<>
     <NavBar authTitle={authTitle} showWelcome={showWelcome}
@@ -206,6 +223,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                     מחפש...
               </div></div>
             : <>
+              {focusedPage ? <></> : <>
               {tag && <h3><TagLink tag={tag} pushState={pushState}/></h3>}
               <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
               {
@@ -213,17 +231,24 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                   <TagLink key={t} tag={t} pushState={pushState} className="badge bg-primary link-light rounded-pill mb-2 me-1"/>
                 </span>)
               }
+              </>}
               {
-                pages && pages.map((page, i) => <div className="result card p-1 mb-3 border-primary" key={i}>
-                  <div className="card-body">
+                pagesToShow && pagesToShow.map((page) => <div className="result card p-1 mb-3" key={page.title}>
+                  <div className="card-body p-2">
+                    {focusedPage && <div className="float-end">
+                      <button type="button" className="btn-close" aria-label="Close" onClick={cancelFocusPage}/>
+                    </div>}
                     <h5 className="card-title">
                       <TitleLink title={page.title} key={page.title} onClick={e => {
-                        e.preventDefault()
-                        pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
+                        if (!focusedPage) {
+                          e.preventDefault()
+                          pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
+                          setFocusedPage(page)
+                        }
                       }}/>
                     </h5>
                     <input type="checkbox" id={page.title}/>
-                    <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
+                    <PageHtmlRenderer pushState={pushState} className={'preview' + (focusedPage ? ' focused' : '')} page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
                     <label htmlFor={page.title} role="button">הצג עוד</label>
                   </div>
                 </div>)

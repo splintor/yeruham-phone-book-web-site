@@ -42,10 +42,13 @@
   }
 
   .preview {
-    max-height: 120px;
-    transition: all 3s ease;
     overflow-y: hidden;
     margin-block-start: 4px;
+    max-height: 120px;
+
+    &.focused {
+      max-height: unset;
+    }
 
     p, div {
       margin: 4px 0;
