@@ -199,10 +199,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                        newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
         : <div className="results">
           {isSearching
-            ? <div className="p-3 text-primary justify-content-center">
-                <span className="spinner-border spinner-border-sm me-1" role="status"/>
-                  מחפש...
-              </div>
+            ? <div className="d-flex justify-content-center text-primary mt-4"><div>
+                  <span className="spinner-border spinner-border-sm me-1" role="status"/>
+                    מחפש...
+              </div></div>
             : <>
               {tag && <h1><TagLink tag={tag} pushState={pushState}/></h1>}
               <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</div>
