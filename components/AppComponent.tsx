@@ -204,8 +204,8 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                     מחפש...
               </div></div>
             : <>
-              {tag && <h1><TagLink tag={tag} pushState={pushState}/></h1>}
-              <div className="resultsTitle">{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</div>
+              {tag && <h3><TagLink tag={tag} pushState={pushState}/></h3>}
+              <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
               {
                 tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} className="titleLink tag"/>)
               }
