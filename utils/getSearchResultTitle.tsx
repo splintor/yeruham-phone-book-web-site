@@ -33,16 +33,17 @@ export function getSearchResultTitle(pages: PageData[], tags: string[], totalCou
       }
 
     default:
-      const suffix = totalCount > pagesCount ?
-        `${totalCount} דפים. מציג את ${pagesCount} הדפים הראשונים:` :
-        `${pagesCount} דפים:`
+      const wrap = totalCount > pagesCount
+        ? (s: string) => <><span>{`${s}. `}</span><span className="text-nowrap">{`מציג את ${pagesCount} הדפים הראשונים`}:</span></>
+        : (s: string) => s + ':'
+      const pageCount = totalCount ?? pagesCount
       switch (tagsCount) {
         case 0:
-          return `נמצאו ${suffix}`
+          return wrap(`נמצאו ${pageCount} דפים`)
         case 1:
-          return `נמצאו קטגוריה אחת ו-${suffix}`
+          return wrap(`נמצאו קטגוריה אחת ו-${pageCount} דפים`)
         default:
-          return `נמצאו ${tagsCount} קטגוריות ו-${suffix}`
+          return wrap(`נמצאו ${tagsCount} קטגוריות ו-${pageCount} דפים`)
       }
   }
 }
