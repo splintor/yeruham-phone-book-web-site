@@ -197,7 +197,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       : displayedPage
         ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
                        newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
-        : <div className="results">
+        : <div className="results p-2">
           {isSearching
             ? <div className="d-flex justify-content-center text-primary mt-4"><div>
                   <span className="spinner-border spinner-border-sm me-1" role="status"/>
@@ -212,14 +212,18 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                 </span>)
               }
               {
-                pages && pages.map((page, i) => <div className="result" key={i}>
-                  <TitleLink title={page.title} key={page.title} onClick={e => {
-                    e.preventDefault()
-                    pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
-                  }}/>
-                  <input type="checkbox" id={page.title}/>
-                  <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
-                  <label htmlFor={page.title} role="button">הצג עוד</label>
+                pages && pages.map((page, i) => <div className="result card p-1 mb-3 border-primary" key={i}>
+                  <div className="card-body">
+                    <h5 className="card-title">
+                      <TitleLink title={page.title} key={page.title} onClick={e => {
+                        e.preventDefault()
+                        pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
+                      }}/>
+                    </h5>
+                    <input type="checkbox" id={page.title}/>
+                    <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
+                    <label htmlFor={page.title} role="button">הצג עוד</label>
+                  </div>
                 </div>)
               }
             </>
