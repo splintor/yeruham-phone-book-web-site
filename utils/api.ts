@@ -4,14 +4,12 @@ import { PageData } from '../types/PageData'
 import { parseAuthCookies } from './cookies'
 
 export async function sendResponse(response: NextApiResponse, fetchResponse: Response, logData: ReturnType<typeof getRequestLogData>, contentType = 'application/json'): Promise<void> {
-  console.info('sending response', logData)
   response.statusCode = fetchResponse.status
   response.setHeader('Content-Type', contentType)
   response.end(await fetchResponse.text())
 }
 
 export function sendUnsupportedMethodResponse(response: ServerResponse, message: string, logData: Record<string, unknown>): void {
-  console.error(message, logData)
   response.statusCode = 405
 }
 

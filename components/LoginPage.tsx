@@ -62,7 +62,6 @@ export function LoginPage(): ReactElement {
         setErrorType(ErrorType.NotFound)
       }
     } catch (e) {
-      console.error('failed to login', e)
       setErrorType(ErrorType.NetworkError)
     }
     setIsLoading(false)
