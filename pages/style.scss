@@ -19,14 +19,6 @@
   }
 }
 
-.result.selected {
-  position: absolute;
-  z-index: 10000;
-  top: 61px;
-  width: calc(100% - 16px);
-  height: calc(100vh - 68px);
-}
-
 .result > .card-body {
   & > input {
     display: none;
