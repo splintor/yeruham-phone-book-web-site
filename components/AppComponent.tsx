@@ -1,9 +1,7 @@
 import { useRouter } from 'next/router'
 import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
-import { useKeyPress } from '../hooks/useKeyPress'
 import { AppProps, SearchResults } from '../types/AppProps'
-import { PageData } from '../types/PageData'
 import { AuthData, isAuthTitleNew } from '../utils/cookies'
 import { getSearchResultTitle } from '../utils/getSearchResultTitle'
 import { searchForPages } from '../utils/requests.client'
@@ -27,15 +25,12 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     tags: appProps.tags,
     search: appProps.search,
   })
-  const [focusedPage, setFocusedPage] = useState<PageData>(null)
-  const pagesToShow = focusedPage ? [focusedPage] : pages
   const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: appProps.initialTitle || '', html: '' } : appProps.page)
   const [search, setSearch] = useState(searchFromResults || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
   const [isNewPage, setIsNewPage] = useState(appProps.newPage)
   const [toast, setToast] = useState<ToastOptions>()
-  const escapePressed = useKeyPress('Escape')
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
@@ -66,7 +61,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   }, [toast])
 
   useEffect(() => {
-    if (pages?.length > 0) {
+    if (!displayedPage && pages?.length > 0) {
       document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
         for (let i = p.children.length - 1; i >= 0; --i) {
           const c = p.children[i] as HTMLElement
@@ -76,7 +71,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         }
 
         setTimeout(() => {
-          if (!focusedPage && p.scrollHeight > p.offsetHeight) {
+          if (p.scrollHeight > p.offsetHeight) {
             p.classList.add('truncated')
           } else {
             p.classList.remove('truncated')
@@ -84,7 +79,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         }, 0)
       })
     }
-  }, [pagesToShow])
+  }, [pages, displayedPage])
 
   useEffect(() => {
     const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
@@ -151,7 +146,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       return
     }
 
-    setFocusedPage(null)
+    setDisplayedPage(null)
     setIsSearching(true)
     setFromUserEdit(false)
     updateSearchInPage(await searchForPages(search))
@@ -191,14 +186,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     setSearch(userSearch)
   }
 
-  const cancelFocusPage = focusedPage ? () => {
-    setFocusedPage(null)
+  const closePage = pages && displayedPage && (() => {
+    setDisplayedPage(null)
     pushState(tag ? getTagUrl(tag) : getSearchUrl(search), { pages, totalCount, tags, tag, search })
-  } : () => void 0
-
-  if (escapePressed) {
-    cancelFocusPage()
-  }
+  })
 
   // noinspection HtmlUnknownTarget
   return (<>
@@ -214,16 +205,15 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     {showWelcome
       ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
       : displayedPage
-        ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount}
+        ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
                        newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
-        : <div className="results p-2">
+        : <div className="p-2">
           {isSearching
             ? <div className="d-flex justify-content-center text-primary mt-4"><div>
                   <span className="spinner-border spinner-border-sm me-1" role="status"/>
                     מחפש...
               </div></div>
             : <>
-              {focusedPage ? <></> : <>
               {tag && <h3><TagLink tag={tag} pushState={pushState}/></h3>}
               <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
               {
@@ -231,24 +221,18 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                   <TagLink key={t} tag={t} pushState={pushState} className="badge bg-primary link-light rounded-pill mb-2 me-1"/>
                 </span>)
               }
-              </>}
               {
-                pagesToShow && pagesToShow.map((page) => <div className="result card p-1 mb-3" key={page.title}>
+                pages?.map((page) => <div className="result card p-1 mb-3" key={page.title}>
                   <div className="card-body p-2">
-                    {focusedPage && <div className="float-end">
-                      <button type="button" className="btn-close" aria-label="Close" onClick={cancelFocusPage}/>
-                    </div>}
                     <h5 className="card-title">
                       <TitleLink title={page.title} key={page.title} onClick={e => {
-                        if (!focusedPage) {
-                          e.preventDefault()
-                          pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
-                          setFocusedPage(page)
-                        }
+                        e.preventDefault()
+                        pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
+                        setDisplayedPage(page)
                       }}/>
                     </h5>
                     <input type="checkbox" id={page.title}/>
-                    <PageHtmlRenderer pushState={pushState} className={'preview' + (focusedPage ? ' focused' : '')} page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
+                    <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
                     <label htmlFor={page.title} role="button">הצג עוד</label>
                   </div>
                 </div>)
