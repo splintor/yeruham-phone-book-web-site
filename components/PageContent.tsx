@@ -123,8 +123,8 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
             <div className="card-body p-2">
               <div className="float-end d-flex">
                 {props.isGuestLogin || <><div className="d-none d-md-block">
-                  <button className="btn btn-sm btn-info" onClick={() => setIsEditing(true)}>עריכה</button>
-                  <button className="btn btn-sm btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">מחיקה</button>
+                  <button className="btn btn-sm btn-outline-primary" onClick={() => setIsEditing(true)}>עריכה</button>
+                  <button className="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">מחיקה</button>
                 </div>
                 <div className="dropdown d-sm-block d-md-none">
                   <button className="btn btn-sm" data-bs-toggle="dropdown">
