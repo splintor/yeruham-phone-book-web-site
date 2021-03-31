@@ -107,14 +107,11 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h5 className="modal-title">{`מחיקת הדף ${title}`}</h5>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="סגור"/>
-                  </div>
-                  <div className="modal-body">
-                    האם ברצונך למחוק את הדף <b>{title}</b>?
+                    <h5 className="modal-title">האם ברצונך למחוק את הדף <b>{title}</b>?</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="ביטול"/>
                   </div>
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">ביטול</button>
                     <button type="button" className="btn btn-danger" onClick={deletePage}>מחק את הדף</button>
                   </div>
                 </div>
