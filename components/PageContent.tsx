@@ -46,14 +46,19 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   }, [deleteConfirmationDialog.current])
 
   const saveChanges = async (pageToSave: PageData) => {
-    const { title } = pageToSave
-    const { ok, status } = await savePage(pageToSave)
+    const { title, _id } = pageToSave
+    const response = await savePage(pageToSave)
+    const { ok, status } = response
     if (!ok) {
       const content = status === 409
         ? <div>דף בשם <b>{title}</b> קיים כבר בספר הטלפונים.<a href={pageUrl(title)}>פתח את הדף הקיים</a></div>
         : <div>השמירה נכשלה...</div>
       setToast({ position: 'bottom', timeout: 8000, content, type: 'fail' })
       return
+    }
+
+    if (!_id) {
+      pageToSave._id = (await response.json())._id
     }
 
     if (page.title !== title) {
