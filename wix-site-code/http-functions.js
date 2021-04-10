@@ -149,6 +149,7 @@ export async function post_page(request) {
   }
 
   const { page } = await request.body.json()
+  const isExistingPage = Boolean(page._id)
   const { phoneNumber } = loginCheck.body
   const conflicts = await wixData.query('pages').eq('title', page.title).ne('_id', page._id).find()
   const [conflictingItem] = conflicts.items
@@ -161,9 +162,8 @@ export async function post_page(request) {
   }
 
   let updateMessage = getPhoneTitle(phoneNumber) + ' '
-  const isExistingPage = Boolean(page._id)
 
-  if (isExistingPage) {
+  if (page._id) {
     const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
     if (page.title === existing.title && page.html === existing.html && page.isDeleted === existing.isDeleted && (page.tags || []).join() === (existing.tags || []).join()) {
       return okResponse({ message: `No change was needed in page ${page.title}.` })
