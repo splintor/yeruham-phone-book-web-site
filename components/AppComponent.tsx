@@ -197,9 +197,13 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
             search={search} goToHome={goToHome} performSearch={performSearch}
             markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
     <main className={'container mw-100' + showWelcome ? ' showWelcome' : ''}>
-    {toast && <div className={`alert alert-danger ${toast.position} ${toast.type}`}>
-      {toast.content}
-      <button className="close-button" onClick={() => setToast(undefined)}>X</button>
+    {toast && <div className={`alert ${toast.type === 'fail' ? 'alert-danger' : 'alert-success'} ${toast.position === 'bottom' ? 'position-fixed bottom-0 w-100 mb-0' : ''}`}>
+      <div className="d-flex">
+        <div className="toast-body">
+          {toast.content}
+        </div>
+        <button type="button" className="btn-close me-2 m-auto" onClick={() => setToast(null)}/>
+      </div>
     </div>}
 
     {showWelcome

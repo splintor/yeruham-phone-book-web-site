@@ -51,9 +51,9 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
     const { ok, status } = response
     if (!ok) {
       const content = status === 409
-        ? <div>דף בשם <b>{title}</b> קיים כבר בספר הטלפונים.<a href={pageUrl(title)}>פתח את הדף הקיים</a></div>
+        ? <div>דף בשם <b>{title}</b> קיים כבר בספר הטלפונים. <a href={pageUrl(title)}>פתח את הדף הקיים</a></div>
         : <div>השמירה נכשלה...</div>
-      setToast({ position: 'bottom', timeout: 8000, content, type: 'fail' })
+      setToast({ position: 'bottom', content, type: 'fail' })
       return
     }
 
@@ -67,6 +67,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
 
     setPage(pageToSave)
     setIsEditing(false)
+    setToast({ position: 'bottom', content: <div>הדף <b>{title}</b> {_id ? 'נשמר' : 'נוצר'} בהצלחה.</div> })
   }
 
   function cancelEditing(): void {
@@ -82,10 +83,10 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
 
     const cancelDelete = (e: React.MouseEvent) => {
       e.preventDefault()
-      setToast(undefined)
+      setToast(null)
       savePage({ ...page, isDeleted: false }).then(() => {
         pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
-        setToast({ content: <div>המחיקה של הדף<b>{page.title}</b> בוטלה.</div> })
+        setToast({ position: 'bottom', content: <div>המחיקה של הדף <b>{page.title}</b> בוטלה.</div> })
       })
     }
 
@@ -95,7 +96,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
     } else {
       pushState('/', {})
     }
-    setToast({ content: <div>הדף<b>{page.title}</b> נמחק בהצלחה.<a href="/" onClick={cancelDelete}>בטל מחיקה</a></div> })
+    setToast({ position: 'bottom', content: <div>הדף <b>{page.title}</b> נמחק בהצלחה. <a href="/" onClick={cancelDelete}>בטל מחיקה</a></div> })
   }, [page])
 
   switch (props.status) {

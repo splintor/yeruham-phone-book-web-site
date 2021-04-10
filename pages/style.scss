@@ -4,6 +4,10 @@
   }
 }
 
+.alert {
+  z-index: 2000;
+}
+
 .navbar-search-form {
   width: auto !important; // override input-group width
 }
