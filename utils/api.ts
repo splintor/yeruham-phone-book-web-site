@@ -9,7 +9,7 @@ export async function sendResponse(response: NextApiResponse, fetchResponse: Res
   response.end(await fetchResponse.text())
 }
 
-export function sendUnsupportedMethodResponse(response: ServerResponse, message: string, logData: Record<string, unknown>): void {
+export function sendUnsupportedMethodResponse(response: ServerResponse): void {
   response.statusCode = 405
 }
 
