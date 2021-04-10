@@ -39,4 +39,7 @@ export const savePage = (page: PageData): Promise<Response> =>
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: `auth=${parseAuthCookies().auth}` },
     body: JSON.stringify({ page })
+  }).catch(e => {
+    console.error('Failed to save page', page, e)
+    return Promise.resolve({ ok: false } as Response)
   })
