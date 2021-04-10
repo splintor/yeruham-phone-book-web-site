@@ -161,8 +161,9 @@ export async function post_page(request) {
   }
 
   let updateMessage = getPhoneTitle(phoneNumber) + ' '
+  const isExistingPage = Boolean(page._id)
 
-  if (page._id) {
+  if (isExistingPage) {
     const [existing] = (await wixData.query('pages').eq('_id', page._id).find()).items
     if (page.title === existing.title && page.html === existing.html && page.isDeleted === existing.isDeleted && (page.tags || []).join() === (existing.tags || []).join()) {
       return okResponse({ message: `No change was needed in page ${page.title}.` })
@@ -181,13 +182,13 @@ export async function post_page(request) {
     page.createdBy = phoneNumber
   }
 
-  await wixData.save('pages', page, suppressAuthAndHooks)
+  const { _id } = await wixData.save('pages', page, suppressAuthAndHooks)
   await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${telegramChannelChatId}&parse_mode=Markdown&text=${encodeURIComponent(updateMessage)}`, { method: 'get' })
   loadCacheData()
 
-  return page._id ?
+  return isExistingPage ?
     okResponse({ message: `Page ${page.title} was updated` }) :
-    created({ headers, body: { message: `Page ${page.title} was created` } })
+    created({ headers, body: { message: `Page ${page.title} was created`, _id } })
 }
 
 function parseToWords(s) {
