@@ -42,7 +42,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     window.history.replaceState(appProps, '', location.href)
     initTagManager(appProps.url, authTitle)
     if (isAuthTitleNew()) {
-      setToast({ position: 'top', timeout: 4000, content: <div>איזה כיף שהתחברת לספר הטלפונים של ירוחם, <b>{authTitle}</b>!</div> })
+      setToast({ position: 'top', timeout: 5000, content: <div>הי <b>{authTitle}</b>, איזה כיף שהתחברת לספר הטלפונים של ירוחם!</div> })
     }
   }, [])
 
