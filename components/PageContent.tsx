@@ -117,7 +117,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
                   </div>
                   <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">ביטול</button>
-                    <button type="button" className="btn btn-danger" onClick={deletePage}>מחק את הדף</button>
+                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={deletePage}>מחק את הדף</button>
                   </div>
                 </div>
               </div>
