@@ -218,11 +218,11 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                     מחפש...
               </div></div>
             : <>
-              {tag && <h3><TagLink tag={tag} pushState={pushState}/></h3>}
+              {tag && <h3><TagLink tag={tag} pushState={pushState} kind="title"/></h3>}
               <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
               {
                 tags && tags.map(t => <span className="fs-4">
-                  <TagLink key={t} tag={t} pushState={pushState} className="badge bg-primary link-light rounded-pill mb-2 me-1"/>
+                  <TagLink key={t} tag={t} pushState={pushState} kind="title"/>
                 </span>)
               }
               {
@@ -235,6 +235,9 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                         setDisplayedPage(page)
                       }}/>
                     </h5>
+                    <div>
+                      {page.tags?.map(tag => <TagLink tag={tag} pushState={pushState} kind="small"/>)}
+                    </div>
                     <input type="checkbox" id={page.title}/>
                     <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
                     <label htmlFor={page.title} role="button">הצג עוד</label>

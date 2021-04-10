@@ -149,10 +149,10 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
               <h5 className="card-title">
                 <TitleLink title={page.title} key={page.title}/>
               </h5>
-              <PageHtmlRenderer pushState={pushState} page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
-              <div className="tags">
-                {tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} className="titleLink tag"/>)}
+              <div>
+                {tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} kind="small"/>)}
               </div>
+              <PageHtmlRenderer pushState={pushState} page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
             </div>
           </div>
         </div>
