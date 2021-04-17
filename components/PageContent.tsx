@@ -106,7 +106,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
       </div>
 
     default:
-      return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges}/> :
+      return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges} pushState={pushState}/> :
         <div className="p-2">
           <div className="card p-1 mb-3" key={page.title}>
             {props.isGuestLogin || <div className="modal fade" id="deleteConfirmation" ref={deleteConfirmationDialog} tabIndex={-1} aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
