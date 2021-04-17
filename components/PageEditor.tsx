@@ -65,13 +65,15 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   useEffect(() => titleInputRef.current?.select(), [titleInputRef])
 
   return <div className="results page-editor">
-    <div className="buttons">
-      <button className="OK" onClick={save} disabled={!title.trim() || !editorRef.current?.getEditor().getText().trim()}>
-        {isSaving ? 'שומר...' : 'שמירה'}
-      </button>
-      <button className="delete" onClick={onCancel}>ביטול</button>
+    <div className="d-flex justify-content-between my-1">
+      <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
+      <span>
+        <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !editorRef.current?.getEditor().getText().trim()}>
+          {isSaving ? 'שומר...' : 'שמירה'}
+        </button>
+        <button className="btn btn-secondary me-1" onClick={onCancel}>ביטול</button>
+      </span>
     </div>
-    <input className="edit-title" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>
       <ReactQuill ref={editorRef} theme="snow" value={editorValue} onChange={setEditorValue}/>
     </div>
