@@ -57,9 +57,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     }
   }
 
-  useEffect(() => {
-    getAllTags().then(tags => setAllTags(tags))
-  }, [])
+  useEffect(() => void getAllTags().then(setAllTags), [])
 
   const titleInputRef = useRef<HTMLInputElement>(null)
   useEffect(() => titleInputRef.current?.select(), [titleInputRef])
