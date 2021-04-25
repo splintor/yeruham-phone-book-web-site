@@ -23,6 +23,11 @@
   }
 }
 
+.page-html {
+  p, div {
+    margin: 0;
+  }
+}
 .result > .card-body {
   & > input {
     display: none;
@@ -44,10 +49,6 @@
 
     &.focused {
       max-height: unset;
-    }
-
-    p, div {
-      margin: 4px 0;
     }
 
     &:not(.truncated) ~ label {

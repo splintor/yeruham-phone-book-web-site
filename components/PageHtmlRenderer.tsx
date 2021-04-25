@@ -35,5 +35,5 @@ export const PageHtmlRenderer = ({ pushState, className, ...props}: PageHtmlRend
     }
   }
 
-  return <div dangerouslySetInnerHTML={{ __html: props.page.html }} className={className} onClick={onContentClick}/>
+  return <div dangerouslySetInnerHTML={{ __html: props.page.html }} className={`page-html ${className}`} onClick={onContentClick}/>
 }
