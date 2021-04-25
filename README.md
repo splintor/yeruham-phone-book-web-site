@@ -13,6 +13,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
   * add phone number
   * add e-mail address
   * add in-phonebook links
+1. TODO: Convert phone numbers to tel: links on mobile devices (and consider converting unlinked e-mail addresses) - use mobile app code
 1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
 1. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
 1. TODO: Add help link to login page
