@@ -1,11 +1,12 @@
 import dynamic from 'next/dynamic'
-import React, { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import React, { ReactElement, useCallback, useEffect, useState } from 'react'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { AppProps } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { deletedPageTitleKey, ToastOptions } from './App'
+import { DeleteConfirmationModal } from './DeleteConfirmationModal'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
@@ -38,12 +39,6 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   }, [props.newPage])
 
   useEffect(() => setPage(props.page), [props.page])
-
-  const deleteConfirmationDialog = useRef<HTMLDivElement>()
-  useEffect(() => {
-    deleteConfirmationDialog.current?.addEventListener('show.bs.modal', () => setIsDeleteConfirmationVisible(true))
-    deleteConfirmationDialog.current?.addEventListener('hidden.bs.modal', () => setIsDeleteConfirmationVisible(false))
-  }, [deleteConfirmationDialog.current])
 
   const saveChanges = async (pageToSave: PageData) => {
     const { title, _id } = pageToSave
@@ -109,20 +104,9 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
       return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges} pushState={pushState}/> :
         <div className="p-2">
           <div className="card p-1 mb-3" key={page.title}>
-            {props.isGuestLogin || <div className="modal fade" id="deleteConfirmation" ref={deleteConfirmationDialog} tabIndex={-1} aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
-              <div className="modal-dialog">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">האם ברצונך למחוק את הדף <b>{title}</b>?</h5>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="ביטול"/>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">ביטול</button>
-                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={deletePage}>מחק את הדף</button>
-                  </div>
-                </div>
-              </div>
-            </div>}
+            {props.isGuestLogin || <DeleteConfirmationModal pageTitle={title}
+                                                            setModalVisible={setIsDeleteConfirmationVisible}
+                                                            onDelete={deletePage}/>}
             <div className="card-body p-2">
               <div className="float-end d-flex">
                 {props.isGuestLogin || <><div className="d-none d-md-block">
