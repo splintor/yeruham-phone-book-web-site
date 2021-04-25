@@ -41,4 +41,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. It enables easy Telegram integration (notify on change/access/search)
 1. It won't send me e-mails when I edit pages
 1. It can provide easy editing on mobile devices
+1. It can search partial words
+1. It can search in Hebrew if English search finds no result.
 
