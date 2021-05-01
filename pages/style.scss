@@ -4,6 +4,40 @@
   }
 }
 
+body {
+  .bg-primary, .btn-primary {
+    background-color: purple !important;
+  }
+
+  .border-primary, .btn-primary {
+    border-color: purple !important;
+  }
+
+  $purple-600: #6F42C1FF;
+  .btn-primary:hover {
+    background-color: $purple-600 !important;
+    border-color: $purple-600 !important;
+  }
+
+  .btn-outline-primary {
+    border-color: purple !important;
+    color: purple !important;
+
+    &:hover {
+      color: white !important;
+      background-color: purple !important;
+    }
+  }
+
+  .link-primary {
+    color: purple !important;
+
+    &:hover, &:focus {
+      color: $purple-600 !important;
+    }
+  }
+}
+
 .alert {
   z-index: 2000;
 }
