@@ -1,11 +1,15 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react'
-import 'react-quill/dist/quill.snow.css'
-import ReactQuill from 'react-quill'
+import React, { FormEvent, ReactElement, useEffect, useRef, useState } from 'react'
+import 'quill/dist/quill.snow.css'
+import { useQuill } from 'react-quilljs'
 import { AppProps } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
 import { publicTagName } from '../utils/consts'
+import { htmlPrettify } from '../utils/html-prettify'
 import { TagLink } from './TagLink'
+
+// TODO: Add SO answer to https://stackoverflow.com/q/58943180/46635 (based on https://codepen.io/alexkrolick/pen/gmroPj?editors=0010 or https://codesandbox.io/s/6x93pk4rp3?file=/index.js)
+// TODO: Learn how to show modal for various types of links (start point - https://github.com/zenoamaro/react-quill/issues/471 and https://stackoverflow.com/a/65663934/46635)
 
 interface EditorProps {
   page: PageData
@@ -14,20 +18,99 @@ interface EditorProps {
   pushState(url: string, state: Partial<AppProps>)
 }
 
+const editorFormats = [
+  'header', 'size',
+  'bold', 'italic', 'underline', 'strike', 'blockquote',
+  'list', 'bullet', 'indent',
+  'link', 'image'
+]
+
+const CustomToolbar = () => (
+  <div id="toolbar">
+    <span className="ql-formats">
+      <select className="ql-header" defaultValue="">
+        <option value="1">כותרת 1</option>
+        <option value="2">כותרת 2</option>
+        <option value="3">כותרת 3</option>
+        <option value="">טקסט</option>
+      </select>
+    </span>
+    <span className="ql-formats">
+      <select className="ql-size" defaultValue="">
+        <option value="small">קטן</option>
+        <option value="">רגיל</option>
+        <option value="large">גדול</option>
+        <option value="huge">ענק</option>
+      </select>
+    </span>
+    <span className="ql-formats">
+      <select className="ql-align" />
+    </span>
+    <span className="ql-formats">
+      <button className="ql-list" value="ordered"/>
+      <button className="ql-list" value="bullet"/>
+    </span>
+    <span className="ql-formats">
+      <select className="ql-color" />
+    </span>
+    <span className="ql-formats">
+      <select className="ql-background" />
+    </span>
+    <span className="ql-formats">
+      <select className="ql-custom links">
+        <option value="insertPhonebookLink">הוסף קישור לדף בספר הטלפונים</option>
+        <option value="insertFacebookLink">הוסף קישור לפייסבוק</option>
+      </select>
+    </span>
+    <span className="ql-formats">
+      <button className="ql-viewSource">&lt;קוד מקור&gt;</button>
+    </span>
+  </div>
+)
+
 export default function PageEditor({ page, onCancel, onSave, pushState }: EditorProps): ReactElement {
   const [title, setTitle] = useState(page.title)
   const [tags, setTags] = useState(page.tags)
   const [newTag, setNewTag] = useState('')
   const [editorValue, setEditorValue] = useState(page.html)
+  const [viewSource, setViewSource] = useState(false)
+  const [editedSource, setEditedSource] = useState(editorValue)
   const [isSaving, setIsSaving] = useState(false)
-  const editorRef = useRef<ReactQuill>()
+  // const editorRef = useRef<ReactQuill>()
   const [allTags, setAllTags] = useState<string[]>()
 
+
+  const customToolbarHandler = (action: string) => {
+    console.log('custom action', action)
+    // TODO: Implement link
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  const editorModules = {
+    toolbar: {
+      container: "#toolbar",
+      handlers: {
+        custom: customToolbarHandler,
+        viewSource: () => setViewSource(true),
+      }
+    },
+  }
+
+  const { quill, quillRef } = useQuill({ theme: 'snow', modules: editorModules, formats: editorFormats })
+
+  React.useEffect(() => {
+    if (quill) {
+      quill.clipboard.dangerouslyPasteHTML(editorValue)
+      quill.on('text-change', () => setEditorValue(quill.root.innerHTML))
+    }
+  }, [quill])
+
   async function save() {
+    const html = viewSource ? editedSource : editorValue
     try {
       const tagsWereUpdated = page.tags !== tags
       setIsSaving(true)
-      await onSave({ ...page, title: title.trim(), html: editorValue, tags })
+      await onSave({ ...page, title: title.trim(), html, tags })
       if (tagsWereUpdated) {
         await getAllTags(true)
       }
@@ -66,14 +149,26 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     <div className="d-flex justify-content-between my-1 mx-1">
       <input className="edit-title flex-grow-1 me-1 px-2" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
       <span>
-        <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !editorRef.current?.getEditor().getText().trim()}>
+        <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !quill?.getText().trim()}>
           {isSaving ? 'שומר...' : 'שמירה'}
         </button>
         <button className="btn btn-secondary" onClick={onCancel}>ביטול</button>
       </span>
     </div>
+    {viewSource &&
+      <div className="viewSource-container">
+        <div>
+          <button className="btn btn-outline-primary" onClick={() => {
+            setEditorValue(editedSource)
+            quill.clipboard.dangerouslyPasteHTML(editedSource)
+            setViewSource(false)
+          }}>חזרה לעורך</button>
+        </div>
+        <pre contentEditable className="viewSource" onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
+      </div>}
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>
-      <ReactQuill ref={editorRef} theme="snow" value={editorValue} onChange={setEditorValue}/>
+      <CustomToolbar/>
+      <div ref={quillRef} />
     </div>
     <div className="d-flex align-items-center flex-wrap mt-2">
       {tags?.map(t => <TagLink key={t} tag={t} pushState={pushState} removeTag={removeTag} kind="small"/>)}

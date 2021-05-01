@@ -103,3 +103,62 @@ body {
   position: relative;
   left: -3px;
 }
+
+.viewSource {
+  border: 1px solid black;
+  padding: 6px;
+  margin: 8px;
+  direction: rtl;
+}
+
+.viewSource-container + .editor-container {
+  display: none;
+}
+
+.editor-container {
+  #toolbar {
+    button {
+      width: auto;
+      line-height: initial;
+    }
+
+    .ql-picker {
+      line-height: initial;
+    }
+
+    .ql-picker .ql-picker-label svg {
+      right: auto;
+      left: 0;
+    }
+
+    .ql-custom {
+      &:not(.ql-expanded) .ql-picker-label:not(:hover), .ql-picker-item:not(:hover) {
+        color: inherit;
+
+        svg polygon {
+          stroke: currentColor;
+        }
+      }
+      .ql-picker-label:before {
+        margin-inline-end: 20px;
+      }
+      .ql-picker-item:before {
+        content: attr(data-label);
+      }
+      &.links .ql-picker-label:before {
+        content: "הוסף קישור";
+      }
+    }
+  }
+
+  .ql-container {
+    .ql-editor {
+      text-align: right;
+
+      li:before {
+        margin-left: 0.3em;
+        margin-right: 0;
+      }
+    }
+  }
+}
