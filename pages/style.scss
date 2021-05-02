@@ -161,4 +161,32 @@ body {
       }
     }
   }
+
+  .ql-snow .ql-tooltip {
+    &::before {
+      content: '';
+      margin-right: 0;
+      margin-left: 8px;
+    }
+
+    &[data-mode="link"]::before {
+      content: 'הכנס כתובת:';
+    }
+
+    a.ql-action::after {
+      content: 'עריכה';
+      margin-left: 0;
+      margin-right: 16px;
+    }
+
+    &.ql-editing a.ql-action::after {
+      content: 'שמירה';
+    }
+
+    a.ql-remove::before {
+      content: 'הסרה';
+      margin-left: 0;
+      margin-right: 8px;
+    }
+  }
 }

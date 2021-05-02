@@ -78,10 +78,13 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const [isSaving, setIsSaving] = useState(false)
   // const editorRef = useRef<ReactQuill>()
   const [allTags, setAllTags] = useState<string[]>()
-
+  const quillObj = useRef<any>()
 
   const customToolbarHandler = (action: string) => {
     console.log('custom action', action)
+    const quill = quillObj.current
+    console.log('quill.theme.tooltip', quill?.theme.tooltip)
+    quill?.theme.tooltip.edit()
     // TODO: Implement link
   }
 
@@ -102,6 +105,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     if (quill) {
       quill.clipboard.dangerouslyPasteHTML(editorValue)
       quill.on('text-change', () => setEditorValue(quill.root.innerHTML))
+      quillObj.current = quill
     }
   }, [quill])
 
