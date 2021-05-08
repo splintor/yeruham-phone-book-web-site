@@ -100,7 +100,28 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     },
   }
 
-  const { quill, quillRef } = useQuill({ theme: 'snow', modules: editorModules, formats: editorFormats })
+  const { Quill, quill, quillRef } = useQuill({ theme: 'snow', modules: editorModules, formats: editorFormats })
+
+  useEffect(() => {
+    if (!quill) {
+      return
+    }
+    (window as any).quill = quill
+    const LinkBlot = Quill.import('formats/link')
+    quill.on('selection-change', (range, oldRange, source) => {
+      if (range?.length === 1 && source === 'user') {
+        const [link] = quill.scroll.descendant(LinkBlot, range.index)
+        if (link && link.children.head?.domNode.tagName === 'IMG') {
+          const { tooltip } = quill.theme
+          const preview = LinkBlot.formats(link.domNode)
+          tooltip.preview.textContent = preview
+          tooltip.preview.setAttribute('href', preview)
+          tooltip.show()
+          tooltip.position(quill.selection.getBounds(range.index, range.length))
+        }
+      }
+    })
+  }, [quill])
 
   React.useEffect(() => {
     if (quill) {

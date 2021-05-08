@@ -163,6 +163,7 @@ body {
   }
 
   .ql-snow .ql-tooltip {
+    z-index: 1000;
     &::before {
       content: '';
       margin-right: 0;
