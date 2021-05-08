@@ -8,7 +8,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Style page editor:
-  * view source
   * add social network links 
   * add phone number
   * add e-mail address
