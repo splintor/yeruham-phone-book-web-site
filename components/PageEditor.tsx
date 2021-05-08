@@ -85,6 +85,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     const quill = quillObj.current
     console.log('quill.theme.tooltip', quill?.theme.tooltip)
     quill?.theme.tooltip.edit()
+    // https://github.com/quilljs/quill/blob/master/themes/snow.js
     // TODO: Implement link
   }
 
@@ -149,16 +150,18 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const titleInputRef = useRef<HTMLInputElement>(null)
   useEffect(() => titleInputRef.current?.select(), [titleInputRef])
 
-  return <div className="results page-editor">
-    <div className="d-flex justify-content-between my-1 mx-1">
-      <input className="edit-title flex-grow-1 me-1 px-2" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
-      <span>
+  return <div className="results page-editor m-1">
+    <form className="row g-1 mb-1">
+      <span className="col-auto flex-grow-1">
+        <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
+      </span>
+      <span className="col-auto">
         <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !quill?.getText().trim()}>
           {isSaving ? 'שומר...' : 'שמירה'}
         </button>
         <button className="btn btn-secondary" onClick={onCancel}>ביטול</button>
       </span>
-    </div>
+    </form>
     {viewSource &&
       <div className="viewSource-container">
         <div>
