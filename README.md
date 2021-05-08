@@ -46,3 +46,4 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. It can search in Hebrew if English search finds no result.
 1. It enables editing in mobile
 1. It has Hebrew UX (edit buttons, etc.)
+1. It enables having simple URL to get data JSON for mobile app, without a need to have a Google Apps script to get it and cache it.
