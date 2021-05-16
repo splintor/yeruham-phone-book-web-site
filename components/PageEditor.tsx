@@ -20,7 +20,7 @@ interface EditorProps {
 }
 
 const editorFormats = [
-  'header', 'size',
+  'header',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
   'list', 'bullet', 'indent',
   'link', 'image', 'background', 'color',
@@ -35,17 +35,6 @@ const CustomToolbar = () => (
         <option value="3">כותרת 3</option>
         <option value="">טקסט</option>
       </select>
-    </span>
-    <span className="ql-formats">
-      <select className="ql-size" defaultValue="">
-        <option value="small">קטן</option>
-        <option value="">רגיל</option>
-        <option value="large">גדול</option>
-        <option value="huge">ענק</option>
-      </select>
-    </span>
-    <span className="ql-formats">
-      <select className="ql-align" />
     </span>
     <span className="ql-formats">
       <button className="ql-list" value="ordered"/>
