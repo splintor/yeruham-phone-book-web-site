@@ -8,6 +8,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Style page editor:
+   (take examples from https://quilljs.com/guides/cloning-medium-with-parchment/)
   * add social network links 
   * add phone number
   * add e-mail address
@@ -32,6 +33,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 ### Benefits in new sites
 1. It won't close on 2021
 1. It has nicer URLs
+1. It enables custom favicon
 1. It is designed exactly as I want it
 1. It enables logging-in based on phone number existence
 1. It enables tagging pages
@@ -39,6 +41,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. It provides simple URL, based only on title, thus removing the need to come up with English id, and helps to detect duplicates
 1. It enables control on how page link looks on WhatsApp previews
 1. It enables easy Telegram integration (notify on change/access/search)
+1. It enables browser's search engine integration
 1. It won't send me e-mails when I edit pages
 1. It can provide easy editing on mobile devices
 1. It can search partial words and partial phone-numbers
