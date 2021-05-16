@@ -131,7 +131,8 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     }
   }, [quill])
 
-  async function save() {
+  async function save(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
     const html = viewSource ? editedSource : editorValue
     try {
       const tagsWereUpdated = page.tags !== tags
