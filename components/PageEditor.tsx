@@ -126,7 +126,10 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   React.useEffect(() => {
     if (quill) {
       quill.clipboard.dangerouslyPasteHTML(editorValue)
-      quill.on('text-change', () => setEditorValue(quill.root.innerHTML))
+      quill.on('text-change', () => {
+        setEditorValue(quill.root.innerHTML)
+        setEditedSource(quill.root.innerHTML)
+      })
       quillObj.current = quill
     }
   }, [quill])
