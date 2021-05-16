@@ -23,7 +23,7 @@ const editorFormats = [
   'header', 'size',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
   'list', 'bullet', 'indent',
-  'link', 'image'
+  'link', 'image', 'background', 'color',
 ]
 
 const CustomToolbar = () => (
