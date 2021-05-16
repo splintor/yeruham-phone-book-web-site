@@ -108,7 +108,14 @@ body {
   border: 1px solid black;
   padding: 6px;
   margin: 8px;
-  direction: rtl;
+
+  &.rtl {
+    direction: rtl;
+  }
+
+  &.ltr {
+    direction: ltr;
+  }
 }
 
 .viewSource-container + .editor-container {

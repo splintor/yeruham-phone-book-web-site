@@ -75,6 +75,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const [newTag, setNewTag] = useState('')
   const [editorValue, setEditorValue] = useState(page.html)
   const [viewSource, setViewSource] = useState(false)
+  const [viewSourceDirection, setViewSourceDirection] = useState('rtl')
   const [editedSource, setEditedSource] = useState(editorValue)
   const [isSaving, setIsSaving] = useState(false)
   const [allTags, setAllTags] = useState<string[]>()
@@ -189,14 +190,22 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     </form>
     {viewSource &&
       <div className="viewSource-container">
-        <div>
+        <div className="d-flex">
+          <button className={`btn btn-outline-secondary me-2 ${viewSourceDirection === 'rtl' ? 'active' : ''}`}
+                  onClick={() => setViewSourceDirection('rtl')}>
+            &gt;&gt;
+          </button>
+          <button className={`btn btn-outline-secondary me-2 ${viewSourceDirection === 'ltr' ? 'active' : ''}`}
+                  onClick={() => setViewSourceDirection('ltr')}>
+            &lt;&lt;
+          </button>
           <button className="btn btn-outline-primary" onClick={() => {
             setEditorValue(editedSource)
             quill.clipboard.dangerouslyPasteHTML(editedSource)
             setViewSource(false)
           }}>חזרה לעורך</button>
         </div>
-        <pre contentEditable className="viewSource" onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
+        <pre contentEditable className={`viewSource ${viewSourceDirection}`} onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
       </div>}
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>
       <CustomToolbar/>
