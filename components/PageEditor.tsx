@@ -53,7 +53,13 @@ const CustomToolbar = () => (
       </select>
     </span>
     <span className="ql-formats">
-      <button className="ql-viewSource">&lt;/&gt;</button>
+      <button className="ql-viewSource" title="עריכת קוד מקור">
+        <svg viewBox="0 0 18 18">
+          <polyline className="ql-even ql-stroke" points="5 7 3 9 5 11"/>
+          <polyline className="ql-even ql-stroke" points="13 7 15 9 13 11"/>
+          <line className="ql-stroke" x1="10" x2="8" y1="5" y2="13"/>
+        </svg>
+      </button>
     </span>
   </div>
 )
