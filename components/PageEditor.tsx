@@ -1,5 +1,6 @@
 import React, { FormEvent, ReactElement, useEffect, useRef, useState } from 'react'
 import 'quill/dist/quill.snow.css'
+import { Quill } from 'quill'
 import { useQuill } from 'react-quilljs'
 import { AppProps } from '../types/AppProps'
 import { PageData } from '../types/PageData'
@@ -76,9 +77,8 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const [viewSource, setViewSource] = useState(false)
   const [editedSource, setEditedSource] = useState(editorValue)
   const [isSaving, setIsSaving] = useState(false)
-  // const editorRef = useRef<ReactQuill>()
   const [allTags, setAllTags] = useState<string[]>()
-  const quillObj = useRef<any>()
+  const quillObj = useRef<Quill>()
 
   const customToolbarHandler = (action: string) => {
     console.log('custom action', action)
@@ -106,7 +106,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     if (!quill) {
       return
     }
-    (window as any).quill = quill
+    window['quill'] = quill
     const LinkBlot = Quill.import('formats/link')
     quill.on('selection-change', (range, oldRange, source) => {
       if (range?.length === 1 && source === 'user') {
