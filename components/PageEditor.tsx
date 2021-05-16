@@ -53,7 +53,7 @@ const CustomToolbar = () => (
       </select>
     </span>
     <span className="ql-formats">
-      <button className="ql-viewSource">&lt;קוד מקור&gt;</button>
+      <button className="ql-viewSource">&lt;/&gt;</button>
     </span>
   </div>
 )
