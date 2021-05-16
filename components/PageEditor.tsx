@@ -64,7 +64,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const [newTag, setNewTag] = useState('')
   const [editorValue, setEditorValue] = useState(page.html)
   const [viewSource, setViewSource] = useState(false)
-  const [viewSourceDirection, setViewSourceDirection] = useState('rtl')
+  const [viewSourceLTR, setViewSourceLTR] = useState(false)
   const [editedSource, setEditedSource] = useState(editorValue)
   const [isSaving, setIsSaving] = useState(false)
   const [allTags, setAllTags] = useState<string[]>()
@@ -179,14 +179,22 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     </form>
     {viewSource &&
       <div className="viewSource-container">
-        <div className="d-flex">
-          <button className={`btn btn-outline-secondary me-2 ${viewSourceDirection === 'rtl' ? 'active' : ''}`}
-                  onClick={() => setViewSourceDirection('rtl')}>
-            &gt;&gt;
-          </button>
-          <button className={`btn btn-outline-secondary me-2 ${viewSourceDirection === 'ltr' ? 'active' : ''}`}
-                  onClick={() => setViewSourceDirection('ltr')}>
-            &lt;&lt;
+        <div className="mt-2">
+          <button className="btn btn-outline-primary me-2"
+                  onClick={() => setViewSourceLTR(!viewSourceLTR)}>
+            {viewSourceLTR ? <svg viewBox="0 0 18 18" width="24px">
+              <polygon className="ql-stroke ql-fill" points="3 11 5 9 3 7 3 11"/>
+              <line className="ql-stroke ql-fill" x1="15" x2="11" y1="4" y2="4"/>
+              <path className="ql-fill" d="M11,3a3,3,0,0,0,0,6h1V3H11Z"/>
+              <rect className="ql-fill" height="11" width="1" x="11" y="4"/>
+              <rect className="ql-fill" height="11" width="1" x="13" y="4"/>
+            </svg> : <svg viewBox="0 0 18 18" width="24px">
+              <polygon className="ql-stroke ql-fill" points="15 12 13 10 15 8 15 12"/>
+              <line className="ql-stroke ql-fill" x1="9" x2="5" y1="4" y2="4"/>
+              <path className="ql-fill" d="M5,3A3,3,0,0,0,5,9H6V3H5Z"/>
+              <rect className="ql-fill" height="11" width="1" x="5" y="4"/>
+              <rect className="ql-fill" height="11" width="1" x="7" y="4"/>
+            </svg>}
           </button>
           <button className="btn btn-outline-primary" onClick={() => {
             setEditorValue(editedSource)
@@ -194,7 +202,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
             setViewSource(false)
           }}>חזרה לעורך</button>
         </div>
-        <pre contentEditable className={`viewSource ${viewSourceDirection}`} onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
+        <pre contentEditable className={`viewSource ${viewSourceLTR ? 'ltr' : 'rtl'}`} onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
       </div>}
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>
       <CustomToolbar/>
