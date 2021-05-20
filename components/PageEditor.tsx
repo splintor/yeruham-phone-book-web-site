@@ -7,6 +7,7 @@ import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
 import { publicTagName } from '../utils/consts'
 import { htmlPrettify } from '../utils/html-prettify'
+import { ToastOptions } from './App'
 import { TagLink } from './TagLink'
 
 // TODO: Learn how to show modal for various types of links (start point - https://github.com/zenoamaro/react-quill/issues/471 and https://stackoverflow.com/a/65663934/46635)
@@ -15,7 +16,8 @@ interface EditorProps {
   page: PageData
   onSave(pageData: PageData): Promise<void>
   onCancel(): void
-  pushState(url: string, state: Partial<AppProps>)
+  pushState(url: string, state: Partial<AppProps>): void
+  setToast(toastOptions: ToastOptions): void
 }
 
 const editorFormats = [
@@ -46,6 +48,13 @@ const CustomToolbar = () =>
       <select className="ql-background" />
     </span>
     <span className="ql-formats">
+      <select className="ql-details customSelect">
+        <option value="Email">הוסף כתובת מייל</option>
+        <option value="Phone">הוסף מספר טלפון</option>
+        <option value="Mobile">הוסף מספר נייד</option>
+      </select>
+    </span>
+    <span className="ql-formats">
       <button className="ql-link"/>
     </span>
     <span className="ql-formats">
@@ -66,13 +75,48 @@ const CustomToolbar = () =>
     </span>
   </div>
 
+const detailsPromptText = {
+  Email: 'הכנס כתובת מייל:',
+  Phone: 'הכנס מספר טלפון:',
+  Mobile: 'הכנס מספר נייד:',
+}
+
+const detailsPrefix = {
+  Email: 'email: ',
+  Phone: 'טלפון: ',
+  Mobile: 'נייד: ',
+}
+
+const sanitizeMail = (email: string): string => {
+  if (!email.includes('@')) {
+    throw email + ' לא נראה כמו כתובת אימייל תקינה.'
+  }
+  return email.replace(/^mailto:/, '').trim()
+}
+
+const sanitizePhone = (phone: string): string => {
+  if (!phone.match(/^[\d-+*\s\u2066\u2069]+$/)) {
+    throw phone + ' לא נראה כמו מספר טלפון תקין.'
+  }
+  return phone
+    .replace(/[-\s\u2066\u2069]/g, '')
+    .replace(/^\+972/, '')
+    .replace(/^([1-9])/, '0$1')
+}
+
+const detailsSanitation = {
+  Email: sanitizeMail,
+  Phone: sanitizePhone,
+  Mobile: sanitizePhone,
+}
+
 const socialNetworkIcons = {
   Instagram: '/instagram.jpg',
   Twitter: '/twitter.png',
   Facebook: '/facebook.png',
 }
 
-export default function PageEditor({ page, onCancel, onSave, pushState }: EditorProps): ReactElement {
+export default function PageEditor({ page, onCancel, onSave, pushState, setToast }: EditorProps): ReactElement {
   const [title, setTitle] = useState(page.title)
   const [tags, setTags] = useState(page.tags)
   const [newTag, setNewTag] = useState('')
@@ -83,6 +127,33 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const [isSaving, setIsSaving] = useState(false)
   const [allTags, setAllTags] = useState<string[]>()
   const quillObj = useRef<Quill>()
+
+  const detailsHandler = (action: string) => {
+    const quill = quillObj.current
+    const range = quill.getSelection(true)
+    let value = prompt(detailsPromptText[action])
+    if (!value) {
+      return
+    }
+
+    const sanitize = detailsSanitation[action]
+    try {
+      value = sanitize(value)
+    } catch(e) {
+      setToast({ content: e, type: 'fail', position: 'bottom' })
+      return
+    }
+    const prefix = detailsPrefix[action]
+    const text = prefix + value + '\n\n'
+    quill.insertText(range.index, text, 'user')
+
+    if (action === 'Email') {
+      quill.setSelection(range.index + prefix.length, value.length)
+      quill.theme.tooltip.edit('link', 'mailto:' + value)
+      quill.theme.tooltip.save()
+    }
+    quill.setSelection(range.index + text.length, 0, 'user')
+  }
 
   const socialNetworkLinkHandler = (action: string) => {
     const quill = quillObj.current
@@ -98,6 +169,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
       container: "#toolbar",
       handlers: {
         socialNetworks: socialNetworkLinkHandler,
+        details: detailsHandler,
         viewSource: () => setViewSource(true),
       }
     },

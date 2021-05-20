@@ -156,6 +156,10 @@ body {
       }
     }
 
+    .ql-details .ql-picker-label:before {
+      content: "פרטים";
+    }
+
     .ql-socialNetworks .ql-picker-label:before {
       content: "רשתות חברתיות";
     }

@@ -7,26 +7,26 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
-1. TODO: Style page editor:
-   (take examples from https://quilljs.com/guides/cloning-medium-with-parchment/)
-  * add phone number
-  * add e-mail address
-  * add in-phonebook links
-1. TODO: Convert phone numbers to tel: links on mobile devices (and consider converting unlinked e-mail addresses) - use mobile app code
-1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
-1. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
 1. TODO: Add help link to login page
-1. TODO: Improve editing features (bold, underline, link, social media icons)
-1. TODO: Find how to make site links open the app on Android
+1. TODO: Add documentation and link to it from home
+1. TODO: Make tags in editor open in new window
+1. TODO: Convert phone numbers to tel: links on mobile devices (and consider converting unlinked e-mail addresses) - use mobile app code
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
-1. TODO: Add documentation and link to it from home
-1. TODO: Enable showing all tags
+1. TODO [mobile]: Update app to use the new site
+1. TODO [mobile]: Find how to make site links open the app on Android
+1. TODO: Handle in-phonebook links in editor
+  * Show auto-complete dropdown
+  * replace pasted URLs to relative URLs
 1. TODO: Highlight search in result page
 1. TODO: Handle cross-domain authentication
-1. TODO: Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
+1. TODO: Data sanitation:
+    * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
+    * verify social network links use relative images
 1. TODO: X Think of how to handle deletion (also so the flutter app can be updated about changes)
 1. TODO: X Handle page history
+1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
+1. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
 
 
 ### Benefits in new sites
@@ -46,5 +46,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 1. It can search partial words and partial phone-numbers
 1. It can search in Hebrew if English search finds no result.
 1. It enables editing in mobile
+1. It enables easily adding and formatting emails and phone numbers
 1. It has Hebrew UX (edit buttons, etc.)
 1. It enables having simple URL to get data JSON for mobile app, without a need to have a Google Apps script to get it and cache it.

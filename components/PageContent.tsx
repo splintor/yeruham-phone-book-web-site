@@ -101,7 +101,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
       </div>
 
     default:
-      return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges} pushState={pushState}/> :
+      return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges} pushState={pushState} setToast={setToast}/> :
         <div className="p-2">
           <div className="card p-1 mb-3" key={page.title}>
             {props.isGuestLogin || <DeleteConfirmationModal pageTitle={title}
