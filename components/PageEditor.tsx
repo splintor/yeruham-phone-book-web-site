@@ -9,7 +9,6 @@ import { publicTagName } from '../utils/consts'
 import { htmlPrettify } from '../utils/html-prettify'
 import { TagLink } from './TagLink'
 
-// TODO: Add SO answer to https://stackoverflow.com/q/58943180/46635 (based on https://codepen.io/alexkrolick/pen/gmroPj?editors=0010 or https://codesandbox.io/s/6x93pk4rp3?file=/index.js)
 // TODO: Learn how to show modal for various types of links (start point - https://github.com/zenoamaro/react-quill/issues/471 and https://stackoverflow.com/a/65663934/46635)
 
 interface EditorProps {
@@ -26,7 +25,7 @@ const editorFormats = [
   'link', 'image', 'background', 'color',
 ]
 
-const CustomToolbar = () => (
+const CustomToolbar = () =>
   <div id="toolbar">
     <span className="ql-formats">
       <select className="ql-header" defaultValue="">
@@ -47,9 +46,13 @@ const CustomToolbar = () => (
       <select className="ql-background" />
     </span>
     <span className="ql-formats">
-      <select className="ql-custom links">
-        <option value="insertPhonebookLink">הוסף קישור לדף בספר הטלפונים</option>
-        <option value="insertFacebookLink">הוסף קישור לפייסבוק</option>
+      <button className="ql-link"/>
+    </span>
+    <span className="ql-formats">
+      <select className="ql-socialNetworks customSelect withIcons">
+        <option value="Facebook">הוסף קישור לפייסבוק</option>
+        <option value="Twitter">הוסף קישור לטוויטר</option>
+        <option value="Instagram">הוסף קישור לאינסטגרם</option>
       </select>
     </span>
     <span className="ql-formats">
@@ -62,7 +65,12 @@ const CustomToolbar = () => (
       </button>
     </span>
   </div>
-)
+
+const socialNetworkIcons = {
+  Instagram: '/instagram.jpg',
+  Twitter: '/twitter.png',
+  Facebook: '/facebook.png',
+}
 
 export default function PageEditor({ page, onCancel, onSave, pushState }: EditorProps): ReactElement {
   const [title, setTitle] = useState(page.title)
@@ -76,13 +84,12 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
   const [allTags, setAllTags] = useState<string[]>()
   const quillObj = useRef<Quill>()
 
-  const customToolbarHandler = (action: string) => {
-    console.log('custom action', action)
+  const socialNetworkLinkHandler = (action: string) => {
     const quill = quillObj.current
-    console.log('quill.theme.tooltip', quill?.theme.tooltip)
-    quill?.theme.tooltip.edit()
-    // https://github.com/quilljs/quill/blob/master/themes/snow.js
-    // TODO: Implement link
+    const range = quill.getSelection(true)
+    quill.insertEmbed(range.index, 'image', socialNetworkIcons[action], 'user')
+    quill.setSelection(range.index, 1, 'user')
+    quill.theme.tooltip.edit('link', '}קישור לפרופיל{')
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -90,7 +97,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     toolbar: {
       container: "#toolbar",
       handlers: {
-        custom: customToolbarHandler,
+        socialNetworks: socialNetworkLinkHandler,
         viewSource: () => setViewSource(true),
       }
     },
@@ -106,14 +113,14 @@ export default function PageEditor({ page, onCancel, onSave, pushState }: Editor
     const LinkBlot = Quill.import('formats/link')
     quill.on('selection-change', (range, oldRange, source) => {
       if (range?.length === 1 && source === 'user') {
-        const [link] = quill.scroll.descendant(LinkBlot, range.index)
+        const [link, offset] = quill.scroll.descendant(LinkBlot, range.index)
         if (link && link.children.head?.domNode.tagName === 'IMG') {
           const { tooltip } = quill.theme
           const preview = LinkBlot.formats(link.domNode)
           tooltip.preview.textContent = preview
           tooltip.preview.setAttribute('href', preview)
           tooltip.show()
-          tooltip.position(quill.selection.getBounds(range.index, range.length))
+          tooltip.position(quill.getBounds(range.index - offset, range.length))
         }
       }
     })

@@ -9,7 +9,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 ### Things left to be done:
 1. TODO: Style page editor:
    (take examples from https://quilljs.com/guides/cloning-medium-with-parchment/)
-  * add social network links 
   * add phone number
   * add e-mail address
   * add in-phonebook links

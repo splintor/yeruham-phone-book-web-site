@@ -138,7 +138,7 @@ body {
       left: 0;
     }
 
-    .ql-custom {
+    .customSelect {
       &:not(.ql-expanded) .ql-picker-label:not(:hover), .ql-picker-item:not(:hover) {
         color: inherit;
 
@@ -146,14 +146,36 @@ body {
           stroke: currentColor;
         }
       }
+
       .ql-picker-label:before {
         margin-inline-end: 20px;
       }
+
       .ql-picker-item:before {
         content: attr(data-label);
       }
-      &.links .ql-picker-label:before {
-        content: "הוסף קישור";
+    }
+
+    .ql-socialNetworks .ql-picker-label:before {
+      content: "רשתות חברתיות";
+    }
+
+    .withIcons.ql-expanded .ql-picker-item {
+      &:before {
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: 20px 20px;
+        padding-inline-start: 24px;
+      }
+
+      &[data-value="Facebook"]:before {
+        background-image: url("/facebook.png");
+      }
+      &[data-value="Twitter"]:before {
+        background-image: url("/twitter.png");
+      }
+      &[data-value="Instagram"]:before {
+        background-image: url("/instagram.jpg");
       }
     }
   }
