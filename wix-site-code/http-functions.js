@@ -1,7 +1,7 @@
 import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
 import { fetch } from 'wix-fetch'
-import { adminPhoneNumber, authPassword, telegramBotApiToken, telegramChannelChatId } from './secret'
+import { adminPhoneNumber, authPassword, telegramBotApiToken, telegramUpdateChannelChatId, telegramInfoChannelChatId } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
@@ -23,7 +23,15 @@ let activePages
 let phones
 let tagsList
 
+async function sendToTelegram(chatId, message) {
+  await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${chatId}&parse_mode=Markdown&text=${encodeURIComponent(message)}`, { method: 'get' })
+}
+
+const sendUpdateLog = message => void sendToTelegram(telegramUpdateChannelChatId, message)
+const sendInfoLog = message => void sendToTelegram(telegramInfoChannelChatId, message)
+
 async function loadCacheData() {
+  const start = performance.now()
   let pagesList = []
   let result = await wixData.query('pages').limit(1000).find()
   while (result) {
@@ -51,6 +59,8 @@ async function loadCacheData() {
   activePages = pagesList.filter(p => !p.isDeleted)
   phones = phonesMap
   tagsList = [...tagsSet]
+  const timeSpan = performance.now() - start
+  sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות`)
 }
 
 // URL: https://<wix-site-url>/_functions/login/<phoneNumber>
@@ -183,7 +193,7 @@ export async function post_page(request) {
   }
 
   const { _id } = await wixData.save('pages', page, suppressAuthAndHooks)
-  await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${telegramChannelChatId}&parse_mode=Markdown&text=${encodeURIComponent(updateMessage)}`, { method: 'get' })
+  sendUpdateLog(updateMessage)
   loadCacheData()
 
   return isExistingPage ?
