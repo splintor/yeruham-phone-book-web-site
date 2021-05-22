@@ -23,6 +23,8 @@ let activePages
 let phones
 let tagsList
 
+const getMarkdownLink = (title, urlSuffix = '') => `[${title}](${siteUrl}${urlSuffix}${title.replace(/ /g, '_')}?noPreview=1)`
+
 async function sendToTelegram(chatId, message) {
   await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${chatId}&parse_mode=Markdown&text=${encodeURIComponent(message)}`, { method: 'get' })
 }
@@ -30,8 +32,8 @@ async function sendToTelegram(chatId, message) {
 const sendUpdateLog = message => void sendToTelegram(telegramUpdateChannelChatId, message)
 const sendInfoLog = message => void sendToTelegram(telegramInfoChannelChatId, message)
 
-async function loadCacheData() {
-  const start = performance.now()
+async function loadCacheData(phoneNumber) {
+  const start = Date.now()
   let pagesList = []
   let result = await wixData.query('pages').limit(1000).find()
   while (result) {
@@ -59,8 +61,13 @@ async function loadCacheData() {
   activePages = pagesList.filter(p => !p.isDeleted)
   phones = phonesMap
   tagsList = [...tagsSet]
-  const timeSpan = performance.now() - start
-  sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות`)
+  const timeSpan = Date.now() - start
+  const title = getPhoneTitle(phoneNumber)
+  if (title) {
+    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}`)
+  } else {
+    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות`)
+  }
 }
 
 // URL: https://<wix-site-url>/_functions/login/<phoneNumber>
@@ -72,7 +79,7 @@ export async function get_login(request) {
   }
 
   if (!phones) {
-    await loadCacheData()
+    await loadCacheData(phoneNumber)
   }
 
   const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -82,8 +89,10 @@ export async function get_login(request) {
 
   const foundPage = phones.get(strippedPhoneNumber)
   if (foundPage) {
+    sendInfoLog(`בוצעה כניסה למערכת ע"י *${foundPage.title}* בעזרת המספר *${phoneNumber}*`)
     return okResponse({ auth: buildAuth(phoneNumber), authTitle: foundPage.title })
   } else {
+    sendInfoLog(`בוצע נסיון כושל להכנס למערכת מהמספר *${phoneNumber}*`)
     return unauthorizedResponse('Failed to login')
   }
 }
@@ -119,7 +128,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
     }
 
     if (!phones) {
-      await loadCacheData()
+      await loadCacheData(phoneNumber)
     }
 
     const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -138,19 +147,32 @@ export async function get_page(request) {
   const loginCheck = await get_checkLogin(request)
 
   if (!activePages) {
-    await loadCacheData()
+    await loadCacheData(loginCheck.body.phoneNumber)
   }
 
   const param = decodeURI(request.path[0])
   const titleToSearch = param.replace(/_/g, ' ')
   const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
 
-  return item && (loginCheck.status === 200 || (item.tags && item.tags.includes(publicTagName)))
-    ? okResponse(item)
-    : notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
+  const title = getPhoneTitle(loginCheck.body.phoneNumber)
+  if (item && (loginCheck.status === 200 || (item.tags && item.tags.includes(publicTagName)))) {
+    if (title) {
+      sendInfoLog(`הדף ${getMarkdownLink(item.title)} נפתח ע"י *${title}*`)
+    } else {
+      sendInfoLog(`הדף הציבורי ${getMarkdownLink(item.title)} נפתח`)
+    }
+    return okResponse(item)
+  } else {
+    if (item) {
+      sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי ${getMarkdownLink(item.title)}`)
+    } else if (title) {
+      sendInfoLog(`בוצע נסיון לגשת לדף הלא קיים *${param}* ע"י *${title}*`)
+    } else {
+      sendInfoLog(`בוצע נסיון לגשת לדף הלא קיים *${param}*`)
+    }
+    return notFound({ headers, body: { title: titleToSearch, error: `'${param}' was not found` } })
+  }
 }
-
-const getMargdownLink = title => `[${title}](${siteUrl}${title.replace(/ /g, '_')}?noPreview=1)`
 
 export async function post_page(request) {
   const loginCheck = await get_checkLogin(request)
@@ -183,18 +205,19 @@ export async function post_page(request) {
     if (page.isDeleted) {
       updateMessage = `הדף ${page.title} *נמחק* ע"י ${getPhoneTitle(phoneNumber   )}`
     } else if (existing.isDeleted) {
-      updateMessage = `הדף ${getMargdownLink(page.title)} *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
+      updateMessage = `הדף ${getMarkdownLink(page.title)} *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
     } else {
-      updateMessage = `הדף ${getMargdownLink(page.title)} *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
+      updateMessage = `הדף ${getMarkdownLink(page.title)} *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
     }
   } else {
-    updateMessage = `הדף ${getMargdownLink(page.title)} *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
+    updateMessage = `הדף ${getMarkdownLink(page.title)} *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
     page.createdBy = phoneNumber
   }
 
   const { _id } = await wixData.save('pages', page, suppressAuthAndHooks)
   sendUpdateLog(updateMessage)
-  loadCacheData()
+  sendInfoLog(updateMessage)
+  loadCacheData(phoneNumber)
 
   return isExistingPage ?
     okResponse({ message: `Page ${page.title} was updated` }) :
@@ -282,15 +305,22 @@ function performSearch(search, isLoggedIn) {
 // URL: https://<wix-site-url>/_functions/search/<search>
 export async function get_search(request) {
   const isSuggestionsRequest = Boolean(request.query && request.query.suggestions)
-  const isLoggedIn = isSuggestionsRequest ? true : (await get_checkLogin(request)).status === 200
-
   const param = decodeURI(request.path[0])
   if (!param || !param.trim()) {
     return badRequest({ headers, body: 'Search cannot be empty' })
   }
 
+  let isLoggedIn, phoneNumber
+  if (isSuggestionsRequest) {
+    isLoggedIn = true
+  } else {
+    const loginCheck = await get_checkLogin(request)
+    phoneNumber = loginCheck.body && loginCheck.body.phoneNumber
+    isLoggedIn = loginCheck.status === 200
+  }
+
   if (!activePages) {
-    await loadCacheData()
+    await loadCacheData(phoneNumber)
   }
 
   const searchResults = performSearch(param, isLoggedIn)
@@ -298,6 +328,14 @@ export async function get_search(request) {
     ? [param, searchResults.pages.length > 0 ? searchResults.pages.map(p => p.title) : [`{ לא נמצאו תוצאות חיפוש עבור "${param}" }`]]
     : searchResults
 
+  const link = getMarkdownLink(param, 'search/')
+  if (isSuggestionsRequest) {
+    sendInfoLog(`בוצע חיפוש משורת הכתובת של ${link}, וחזרו *${searchResults.pages.length}* דפים`)
+  } else if (phoneNumber) {
+    sendInfoLog(`בוצע חיפוש של ${link} ע"י *${getPhoneTitle(phoneNumber)}*, וחזרו *${searchResults.pages.length}* דפים`)
+  } else {
+    sendInfoLog(`בוצע חיפוש של ${link}, וחזרו *${searchResults.pages.length}* דפים`)
+  }
   return okResponse(result)
 }
 
@@ -309,10 +347,18 @@ export async function get_pages(request) {
   }
 
   if (!allPages) {
-    await loadCacheData()
+    await loadCacheData(loginCheck.body.phoneNumber)
   }
 
-  const pages = request.query && request.query.UpdatedAfter ? allPages.filter(p => p._updatedDate.toISOString() >= request.query.UpdatedAfter) : allPages
+  const updatedAfter = request.query && request.query.UpdatedAfter
+  const pages = updatedAfter ? allPages.filter(p => p._updatedDate.toISOString() >= updatedAfter) : allPages
+
+  const title = getPhoneTitle(loginCheck.body.phoneNumber)
+  if (updatedAfter) {
+    sendInfoLog(`בוצעה בקשה לרשימת הדפים מאז *${updatedAfter}* ע"י *${title}*, וחזרו *${pages.length}* דפים`)
+  } else {
+    sendInfoLog(`בוצעה בקשה לרשימת הדפים ע"י *${title}*, וחזרו *${pages.length}* דפים`)
+  }
 
   return okResponse({ pages, maxDate })
 }
@@ -325,8 +371,18 @@ export async function get_tag(request) {
     await loadCacheData()
   }
 
-  const isLoggedIn = searchedTag === publicTagName || (await get_checkLogin(request).status === 200)
+  const loginCheck = await get_checkLogin(request)
+  const isLoggedIn = searchedTag === publicTagName || loginCheck.status === 200
   const pages = activePages.filter(p => p.tags && p.tags.includes(searchedTag) && (isLoggedIn || p.tags.includes(publicTagName)))
+
+  const title = getPhoneTitle(loginCheck.body && loginCheck.body.phoneNumber)
+  const link = getMarkdownLink(searchedTag, 'tag/')
+  if (title) {
+    sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה ${link} ע"י *${title}*, וחזרו *${pages.length}* דפים`)
+  } else {
+    sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה ${link}, וחזרו *${pages.length}* דפים`)
+  }
+
   return okResponse({ pages })
 }
 
@@ -336,5 +392,6 @@ export async function get_tags() {
     await loadCacheData()
   }
 
+  sendInfoLog('בוצעה בקשה של רשימת כל הקטגוריות')
   return okResponse({ tags: tagsList })
 }

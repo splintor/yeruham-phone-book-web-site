@@ -9,7 +9,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 ### Things left to be done:
 1. TODO: Add help link to login page
 1. TODO: Add documentation and link to it from home
-1. TODO: Log actions (login/logout, search, click, cache load) in "quite" Telegram channels
 1. TODO: Convert phone numbers to tel: links on mobile devices (and consider converting unlinked e-mail addresses) - use mobile app code (probably not needed on Safari - iOS?)
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
