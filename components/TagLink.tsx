@@ -11,6 +11,7 @@ interface TagLinkProps {
   kind: 'title' | 'small'
   className?: string
   tag: string
+  target?: string
 }
 
 const classNames = {
@@ -20,9 +21,9 @@ const classNames = {
   smallPublic: 'border border-success link-success',
 }
 
-export const TagLink = ({ tag, kind, onClick, removeTag, ...props }: TagLinkProps): ReactElement => {
+export const TagLink = ({ tag, kind, onClick, removeTag, target, ...props }: TagLinkProps): ReactElement => {
   const kindType = tag === publicTagName ? `${kind}Public` : kind
-  const onTagClick = async e => {
+  const onTagClick = target ? undefined : async e => {
     e.preventDefault()
     if (onClick) {
       onClick(tag)
@@ -39,6 +40,7 @@ export const TagLink = ({ tag, kind, onClick, removeTag, ...props }: TagLinkProp
 
   return <a className={'badge rounded-pill mb-2 me-1 text-decoration-none ' + classNames[kindType] + (removeTag ? ' d-flex align-items-center' : '')}
             href={`/tag/${tag}`}
+            target={target}
             onClick={onTagClick}>
     {tag}
     {removeTag && <button type="button" key="close" className="btn-close btn-sm remove-tag-button" onClick={e => {

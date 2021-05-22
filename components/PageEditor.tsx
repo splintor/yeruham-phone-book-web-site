@@ -294,7 +294,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
       <div ref={quillRef} />
     </div>
     <div className="d-flex align-items-center flex-wrap mt-2">
-      {tags?.map(t => <TagLink key={t} tag={t} pushState={pushState} removeTag={removeTag} kind="small"/>)}
+      {tags?.map(t => <TagLink key={t} tag={t} pushState={pushState} removeTag={removeTag} target="_blank" kind="small"/>)}
 
       <div className="dropdown">
       <a className="btn badge rounded-pill mb-2 me-1 text-decoration-none bg-light border border-secondary link-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#">+ הוסף קטגוריה</a>
