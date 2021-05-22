@@ -16,7 +16,7 @@ export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: strin
         אנדרואיד</a> וכ<a href="https://groups.google.com/d/msg/yerucham1/QWQYnxeXNfU/Q104gimvAAAJ">בוט בטלגרם</a>
       </div>
       <div className="mt-2">
-        הסבר על השימוש באתר אפשר למצוא כאן
+        הסבר על השימוש באתר אפשר למצוא <a href="/help">כאן</a>
       </div>
       <div className="mt-2">
         הערות והצעות כדאי לשלוח ב<a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>מייל</a> או ב<a href={`https://wa.me/${adminPhone.replace(/^0/, '+972-')}`}>ווטסאפ</a>

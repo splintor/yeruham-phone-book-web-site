@@ -142,6 +142,10 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
   }
 }
 
+const pageRedirects = {
+  help: 'הסבר על השימוש באתר',
+}
+
 // URL: https://<wix-site-url>/_functions/page/<titleOrOldName>
 export async function get_page(request) {
   const loginCheck = await get_checkLogin(request)
@@ -151,7 +155,7 @@ export async function get_page(request) {
   }
 
   const param = decodeURI(request.path[0])
-  const titleToSearch = param.replace(/_/g, ' ')
+  const titleToSearch = (pageRedirects[param] || param).replace(/_/g, ' ')
   const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
 
   const title = getPhoneTitle(loginCheck.body.phoneNumber)
