@@ -21,7 +21,7 @@ interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' |
   closePage(): void
 }
 
-export function PageContent({ search, tag, pushState, setToast, pages, totalCount, closePage, ...props }: PageContentProps): ReactElement {
+export function PageContent({ search, tag, pushState, setToast, pages, totalCount, closePage, isGuestLogin, ...props }: PageContentProps): ReactElement {
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false)
   const escapePressed = useKeyPress('Escape')
@@ -100,7 +100,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
         <h5 className="p-2">
           <p>הדף <span className="fw-bold">{title}</span> לא נמצא בספר הטלפונים.</p>
           <p>&nbsp;</p>
-          <p>יכול להיות שזה מפני ש<a href={`/`}>אינך מחובר/ת</a>.</p>
+          {isGuestLogin && <p>יכול להיות שזה מפני שלא בוצעה <a href={`/`}>כניסה למערכת</a>.</p>}
         </h5>
       </div>
 
@@ -108,12 +108,12 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
       return isEditing ? <PageEditor page={page} onCancel={cancelEditing} onSave={saveChanges} pushState={pushState} setToast={setToast}/> :
         <div className="p-2">
           <div className="card p-1 mb-3" key={page.title}>
-            {props.isGuestLogin || <DeleteConfirmationModal pageTitle={title}
+            {isGuestLogin || <DeleteConfirmationModal pageTitle={title}
                                                             setModalVisible={setIsDeleteConfirmationVisible}
                                                             onDelete={deletePage}/>}
             <div className="card-body p-2">
               <div className="float-end d-flex">
-                {props.isGuestLogin || <><div className="d-none d-md-block">
+                {isGuestLogin || <><div className="d-none d-md-block">
                   <button className="btn btn-sm btn-outline-primary" onClick={() => setIsEditing(true)}>עריכה</button>
                   <button className="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">מחיקה</button>
                 </div>
