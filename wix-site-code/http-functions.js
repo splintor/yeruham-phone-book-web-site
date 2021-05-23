@@ -1,5 +1,8 @@
+// noinspection NpmUsedModulesInstalled
 import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
+// noinspection NpmUsedModulesInstalled
 import wixData from 'wix-data'
+// noinspection NpmUsedModulesInstalled
 import { fetch } from 'wix-fetch'
 import { adminPhoneNumber, authPassword, telegramBotApiToken, telegramUpdateChannelChatId, telegramInfoChannelChatId } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
@@ -32,6 +35,18 @@ async function sendToTelegram(chatId, message) {
 const sendUpdateLog = message => void sendToTelegram(telegramUpdateChannelChatId, message)
 const sendInfoLog = message => void sendToTelegram(telegramInfoChannelChatId, message)
 
+function getIdentityPage(pageA, pageB) {
+  if (!pageA.tags || pageA.tags.length === 0) {
+    return pageA
+  }
+
+  if (!pageB.tags || pageB.tags.length < pageA.tags.length) {
+    return pageB
+  }
+
+  return pageA
+}
+
 async function loadCacheData(phoneNumber) {
   const start = Date.now()
   let pagesList = []
@@ -48,7 +63,7 @@ async function loadCacheData(phoneNumber) {
     matches && matches.forEach(match => {
       match = match.substr(1)
       const existing = phonesMap.get(match)
-      if (!existing) {
+      if (!existing || page === getIdentityPage(existing, page)) {
         phonesMap.set(match, page)
       }
     })
@@ -71,6 +86,7 @@ async function loadCacheData(phoneNumber) {
 }
 
 // URL: https://<wix-site-url>/_functions/login/<phoneNumber>
+// noinspection JSUnusedGlobalSymbols
 export async function get_login(request) {
   const phoneNumber = request.path[0]
 
@@ -147,6 +163,8 @@ const pageRedirects = {
 }
 
 // URL: https://<wix-site-url>/_functions/page/<titleOrOldName>
+// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
 export async function get_page(request) {
   const loginCheck = await get_checkLogin(request)
 
@@ -178,6 +196,7 @@ export async function get_page(request) {
   }
 }
 
+// noinspection JSUnusedGlobalSymbols
 export async function post_page(request) {
   const loginCheck = await get_checkLogin(request)
   if (loginCheck.status !== 200) {
@@ -307,6 +326,8 @@ function performSearch(search, isLoggedIn) {
 }
 
 // URL: https://<wix-site-url>/_functions/search/<search>
+// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
 export async function get_search(request) {
   const isSuggestionsRequest = Boolean(request.query && request.query.suggestions)
   const param = decodeURI(request.path[0])
@@ -344,6 +365,7 @@ export async function get_search(request) {
 }
 
 // URL: https://<wix-site-url>/_functions/pages
+// noinspection JSUnusedGlobalSymbols
 export async function get_pages(request) {
   const loginCheck = await get_checkLogin(request)
   if (loginCheck.status !== 200) {
@@ -368,6 +390,7 @@ export async function get_pages(request) {
 }
 
 // URL: https://<wix-site-url>/_functions/tag/<tag>
+// noinspection JSUnusedGlobalSymbols
 export async function get_tag(request) {
   const searchedTag = decodeURI(request.path[0]).replace(/_/g, ' ').replace(/"/g, '')
 
@@ -391,6 +414,7 @@ export async function get_tag(request) {
 }
 
 // URL: https://<wix-site-url>/_functions/tags
+// noinspection JSUnusedGlobalSymbols
 export async function get_tags() {
   if (!tagsList) {
     await loadCacheData()
