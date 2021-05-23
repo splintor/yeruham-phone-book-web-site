@@ -181,7 +181,12 @@ export async function get_page(request) {
 
   const param = decodeURI(request.path[0])
   const titleToSearch = (pageRedirects[param] || param).replace(/_/g, ' ')
-  const [item] = activePages.filter(p => p.title === titleToSearch || p.oldName === param) || []
+  let item = activePages.find(p => p.title === titleToSearch || p.oldName === param)
+  if (!item) {
+    sendInfoLog(`הדף *${titleToSearch}* לא נמצא. טוען מידע מחדש.`)
+    await loadCacheData(loginCheck.body.phoneNumber)
+    item = activePages.find(p => p.title === titleToSearch || p.oldName === param)
+  }
 
   const title = getPhoneTitle(loginCheck.body.phoneNumber)
   if (item && (loginCheck.status === 200 || (item.tags && item.tags.includes(publicTagName)))) {
