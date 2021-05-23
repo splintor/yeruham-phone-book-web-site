@@ -13,7 +13,7 @@ export function getSearchResultTitle(pages: PageData[], tags: string[], totalCou
             <p>לא נמצאו דפים שמכילים <b>{search || tag}</b>.</p>
             <p>&nbsp;</p>
             {isGuestLogin
-              ? <p>יכול להיות שזה מפני ש  <a href={`/`}>אינך מחובר/ת</a>.</p>
+              ? <p>יכול להיות שזה מפני ש<a href={`/`}>אינך מחובר/ת</a>.</p>
               : <p>אפשר לחפש משהו אחר או <a href={`/new_page?initialTitle=${search}`}>להוסיף דף חדש</a>.</p>}
           </div>
         case 1:

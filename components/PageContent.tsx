@@ -97,7 +97,11 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   switch (props.status) {
     case 404:
       return <div className="results page">
-        <div className="notFound">הדף <span className="searchedTitle">{title}</span> לא נמצא בספר הטלפונים.</div>
+        <h5 className="p-2">
+          <p>הדף <span className="fw-bold">{title}</span> לא נמצא בספר הטלפונים.</p>
+          <p>&nbsp;</p>
+          <p>יכול להיות שזה מפני ש<a href={`/`}>אינך מחובר/ת</a>.</p>
+        </h5>
       </div>
 
     default:
