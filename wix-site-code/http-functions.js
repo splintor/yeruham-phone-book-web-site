@@ -240,7 +240,7 @@ export async function post_page(request) {
   const { _id } = await wixData.save('pages', page, suppressAuthAndHooks)
   sendUpdateLog(updateMessage)
   sendInfoLog(updateMessage)
-  loadCacheData(phoneNumber)
+  await loadCacheData(phoneNumber)
 
   return isExistingPage ?
     okResponse({ message: `Page ${page.title} was updated` }) :
