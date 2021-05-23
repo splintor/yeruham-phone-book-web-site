@@ -18,7 +18,7 @@ import { WelcomePage } from './WelcomePage'
 export function AppComponent(appProps: AppProps & { authData: AuthData }): ReactElement {
   const [fromUserEdit, setFromUserEdit] = useState(false)
   const [searchFocusId, setSearchFocusId] = useState(0)
-  const { status } = appProps
+  const [pageStatus, setPageStatus] = useState(appProps.status)
   const [{ pages, tags, totalCount, search: searchFromResults }, setSearchResults] = useState<SearchResults>({
     pages: appProps.pages,
     totalCount: appProps.totalCount,
@@ -92,6 +92,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   const processDynamicState = (state: Partial<AppProps>) => {
     const { search, page, pages, tags, tag, totalCount } = state
     setSearch(search || '')
+    setPageStatus(200)
     setDisplayedPage(page || null)
     setIsSearching(false)
     setSearchResults({ pages, tags, totalCount, search })
@@ -209,7 +210,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     {showWelcome
       ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
       : displayedPage
-        ? <PageContent status={status} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
+        ? <PageContent status={pageStatus} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
                        newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
         : <div className="p-2">
           {isSearching
@@ -232,6 +233,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                       <TitleLink title={page.title} key={page.title} onClick={e => {
                         e.preventDefault()
                         pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
+                        setPageStatus(200)
                         setDisplayedPage(page)
                       }}/>
                     </h5>
