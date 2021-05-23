@@ -1,5 +1,4 @@
 import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef } from 'react'
-import { getSearchUrl } from '../utils/url'
 
 export interface SearchBoxProps {
   search: string

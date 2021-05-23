@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { SearchBox, SearchBoxProps } from './SearchBox'
 
-export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: string } & SearchBoxProps) => (
+export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: string } & SearchBoxProps): ReactElement => (
   <div className="container d-flex mt-3">
     <div className="row align-self-center card border-primary mx-auto px-1 py-3">
       <div className="mb-2">

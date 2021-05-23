@@ -12,6 +12,6 @@ export default async function page(request: NextApiRequest, response: NextApiRes
      return sendResponse(response, await savePage(request), getRequestLogData(request))
 
     default:
-      sendUnsupportedMethodResponse(response, `Unexpected method ${method} for page API`, getRequestLogData(request))
+      sendUnsupportedMethodResponse(response)
   }
 }
