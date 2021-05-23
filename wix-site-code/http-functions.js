@@ -18,7 +18,7 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
-const siteUrl = 'https://yeruham-phone-book.now.sh/'
+const siteUrl = 'https://yeruham-phone-book.vercel.app/'
 
 let allPages
 let maxDate
