@@ -55,10 +55,13 @@ async function loadCacheData(phoneNumber) {
     pagesList = pagesList.concat(result.items)
     result = result.hasNext() && await result.next()
   }
+  allPages = pagesList
+  maxDate = allPages.reduce((d, p) => Math.max(p._updatedDate, d), allPages[0]._updatedDate)
+  activePages = pagesList.filter(p => !p.isDeleted)
 
   const phonesMap = new Map()
   const tagsSet = new Set()
-  pagesList.forEach(page => {
+  activePages.forEach(page => {
     const matches = page.html.replace(/[+\-.]+/g, '').match(/[^A-Z_\d=\/:]\d{9,}/g)
     matches && matches.forEach(match => {
       match = match.substr(1)
@@ -71,9 +74,6 @@ async function loadCacheData(phoneNumber) {
     page.tags && page.tags.forEach(tagsSet.add, tagsSet)
   })
 
-  allPages = pagesList
-  maxDate = allPages.reduce((d, p) => Math.max(p._updatedDate, d), allPages[0]._updatedDate)
-  activePages = pagesList.filter(p => !p.isDeleted)
   phones = phonesMap
   tagsList = [...tagsSet]
   const timeSpan = Date.now() - start
