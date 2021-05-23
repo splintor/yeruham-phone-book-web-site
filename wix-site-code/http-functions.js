@@ -91,11 +91,8 @@ export async function get_login(request) {
   const phoneNumber = request.path[0]
 
   if (phoneNumber === adminPhoneNumber) {
+    sendInfoLog(`בוצעה כניסה למערכת בעזרת המספר *${adminPhoneNumber}*`)
     return okResponse({ auth: buildAuth(phoneNumber), authTitle: getPhoneTitle(phoneNumber) })
-  }
-
-  if (!phones) {
-    await loadCacheData(phoneNumber)
   }
 
   const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
@@ -103,7 +100,17 @@ export async function get_login(request) {
     return unauthorizedResponse('Login phone number is too short')
   }
 
-  const foundPage = phones.get(strippedPhoneNumber)
+  if (!phones) {
+    await loadCacheData(phoneNumber)
+  }
+
+  let foundPage = phones.get(strippedPhoneNumber)
+
+  if (!foundPage) {
+    await loadCacheData(phoneNumber)
+    foundPage = phones.get(strippedPhoneNumber)
+  }
+
   if (foundPage) {
     sendInfoLog(`בוצעה כניסה למערכת ע"י *${foundPage.title}* בעזרת המספר *${phoneNumber}*`)
     return okResponse({ auth: buildAuth(phoneNumber), authTitle: foundPage.title })
