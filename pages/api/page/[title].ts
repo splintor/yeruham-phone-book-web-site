@@ -4,7 +4,7 @@ import { getPage, savePage } from '../../../utils/data-layer'
 
 export default async function page(request: NextApiRequest, response: NextApiResponse): Promise<void> {
   const { method, query: { title }} = request
-  switch (request.method) {
+  switch (method) {
     case 'GET':
       return sendResponse(response, await getPage(request, title as string), getRequestLogData(request))
 
