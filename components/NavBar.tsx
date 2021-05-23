@@ -34,7 +34,9 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch
       </div>
       <ul className="navbar-nav ms-auto d-none d-sm-flex">
         <li className="nav-item">
-          {authTitle ? <TitleLink className="nav-link active text-nowrap" title={authTitle}/> : <b className="nav-link text-light">אורח/ת</b>}
+          <TitleLink className="nav-link text-nowrap active"
+                     title={authTitle || 'אורח/ת'}
+                     href={authTitle ? undefined : '/'}/>
         </li>
         <li>
           <div className="dropdown">
