@@ -55,6 +55,19 @@ async function loadCacheData(phoneNumber) {
     pagesList = pagesList.concat(result.items)
     result = result.hasNext() && await result.next()
   }
+
+  await processData(phoneNumber, pagesList)
+
+  const timeSpan = Date.now() - start
+  const title = getPhoneTitle(phoneNumber)
+  if (title) {
+    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}`)
+  } else {
+    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות`)
+  }
+}
+
+async function processData(phoneNumber, pagesList) {
   allPages = pagesList
   maxDate = allPages.reduce((d, p) => Math.max(p._updatedDate, d), allPages[0]._updatedDate)
   activePages = pagesList.filter(p => !p.isDeleted)
@@ -76,13 +89,6 @@ async function loadCacheData(phoneNumber) {
 
   phones = phonesMap
   tagsList = [...tagsSet]
-  const timeSpan = Date.now() - start
-  const title = getPhoneTitle(phoneNumber)
-  if (title) {
-    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}`)
-  } else {
-    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות`)
-  }
 }
 
 // URL: https://<wix-site-url>/_functions/login/<phoneNumber>
@@ -252,7 +258,21 @@ export async function post_page(request) {
   const { _id } = await wixData.save('pages', page, suppressAuthAndHooks)
   sendUpdateLog(updateMessage)
   sendInfoLog(updateMessage)
-  await loadCacheData(phoneNumber)
+
+  const start = Date.now()
+  if (!page._id) {
+    page._id = _id
+  }
+  const updatedSitesList = isExistingPage ? allPages.map(p => p._id === _id ? page : p) : [...allPages, page]
+  await processData(phoneNumber, updatedSitesList)
+
+  const timeSpan = Date.now() - start
+  const title = getPhoneTitle(phoneNumber)
+  if (title) {
+    sendInfoLog(`המידע עודכן בזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}`)
+  } else {
+    sendInfoLog(`המידע עודכן בזכרון תוך ${timeSpan / 1000} שניות`)
+  }
 
   return isExistingPage ?
     okResponse({ message: `Page ${page.title} was updated` }) :
