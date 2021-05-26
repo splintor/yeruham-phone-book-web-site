@@ -8,6 +8,8 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Rewrite "הסבר על השומוש באתר"
+1. TODO: Add link to "public" tag in home page and in app menu
+1. TODO: Show linked tag in tag results
 1. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update)
 1. TODO: Convert phone numbers to tel: links on mobile devices (and consider converting unlinked e-mail addresses) - use mobile app code (probably not needed on Safari - iOS?)
 1. TODO: Add "Copy" button next to phone numbers
@@ -18,6 +20,8 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
   * Show auto-complete dropdown
   * replace pasted URLs to relative URLs
 1. TODO: Highlight search in result page
+1. TODO: Add Kosher/Mehadrin info to food places
+1. Enable customization/themes
 1. Set a nightly backup of the data (to a private GitHub gist?)
 1. TODO: Handle cross-domain authentication
 1. TODO: Data sanitation:
