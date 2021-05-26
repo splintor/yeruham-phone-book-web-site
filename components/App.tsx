@@ -42,18 +42,20 @@ export default function App(appProps: AppProps): ReactElement {
   // suppress JSUnresolvedLibraryURL
   // noinspection JSUnresolvedLibraryURL
   return <div className="app">
-    {showPreview && <Head>
+    <Head>
       <title>{pageTitle}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
-      <meta property="og:title" content={pageTitle} key="pageTitle"/>
-      {isPublicPage && <meta property="og:description" content={page.html.replace(/<[^>]+>|&nbsp;/g, ' ')} key="pageHtml"/>}
-      <meta property="og:url" content={url} key="url"/>
-      <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
+      {showPreview && <>
+        <meta property="og:title" content={pageTitle} key="pageTitle"/>
+        {isPublicPage && <meta property="og:description" content={page.html.replace(/<[^>]+>|&nbsp;/g, ' ')} key="pageHtml"/>}
+        <meta property="og:url" content={url} key="url"/>
+        <meta property="og:image" content={`${origin}/logo.png`} key="image"/>
+      </>}
       <link rel="icon" href="/favicon.ico"/>
       <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="opensearch.xml" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.rtl.min.css"
             integrity="sha384-jHiSqEim4+W1UCvv8kTcMbtCZlRF8MxbgKdfpvncia8gdN1UImBnhTpKtufREzv7" crossOrigin="anonymous"/>
-    </Head>}
+    </Head>
     {authData ? isPageAllowed ? <AppComponent authData={authData} {...appProps} /> : <LoginPage/> : ''}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossOrigin="anonymous"/>
   </div>
