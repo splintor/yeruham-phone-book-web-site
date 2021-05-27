@@ -29,9 +29,9 @@ export const TagLink = ({ tag, kind, onClick, removeTag, target, ...props }: Tag
       onClick(tag)
     } else {
       const { href } = e.target
-      const { pages } = await getTagPages(href.replace(location.origin + '/tag/', ''))
+      const { tags, pages } = await getTagPages(href.replace(location.origin + '/tag/', ''))
       if (pages) {
-        props.pushState(getTagUrl(tag), { pages, totalCount: pages.length, tag })
+        props.pushState(getTagUrl(tag), { pages, tags, totalCount: pages.length, tag })
       } else {
         location.href = href
       }

@@ -437,6 +437,14 @@ export async function get_tag(request) {
   const loginCheck = await get_checkLogin(request)
   const isLoggedIn = searchedTag === publicTagName || loginCheck.status === 200
   const pages = activePages.filter(p => p.tags && p.tags.includes(searchedTag) && (isLoggedIn || p.tags.includes(publicTagName)))
+  const tagsSet = new Set()
+  pages
+    .filter(p => p.tags.length > 1)
+    .forEach(p => p.tags
+      .filter(t => t !== searchedTag && t !== publicTagName)
+      .forEach(t => tagsSet.add(t)))
+
+  const tags = tagsSet.size > 0 ? Array.from(tagsSet) : undefined
 
   const title = getPhoneTitle(loginCheck.body && loginCheck.body.phoneNumber)
   const link = getMarkdownLink(searchedTag, 'tag/')
@@ -446,7 +454,7 @@ export async function get_tag(request) {
     sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה ${link}, וחזרו *${pages.length}* דפים`)
   }
 
-  return okResponse({ pages })
+  return okResponse({ pages, tags })
 }
 
 // URL: https://<wix-site-url>/_functions/tags
