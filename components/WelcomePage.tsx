@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
+import { adminEmail, adminPhone, publicTagName, siteTitle } from '../utils/consts'
 import { SearchBox, SearchBoxProps } from './SearchBox'
 
 export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: string } & SearchBoxProps): ReactElement => (
@@ -7,8 +7,8 @@ export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: strin
     <div className="row align-self-center card border-primary mx-auto px-1 py-3">
       <div className="mb-2">
         {authTitle
-          ? <label htmlFor="search-box">חיפוש אדם, עסק או מוסד<span className="d-md-inline d-none"> (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</span>:</label>
-          : <label htmlFor="search-box">חיפוש עסק או מוסד ציבורי</label>}
+          ? <label htmlFor="search-box">חיפוש אדם, <a href={`/tag/${publicTagName}`}>עסק או מוסד</a><span className="d-md-inline d-none"> (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</span>:</label>
+          : <label htmlFor="search-box">חיפוש <a href={`/tag/${publicTagName}`}>עסק או מוסד ציבורי</a>:</label>}
       </div>
       <SearchBox {...searchBoxProps}/>
       <div className="mt-2">
