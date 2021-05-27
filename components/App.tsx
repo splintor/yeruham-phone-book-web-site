@@ -45,6 +45,7 @@ export default function App(appProps: AppProps): ReactElement {
     <Head>
       <title>{pageTitle}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <meta name="description" content="כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן"/>
       {showPreview && <>
         <meta property="og:title" content={pageTitle} key="pageTitle"/>
         {isPublicPage && <meta property="og:description" content={page.html.replace(/<[^>]+>|&nbsp;/g, ' ')} key="pageHtml"/>}
