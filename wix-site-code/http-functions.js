@@ -32,6 +32,10 @@ async function sendToTelegram(chatId, message) {
   await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${chatId}&parse_mode=Markdown&text=${encodeURIComponent(message)}`, { method: 'get' })
 }
 
+function getUserAgent(request) {
+  return request.headers['user-agent']
+}
+
 const sendUpdateLog = message => void sendToTelegram(telegramUpdateChannelChatId, message)
 const sendInfoLog = message => void sendToTelegram(telegramInfoChannelChatId, message)
 
@@ -199,12 +203,12 @@ export async function get_page(request) {
     if (title) {
       sendInfoLog(`הדף ${getMarkdownLink(item.title)} נפתח ע"י *${title}*`)
     } else {
-      sendInfoLog(`הדף הציבורי ${getMarkdownLink(item.title)} נפתח`)
+      sendInfoLog(`הדף הציבורי ${getMarkdownLink(item.title)} נפתח - ${getUserAgent(request)}`)
     }
     return okResponse(item)
   } else {
     if (item) {
-      sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי ${getMarkdownLink(item.title)}`)
+      sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי ${getMarkdownLink(item.title)} - ${getUserAgent(request)}`)
     } else if (title) {
       sendInfoLog(`בוצע נסיון לגשת לדף הלא קיים *${param}* ע"י *${title}*`)
     } else {
@@ -391,7 +395,7 @@ export async function get_search(request) {
   } else if (phoneNumber) {
     sendInfoLog(`בוצע חיפוש של ${link} ע"י *${getPhoneTitle(phoneNumber)}*, וחזרו *${searchResults.pages.length}* דפים`)
   } else {
-    sendInfoLog(`בוצע חיפוש של ${link}, וחזרו *${searchResults.pages.length}* דפים`)
+    sendInfoLog(`בוצע חיפוש של ${link}, וחזרו *${searchResults.pages.length}* דפים - ${getUserAgent(request)}`)
   }
   return okResponse(result)
 }
