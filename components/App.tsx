@@ -30,25 +30,30 @@ export function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>):
 
 export default function App(appProps: AppProps): ReactElement {
   const router = useRouter()
-  const { url, origin, status, page, newPage } = appProps
+  const { url, origin, status, page, tag, search, newPage } = appProps
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
-  const isPublicPage = page?.tags?.includes(publicTagName)
+  const description = search || tag
+    ? ''
+    : page?.tags?.includes(publicTagName)
+      ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ')
+      : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן'
   const [authData, setAuthData] = useState<AuthData>()
 
   useEffect(() => setAuthData(parseAuthCookies()), [])
   const isPageAllowed = status !== 401 && (authData?.auth || !newPage)
+
 
   // suppress JSUnresolvedLibraryURL
   // noinspection JSUnresolvedLibraryURL
   return <div className="app">
     <Head>
       <title>{pageTitle}</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1"/>
-      <meta name="description" content="כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" key="viewport"/>
+      <meta name="description" content={description} key="description"/>
       {showPreview && <>
         <meta property="og:title" content={pageTitle} key="pageTitle"/>
-        {isPublicPage && <meta property="og:description" content={page.html.replace(/<[^>]+>|&nbsp;/g, ' ')} key="pageHtml"/>}
+        <meta property="og:description" content={description} key="previewDescription"/>
         <meta property="og:url" content={url} key="url"/>
         <meta property="og:image" itemProp="image" content={`${origin}/logo.png`} key="image"/>
       </>}
