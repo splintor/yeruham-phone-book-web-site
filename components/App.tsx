@@ -37,7 +37,7 @@ export default function App(appProps: AppProps): ReactElement {
     ? ''
     : page?.tags?.includes(publicTagName)
       ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ')
-      : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן'
+      : page ? '' : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן'
   const [authData, setAuthData] = useState<AuthData>()
 
   useEffect(() => setAuthData(parseAuthCookies()), [])
