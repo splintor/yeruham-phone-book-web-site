@@ -33,11 +33,16 @@ export default function App(appProps: AppProps): ReactElement {
   const { url, origin, status, page, tag, search, newPage } = appProps
   const pageTitle = getPageTitle(appProps)
   const showPreview = !router.query.noPreview
-  const description = search || tag
-    ? ''
-    : page?.tags?.includes(publicTagName)
-      ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ')
-      : page ? '' : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן'
+  const description = search
+    ? `תוצאות חיפוש עבור ${search}`
+      : tag
+      ? `רשימת הדפים בקטגוריה ${tag}`
+      : page
+        ? page?.tags?.includes(publicTagName)
+          ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ')
+          : `פרטי הדף ${page.title}`
+        : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן'
+
   const [authData, setAuthData] = useState<AuthData>()
 
   useEffect(() => setAuthData(parseAuthCookies()), [])
