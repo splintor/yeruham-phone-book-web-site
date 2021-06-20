@@ -9,7 +9,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 ### Things left to be done:
 1. TODO: Rewrite "הסבר על השומוש באתר"
 1. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
-1. TODO: Convert phone numbers to tel: links on mobile devices (and consider converting unlinked e-mail addresses) - use mobile app code (probably not needed on Safari - iOS?)
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
 1. TODO [mobile]: Update app to use the new site
@@ -19,7 +18,8 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
   * replace pasted URLs to relative URLs
 1. TODO: Highlight search in result page
 1. TODO: Add Kosher/Mehadrin info to food places
-1. Enable customization/themes
+1. TODO: Enable customization/themes
+1. TODO: Link unlinked e-mail addresses (check if there are any)
 1. Set a nightly backup of the data (to a private GitHub gist?)
 1. TODO: Handle cross-domain authentication
 1. TODO: Data sanitation:
