@@ -113,7 +113,11 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     }
 
     & ~ label {
-      color: grey;
+      color: #0d6efd;
+      &:hover {
+        color: #0a58ca;
+      }
+      opacity: .6;
       margin-top: 10px;
       cursor: pointer;
       display: inline-block;
