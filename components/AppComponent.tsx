@@ -240,7 +240,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                     <div>
                       {page.tags?.map(tag => <TagLink key={tag} tag={tag} pushState={pushState} kind="small"/>)}
                     </div>
-                    <input type="checkbox" id={page.title}/>
+                    <input type="checkbox" id={page.title} defaultChecked={pages.length === 1}/>
                     <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
                     <label htmlFor={page.title} role="button">הצג עוד</label>
                   </div>
