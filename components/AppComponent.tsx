@@ -197,7 +197,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     <NavBar authTitle={authTitle} showWelcome={showWelcome}
             search={search} goToHome={goToHome} performSearch={performSearch}
             markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
-    <main className={'container mw-100' + (showWelcome ? ' showWelcome' : '')}>
     {toast && <div className={`alert ${toast.type === 'fail' ? 'alert-danger' : 'alert-success'} ${toast.position === 'bottom' ? 'position-fixed bottom-0 w-100 mb-0' : ''}`}>
       <div className="d-flex">
         <div className="toast-body">
@@ -207,6 +206,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       </div>
     </div>}
 
+    <main className={'container mw-100' + (showWelcome ? ' showWelcome' : '')}>
     {showWelcome
       ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
       : displayedPage
