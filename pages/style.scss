@@ -5,35 +5,36 @@
 }
 
 body {
+  $primary-color: #5F1B68;
+  $primary-color-hover: #750085;
   .bg-primary, .btn-primary {
-    background-color: purple !important;
+    background-color: $primary-color !important;
   }
 
   .border-primary, .btn-primary {
-    border-color: purple !important;
+    border-color: $primary-color !important;
   }
 
-  $purple-600: #6F42C1FF;
   .btn-primary:hover {
-    background-color: $purple-600 !important;
-    border-color: $purple-600 !important;
+    background-color: $primary-color-hover !important;
+    border-color: $primary-color-hover !important;
   }
 
   .btn-outline-primary {
-    border-color: purple !important;
-    color: purple !important;
+    border-color: $primary-color !important;
+    color: $primary-color !important;
 
     &:hover {
       color: white !important;
-      background-color: purple !important;
+      background-color: $primary-color !important;
     }
   }
 
   .link-primary {
-    color: purple !important;
+    color: $primary-color !important;
 
     &:hover, &:focus {
-      color: $purple-600 !important;
+      color: $primary-color-hover !important;
     }
   }
 }
