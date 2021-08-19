@@ -73,6 +73,11 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         setTimeout(() => {
           if (p.scrollHeight > p.offsetHeight) {
             p.classList.add('truncated')
+            if (p.scrollHeight - p.offsetHeight < 50) {
+              p.classList.add('smallTruncate')
+            } else {
+              p.classList.remove('smallTruncate')
+            }
           } else {
             p.classList.remove('truncated')
           }

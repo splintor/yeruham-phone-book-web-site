@@ -109,7 +109,12 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
       max-height: unset;
     }
 
-    &:not(.truncated) ~ label {
+    &.smallTruncate {
+      transition: all 3s ease;
+      max-height: unset;
+    }
+
+    &:not(.truncated) ~ label, &.smallTruncate ~ label {
       display: none;
     }
 
