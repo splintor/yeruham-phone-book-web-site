@@ -4,7 +4,7 @@ import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
 // noinspection NpmUsedModulesInstalled
 import { fetch } from 'wix-fetch'
-import { adminPhoneNumber, authPassword, telegramBotApiToken, telegramUpdateChannelChatId, telegramInfoChannelChatId } from './secret'
+import { adminPhoneNumber, mobileAppPhoneNumber, authPassword, telegramBotApiToken, telegramUpdateChannelChatId, telegramInfoChannelChatId } from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
@@ -96,8 +96,8 @@ async function processData(phoneNumber, pagesList) {
 export async function get_login(request) {
   const phoneNumber = request.path[0]
 
-  if (phoneNumber === adminPhoneNumber) {
-    sendInfoLog(`בוצעה כניסה למערכת בעזרת המספר *${adminPhoneNumber}*`)
+  if (phoneNumber === adminPhoneNumber || phoneNumber === mobileAppPhoneNumber) {
+    sendInfoLog(`בוצעה כניסה למערכת בעזרת המספר *${phoneNumber}*`)
     return okResponse({ auth: buildAuth(phoneNumber), authTitle: getPhoneTitle(phoneNumber) })
   }
 
@@ -131,6 +131,10 @@ function getPhoneTitle(phoneNumber) {
     return 'מנהל מערכת'
   }
 
+  if (phoneNumber === mobileAppPhoneNumber) {
+    return 'אפליקציית ספר הטלפונים'
+  }
+
   const page = phones.get(phoneNumber)
   return page && page.title || phoneNumber
 }
@@ -148,7 +152,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
       return unauthorizedResponse(`Invalid auth header: ${auth}`)
     }
 
-    if (phoneNumber === adminPhoneNumber) {
+    if (phoneNumber === adminPhoneNumber || phoneNumber === mobileAppPhoneNumber) {
       return okResponse({ phoneNumber })
     }
 
