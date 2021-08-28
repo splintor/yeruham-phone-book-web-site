@@ -26,8 +26,6 @@ let activePages
 let phones
 let tagsList
 
-const getMarkdownLink = (title, urlSuffix = '') => `[${title}](${siteUrl}${urlSuffix}${title.replace(/ /g, '_')}?noPreview=1)`
-
 async function sendToTelegram(chatId, message) {
   await fetch(`https://api.telegram.org/bot${telegramBotApiToken}/sendMessage?chat_id=${chatId}&parse_mode=Markdown&text=${encodeURIComponent(message)}`, { method: 'get' })
 }
@@ -201,14 +199,14 @@ export async function get_page(request) {
   const title = getPhoneTitle(loginCheck.body.phoneNumber)
   if (item && (loginCheck.status === 200 || (item.tags && item.tags.includes(publicTagName)))) {
     if (title) {
-      sendInfoLog(`הדף ${getMarkdownLink(item.title)} נפתח ע"י *${title}*`)
+      sendInfoLog(`הדף *${item.title}* נפתח ע"י *${title}*`)
     } else {
-      sendInfoLog(`הדף הציבורי ${getMarkdownLink(item.title)} נפתח`)
+      sendInfoLog(`הדף הציבורי *${item.title}* נפתח`)
     }
     return okResponse(item)
   } else {
     if (item) {
-      sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי ${getMarkdownLink(item.title)}`)
+      sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי *${item.title}*`)
     } else if (title) {
       sendInfoLog(`בוצע נסיון לגשת לדף הלא קיים *${param}* ע"י *${title}*`)
     } else {
@@ -250,12 +248,12 @@ export async function post_page(request) {
     if (page.isDeleted) {
       updateMessage = `הדף ${page.title} *נמחק* ע"י ${getPhoneTitle(phoneNumber   )}`
     } else if (existing.isDeleted) {
-      updateMessage = `הדף ${getMarkdownLink(page.title)} *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
+      updateMessage = `הדף *${page.title}* *שוחזר* ע"י ${getPhoneTitle(phoneNumber)}`
     } else {
-      updateMessage = `הדף ${getMarkdownLink(page.title)} *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
+      updateMessage = `הדף *${page.title}* *עודכן* ע"י ${getPhoneTitle(phoneNumber)}`
     }
   } else {
-    updateMessage = `הדף ${getMarkdownLink(page.title)} *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
+    updateMessage = `הדף *${page.title}* *נוצר* ע"י ${getPhoneTitle(phoneNumber)}`
     page.createdBy = phoneNumber
   }
 
@@ -389,13 +387,12 @@ export async function get_search(request) {
     ? [param, searchResults.pages.length > 0 ? searchResults.pages.map(p => p.title) : [`{ לא נמצאו תוצאות חיפוש עבור "${param}" }`]]
     : searchResults
 
-  const link = getMarkdownLink(param, 'search/')
   if (isSuggestionsRequest) {
-    sendInfoLog(`בוצע חיפוש משורת הכתובת של ${link}, וחזרו *${searchResults.pages.length}* דפים`)
+    sendInfoLog(`בוצע חיפוש משורת הכתובת של *${param}*, וחזרו *${searchResults.pages.length}* דפים`)
   } else if (phoneNumber) {
-    sendInfoLog(`בוצע חיפוש של ${link} ע"י *${getPhoneTitle(phoneNumber)}*, וחזרו *${searchResults.pages.length}* דפים`)
+    sendInfoLog(`בוצע חיפוש של *${param}* ע"י *${getPhoneTitle(phoneNumber)}*, וחזרו *${searchResults.pages.length}* דפים`)
   } else {
-    sendInfoLog(`בוצע חיפוש של ${link}, וחזרו *${searchResults.pages.length}* דפים`)
+    sendInfoLog(`בוצע חיפוש של *${param}*, וחזרו *${searchResults.pages.length}* דפים`)
   }
   return okResponse(result)
 }
@@ -447,11 +444,10 @@ export async function get_tag(request) {
   const tags = tagsSet.size > 0 ? Array.from(tagsSet) : undefined
 
   const title = getPhoneTitle(loginCheck.body && loginCheck.body.phoneNumber)
-  const link = getMarkdownLink(searchedTag, 'tag/')
   if (title) {
-    sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה ${link} ע"י *${title}*, וחזרו *${pages.length}* דפים`)
+    sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה *${searchedTag}* ע"י *${title}*, וחזרו *${pages.length}* דפים`)
   } else {
-    sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה ${link}, וחזרו *${pages.length}* דפים`)
+    sendInfoLog(`בוצעה בקשה של רשימת הדפים בקטגוריה *${searchedTag}*, וחזרו *${pages.length}* דפים`)
   }
 
   return okResponse({ pages, tags })
