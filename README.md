@@ -8,7 +8,7 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Rewrite "הסבר על השומוש באתר"
-1. TODO: Update Android app to use the new site
+1. TODO: Show Edit and Delete buttons when hovering search results
 1. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
 1. TODO: Add "Copy" button next to phone numbers
 1. TODO: Show icon for each result (and enable defining icons for pages/categories)
