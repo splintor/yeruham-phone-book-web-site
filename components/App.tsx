@@ -60,7 +60,7 @@ export default function App(appProps: AppProps): ReactElement {
         <meta property="og:title" content={pageTitle} key="pageTitle"/>
         <meta property="og:description" content={description} key="previewDescription"/>
         <meta property="og:url" content={url} key="url"/>
-        <meta property="og:image" itemProp="image" content={`${origin}/logo.png`} key="image"/>
+        <meta property="og:image" itemProp="image" content={`${origin}/logo-square.jpg`} key="image"/>
       </>}
       <link rel="icon" href="/favicon.ico"/>
       <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="opensearch.xml" />
