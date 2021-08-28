@@ -6,10 +6,10 @@ export default async function page(request: NextApiRequest, response: NextApiRes
   const { method, query: { title }} = request
   switch (method) {
     case 'GET':
-      return sendResponse(response, await getPage(request, title as string), getRequestLogData(request))
+      return sendResponse(response, await getPage(request, title as string))
 
    case 'POST':
-     return sendResponse(response, await savePage(request), getRequestLogData(request))
+     return sendResponse(response, await savePage(request))
 
     default:
       sendUnsupportedMethodResponse(response)

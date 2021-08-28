@@ -9,7 +9,7 @@ import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
 const publicTagName = 'ציבורי'
-const headers = { 'Content-Type': 'application/json' }
+const headers = { 'Content-Type': 'text/plain; charset=utf-8' }
 const okResponse = body => ok({ headers, body })
 const removePhoneDelimiters = s => s.replace(/[+\-.]+/g, '')
 const authPrefix = 'PHONE '
@@ -18,7 +18,6 @@ const buildAuth = phoneNumber => authPrefix + encrypt(phoneNumber, authKey)
 
 const unauthorizedResponse = message => response({ headers, status: 401, body: { message } })
 const suppressAuthAndHooks = { suppressAuth: true, suppressHooks: true }
-const siteUrl = 'https://yeruham-phone-book.vercel.app/'
 
 let allPages
 let maxDate
