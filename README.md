@@ -8,13 +8,15 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Rewrite "הסבר על השומוש באתר"
-1. TODO: Show Edit and Delete buttons when hovering search results
-1. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
-1. TODO: Add "Copy" button next to phone numbers
-1. TODO: Show icon for each result (and enable defining icons for pages/categories)
-1. TODO [mobile]: Update app to use the new site
-1. TODO [mobile]: Find how to make site links open the app on Android
-1. TODO: Handle in-phonebook links in editor
+2. TODO: Show Edit and Delete buttons when hovering search results
+3. TODO: Prompt user when leaving editor
+4. TODO: Add Bold button to editor
+5. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
+6. TODO: Add "Copy" button next to phone numbers
+7. TODO: Show icon for each result (and enable defining icons for pages/categories)
+8. TODO [mobile]: Update app to use the new site
+9. TODO [mobile]: Find how to make site links open the app on Android
+10. TODO: Handle in-phonebook links in editor
   * Show auto-complete dropdown
   * replace pasted URLs to relative URLs
 1. TODO: Highlight search in result page
