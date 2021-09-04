@@ -10,6 +10,7 @@ import { getSearchUrl, getTagUrl, pageUrl } from '../utils/url'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
 import { NavBar } from './NavBar'
 import { PageContent } from './PageContent'
+import { PageEditButtons } from './PageEditButtons'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
@@ -25,18 +26,18 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     tags: appProps.tags,
     search: appProps.search,
   })
-  const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { title: appProps.initialTitle || '', html: '' } : appProps.page)
+  const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { page: { title: appProps.initialTitle || '', html: '' }, isEdited: true } : { page: appProps.page })
   const [search, setSearch] = useState(searchFromResults || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
-  const [isNewPage, setIsNewPage] = useState(appProps.newPage)
   const [toast, setToast] = useState<ToastOptions>()
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
   const router = useRouter()
-  const showWelcome = !isSearching && !displayedPage && !pages
+  const showWelcome = !isSearching && !displayedPage.page && !pages
   const { authTitle } = appProps.authData
+  const isGuestLogin = !authTitle
 
   useEffect(() => {
     window.history.replaceState(appProps, '', location.href)
@@ -61,7 +62,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   }, [toast])
 
   useEffect(() => {
-    if (!displayedPage && pages?.length > 0) {
+    if (!displayedPage.page && pages?.length > 0) {
       document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
         for (let i = p.children.length - 1; i >= 0; --i) {
           const c = p.children[i] as HTMLElement
@@ -84,7 +85,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         }, 0)
       })
     }
-  }, [pages, displayedPage])
+  }, [pages, displayedPage.page])
 
   useEffect(() => {
     const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
@@ -98,11 +99,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     const { search, page, pages, tags, tag, totalCount } = state
     setSearch(search || '')
     setPageStatus(200)
-    setDisplayedPage(page || null)
+    setDisplayedPage({ page: page || null, isEdited: state.newPage || false })
     setIsSearching(false)
     setSearchResults({ pages, tags, totalCount, search })
     setTag(tag)
-    setIsNewPage(state.newPage || false)
     logToGTM({ event: 'navigation', authTitle, ...state })
     setSearchFocusId(Date.now())
   }
@@ -152,7 +152,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       return
     }
 
-    setDisplayedPage(null)
+    setDisplayedPage({ page: null })
     setIsSearching(true)
     setFromUserEdit(false)
     updateSearchInPage(await searchForPages(search))
@@ -185,15 +185,15 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         link.target = '_blank'
       }
     })
-  }, [displayedPage, pages, isSearching])
+  }, [displayedPage.page, pages, isSearching])
 
   const markUserEdit = (userSearch: string) => {
     setFromUserEdit(true)
     setSearch(userSearch)
   }
 
-  const closePage = pages && displayedPage && (() => {
-    setDisplayedPage(null)
+  const closePage = pages && displayedPage.page && (() => {
+    setDisplayedPage({ page: null })
     pushState(tag ? getTagUrl(tag) : getSearchUrl(search), { pages, totalCount, tags, tag, search })
   })
 
@@ -214,9 +214,9 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     <main className={'container mw-100' + (showWelcome ? ' showWelcome' : '')}>
     {showWelcome
       ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
-      : displayedPage
-        ? <PageContent status={pageStatus} page={displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
-                       newPage={isNewPage} pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={!authTitle}/>
+      : displayedPage.page
+        ? <PageContent status={pageStatus} {...displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
+                       pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}/>
         : <div className="p-2">
           {isSearching
             ? <div className="d-flex justify-content-center text-primary mt-4"><div>
@@ -234,12 +234,22 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
               {
                 pages?.map((page) => <div className="result card p-1 mb-3" key={page.title}>
                   <div className="card-body p-2">
+                    <PageEditButtons page={page}
+                                     pages={pages}
+                                     totalCount={totalCount}
+                                     tags={tags}
+                                     tag={tag}
+                                     search={search}
+                                     isGuestLogin={isGuestLogin}
+                                     startEditing={() => setDisplayedPage({ page, isEdited: true })}
+                                     setToast={setToast}
+                                     pushState={pushState}/>
                     <h5 className="card-title">
                       <TitleLink title={page.title} key={page.title} onClick={e => {
                         e.preventDefault()
                         pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
                         setPageStatus(200)
-                        setDisplayedPage(page)
+                        setDisplayedPage({ page })
                       }}/>
                     </h5>
                     <div>

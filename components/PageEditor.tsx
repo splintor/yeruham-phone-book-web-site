@@ -15,7 +15,7 @@ import { TagLink } from './TagLink'
 interface EditorProps {
   page: PageData
   onSave(pageData: PageData): Promise<void>
-  onCancel(): void
+  onCancel(e: React.MouseEvent): void
   pushState(url: string, state: Partial<AppProps>): void
   setToast(toastOptions: ToastOptions): void
 }

@@ -9,8 +9,8 @@ interface DeleteConfirmationModalProps {
 export function DeleteConfirmationModal(props: DeleteConfirmationModalProps): ReactElement {
   const modalRef = useRef<HTMLDivElement>()
   useEffect(() => {
-    modalRef.current?.addEventListener('show.bs.modal', () => props.setModalVisible(true))
-    modalRef.current?.addEventListener('hidden.bs.modal', () => props.setModalVisible(false))
+    modalRef.current?.addEventListener('show.bs.modal', () => props.setModalVisible?.(true))
+    modalRef.current?.addEventListener('hidden.bs.modal', () => props.setModalVisible?.(false))
   }, [modalRef.current])
 
   return <div className="modal fade" id="deleteConfirmation" ref={modalRef} tabIndex={-1}
