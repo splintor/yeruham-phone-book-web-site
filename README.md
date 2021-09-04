@@ -7,13 +7,12 @@ with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
 ### Things left to be done:
-1. TODO: Rewrite "הסבר על השומוש באתר"
-2. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
-3. TODO: Add "Copy" button next to phone numbers
-4. TODO: Show icon for each result (and enable defining icons for pages/categories)
-5. TODO [mobile]: Update app to use the new site
-6. TODO [mobile]: Find how to make site links open the app on Android
-7. TODO: Handle in-phonebook links in editor
+1. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
+2. TODO: Add "Copy" button next to phone numbers
+3. TODO: Show icon for each result (and enable defining icons for pages/categories)
+4. TODO [mobile]: Update app to use the new site
+5. TODO [mobile]: Find how to make site links open the app on Android
+6. TODO: Handle in-phonebook links in editor
   * Show auto-complete dropdown
   * replace pasted URLs to relative URLs
 1. TODO: Highlight search in result page
