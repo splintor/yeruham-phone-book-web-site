@@ -7,7 +7,7 @@ import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
 import { publicTagName } from '../utils/consts'
 import { htmlPrettify } from '../utils/html-prettify'
-import { ToastOptions } from './App'
+import { editedPageCacheKey, ToastOptions } from './App'
 import { TagLink } from './TagLink'
 
 // TODO: Learn how to show modal for various types of links (start point - https://github.com/zenoamaro/react-quill/issues/471 and https://stackoverflow.com/a/65663934/46635)
@@ -118,10 +118,11 @@ const socialNetworkIcons = {
 }
 
 export default function PageEditor({ page, onCancel, onSave, pushState, setToast }: EditorProps): ReactElement {
-  const [title, setTitle] = useState(page.title)
-  const [tags, setTags] = useState(page.tags)
+  const initialPage = JSON.parse(localStorage.getItem(editedPageCacheKey) || null) as PageData || page
+  const [title, setTitle] = useState(initialPage.title)
+  const [tags, setTags] = useState(initialPage.tags)
   const [newTag, setNewTag] = useState('')
-  const [editorValue, setEditorValue] = useState(page.html)
+  const [editorValue, setEditorValue] = useState(initialPage.html)
   const [viewSource, setViewSource] = useState(false)
   const [viewSourceLTR, setViewSourceLTR] = useState(false)
   const [editedSource, setEditedSource] = useState(editorValue)
@@ -210,13 +211,15 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
   }, [quill])
 
+  const getSaveHTML = () => viewSource ? editedSource : editorValue
+  const geDataToSave = () => ({ ...page, title: title.trim(), html: getSaveHTML(), tags })
+
   async function save(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
-    const html = viewSource ? editedSource : editorValue
     try {
       const tagsWereUpdated = page.tags !== tags
       setIsSaving(true)
-      await onSave({ ...page, title: title.trim(), html, tags })
+      await onSave(geDataToSave())
       if (tagsWereUpdated) {
         await getAllTags(true)
       }
@@ -225,6 +228,8 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
       setIsSaving(false)
     }
   }
+
+  useEffect(() => localStorage.setItem(editedPageCacheKey, JSON.stringify(geDataToSave())), [title, tags, getSaveHTML()])
 
   const removeTag = (tag: string) => {
     const filterTags = tags.filter(t => t !== tag)

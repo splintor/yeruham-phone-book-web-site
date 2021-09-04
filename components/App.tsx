@@ -8,6 +8,7 @@ import { AppComponent } from './AppComponent'
 import { LoginPage } from './LoginPage'
 
 export const deletedPageTitleKey = 'deleted-page-title'
+export const editedPageCacheKey = 'edited-page-cache-key'
 
 export interface ToastOptions {
   content: ReactNode

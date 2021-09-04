@@ -5,7 +5,7 @@ import { AppProps } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
-import { ToastOptions } from './App'
+import { editedPageCacheKey, ToastOptions } from './App'
 import { PageEditButtons } from './PageEditButtons'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
@@ -23,7 +23,7 @@ interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' |
 }
 
 export function PageContent({ search, tag, pushState, setToast, pages, totalCount, closePage, isGuestLogin, ...props }: PageContentProps): ReactElement {
-  const [isEditing, setIsEditing] = useState(props.isEdited)
+  const [isEditing, setIsEditing] = useState(props.isEdited || Boolean(localStorage.getItem(editedPageCacheKey)))
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false)
   const escapePressed = useKeyPress('Escape')
   const [page, setPage] = useState(props.page)
@@ -57,11 +57,13 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
 
     setPage(pageToSave)
     setIsEditing(false)
+    localStorage.removeItem(editedPageCacheKey)
     setToast({ position: 'bottom', content: <div>הדף <b>{title}</b> {_id ? 'נשמר' : 'נוצר'} בהצלחה.</div> })
   }
 
   function cancelEditing(e: React.MouseEvent): void {
     e.preventDefault()
+    localStorage.removeItem(editedPageCacheKey)
     if (props.isEdited) {
       history.back()
     } else {
