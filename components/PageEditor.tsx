@@ -40,6 +40,7 @@ const CustomToolbar = () =>
     <span className="ql-formats">
       <button className="ql-list" value="ordered"/>
       <button className="ql-list" value="bullet"/>
+      <button className="ql-bold" />
     </span>
     <span className="ql-formats">
       <select className="ql-color" />
