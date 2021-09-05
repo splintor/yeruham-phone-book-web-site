@@ -185,6 +185,20 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
     window['quill'] = quill
     const LinkBlot = Quill.import('formats/link')
+
+    class MyLink extends LinkBlot {
+      static create(value) {
+        const node = super.create(value)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        value = (this as any).sanitize(value)
+        node.setAttribute('href', value.replace(location.origin, ''))
+        node.removeAttribute('target')
+        return node
+      }
+    }
+
+    Quill.register(MyLink)
+
     quill.on('selection-change', (range, oldRange, source) => {
       if (range?.length === 1 && source === 'user') {
         const [link, offset] = quill.scroll.descendant(LinkBlot, range.index)

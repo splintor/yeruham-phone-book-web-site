@@ -8,26 +8,25 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
-2. TODO: Add "Copy" button next to phone numbers
-3. TODO: Show icon for each result (and enable defining icons for pages/categories)
-4. TODO [mobile]: Update app to use the new site
-5. TODO [mobile]: Find how to make site links open the app on Android
-6. TODO: Handle in-phonebook links in editor
-  * Show auto-complete dropdown
-  * replace pasted URLs to relative URLs
-1. TODO: Highlight search in result page
-1. TODO: Add Kosher/Mehadrin info to food places
-1. TODO: Enable customization/themes
-1. TODO: Link unlinked e-mail addresses (check if there are any)
-1. Set a nightly backup of the data (to a private GitHub gist?)
-1. TODO: Handle cross-domain authentication
-1. TODO: Data sanitation:
-    * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
-    * verify social network links use relative images
-1. TODO: X Think of how to handle deletion (also so the flutter app can be updated about changes)
-1. TODO: X Handle page history
-1. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
-1. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
+2. TODO [mobile]: Update app to use the new site
+3. TODO: add logo copyright message
+4. TODO: Add "Copy" button next to phone numbers
+5. TODO: Show icon for each result (and enable defining icons for pages/categories)
+6. TODO [mobile]: Find how to make site links open the app on Android
+7. TODO: Show auto-complete dropdown for in-phonebook links in editor
+8. TODO: Highlight search in result page
+9. TODO: Add Kosher/Mehadrin info to food places
+10. TODO: Enable customization/themes
+11. TODO: Link unlinked e-mail addresses (check if there are any)
+12. TODO: Set a nightly backup of the data (to a private GitHub gist?)
+13. TODO: Handle cross-domain authentication
+14. TODO: Data sanitation:
+     * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
+     * verify social network links use relative images
+15. TODO: X Think of how to handle deletion (also so the flutter app can be updated about changes)
+16. TODO: X Handle page history
+17. TODO: Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
+18. TODO: Consider moving to tailwind.css / svelte+sapper / shoelace
 
 
 ### Benefits in new sites
