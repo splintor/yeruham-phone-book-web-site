@@ -17,8 +17,8 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, search, performSearch
   <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
     <div className="container-fluid pe-0">
       <div className="text-nowrap">
-        <a className="navbar-brand app-icon" href="#">
-          <img src="/logo.png" alt={siteTitle} width="40" height="40"/>
+        <a className="navbar-brand app-icon" href="/">
+          <img src="/logo.png" alt={siteTitle} title={`${siteTitle}\nקרדיט על צילום הלוגו: ליאור אלמגור – www.fromycamera.com`} width="40" height="40"/>
         </a>
         <TitleLink title={siteTitle} href="/" className="navbar-brand" onClick={e => {
           e.preventDefault()
