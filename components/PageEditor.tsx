@@ -243,7 +243,11 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
   }
 
-  useEffect(() => localStorage.setItem(editedPageCacheKey(page.title), JSON.stringify(geDataToSave())), [title, tags, getSaveHTML()])
+  useEffect(() => {
+    if (title) {
+      localStorage.setItem(editedPageCacheKey(page.title), JSON.stringify(geDataToSave()))
+    }
+  }, [title, tags, getSaveHTML()])
 
   const removeTag = (tag: string) => {
     const filterTags = tags.filter(t => t !== tag)
