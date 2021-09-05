@@ -118,7 +118,7 @@ const socialNetworkIcons = {
 }
 
 export default function PageEditor({ page, onCancel, onSave, pushState, setToast }: EditorProps): ReactElement {
-  const initialPage = JSON.parse(localStorage.getItem(editedPageCacheKey) || null) as PageData || page
+  const initialPage = JSON.parse(localStorage.getItem(editedPageCacheKey(page.title)) || null) as PageData || page
   const [title, setTitle] = useState(initialPage.title)
   const [tags, setTags] = useState(initialPage.tags)
   const [newTag, setNewTag] = useState('')
@@ -229,7 +229,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
   }
 
-  useEffect(() => localStorage.setItem(editedPageCacheKey, JSON.stringify(geDataToSave())), [title, tags, getSaveHTML()])
+  useEffect(() => localStorage.setItem(editedPageCacheKey(page.title), JSON.stringify(geDataToSave())), [title, tags, getSaveHTML()])
 
   const removeTag = (tag: string) => {
     const filterTags = tags.filter(t => t !== tag)
