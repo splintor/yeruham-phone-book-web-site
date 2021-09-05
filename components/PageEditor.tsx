@@ -272,7 +272,12 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   useEffect(() => void getAllTags().then(setAllTags), [])
 
   const titleInputRef = useRef<HTMLInputElement>(null)
-  useEffect(() => titleInputRef.current?.select(), [titleInputRef])
+  useEffect(() => {
+    setTimeout(() => {
+      titleInputRef.current?.focus()
+      titleInputRef.current?.select()
+    }, 10)
+  }, [titleInputRef])
 
   return <div className="results page-editor m-1">
     <form className="row g-1 mb-1">
