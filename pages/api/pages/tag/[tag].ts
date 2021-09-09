@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getRequestLogData, sendResponse } from '../../../../utils/api'
+import { sendResponse } from '../../../../utils/api'
 import { getTagPages } from '../../../../utils/data-layer'
 
 // noinspection JSUnusedGlobalSymbols
