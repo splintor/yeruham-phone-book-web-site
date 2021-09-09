@@ -346,7 +346,7 @@ const resultsCompare = (searchWords) => (a, b) => {
 function performSearch(search, isLoggedIn) {
   const searchWords = parseToWords(search.toLowerCase()).map(s => s.trim()).filter(s => s)
   const items = activePages.filter(p => searchWords.every(w => isPageMatchWord(p, w))).sort(resultsCompare(searchWords))
-  const tags = tagsList.filter(t => searchWords.every(w => t.includes(w)))
+  const tags = tagsList.filter(t => searchWords.every(w => t.includes(w))).sort()
   if (items.length === 0 && tags.length === 0) {
     const mapped = mappedString(search)
     if (mapped) {
@@ -433,6 +433,7 @@ export async function get_tag(request) {
   const loginCheck = await get_checkLogin(request)
   const isLoggedIn = searchedTag === publicTagName || loginCheck.status === 200
   const pages = activePages.filter(p => p.tags && p.tags.includes(searchedTag) && (isLoggedIn || p.tags.includes(publicTagName)))
+    .sort((a, b) => a.title.localeCompare(b.title))
   const tagsSet = new Set()
   pages
     .filter(p => p.tags.length > 1)
@@ -440,7 +441,7 @@ export async function get_tag(request) {
       .filter(t => t !== searchedTag && t !== publicTagName)
       .forEach(t => tagsSet.add(t)))
 
-  const tags = tagsSet.size > 0 ? Array.from(tagsSet) : undefined
+  const tags = tagsSet.size > 0 ? Array.from(tagsSet).sort() : undefined
 
   const title = getPhoneTitle(loginCheck.body && loginCheck.body.phoneNumber)
   if (title) {
