@@ -316,7 +316,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
             setViewSource(false)
           }}>חזרה לעורך</button>
         </div>
-        <pre contentEditable className={`viewSource ${viewSourceLTR ? 'ltr' : 'rtl'}`} onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
+        <pre contentEditable suppressContentEditableWarning className={`viewSource ${viewSourceLTR ? 'ltr' : 'rtl'}`} onInput={(event: FormEvent) => setEditedSource((event.target as HTMLElement).innerText)}>{htmlPrettify(editorValue)}</pre>
       </div>}
     <div className="editor-container" onClick={e => setTimeout(() => (e.target as HTMLElement)?.querySelector<HTMLElement>('[contenteditable]')?.focus(), 0)}>
       <CustomToolbar/>
