@@ -225,15 +225,15 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
   }, [quill])
 
-  const getSaveHTML = () => viewSource ? editedSource : editorValue
-  const geDataToSave = () => ({ ...page, title: title.trim(), html: getSaveHTML(), tags })
+  const htmlToSave = viewSource ? editedSource : editorValue
+  const getDataToSave = () => ({ ...page, title: title.trim(), html: htmlToSave.trim(), tags })
 
   async function save(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     try {
       const tagsWereUpdated = page.tags !== tags
       setIsSaving(true)
-      await onSave(geDataToSave())
+      await onSave(getDataToSave())
       if (tagsWereUpdated) {
         await getAllTags(true)
       }
@@ -245,9 +245,9 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
 
   useEffect(() => {
     if (title) {
-      localStorage.setItem(editedPageCacheKey(page.title), JSON.stringify(geDataToSave()))
+      localStorage.setItem(editedPageCacheKey(page.title), JSON.stringify(getDataToSave()))
     }
-  }, [title, tags, getSaveHTML()])
+  }, [title, tags, htmlToSave])
 
   const removeTag = (tag: string) => {
     const filterTags = tags.filter(t => t !== tag)
@@ -285,7 +285,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
         <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
       </span>
       <span className="col-auto">
-        <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !quill?.getText().trim()}>
+        <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !htmlToSave.trim()}>
           {isSaving ? 'שומר...' : 'שמירה'}
         </button>
         <button className="btn btn-secondary" onClick={onCancel}>ביטול</button>
