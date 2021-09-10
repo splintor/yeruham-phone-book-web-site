@@ -35,7 +35,6 @@ function enrichHtml({ html }: PageData) {
     const preMatchStr = html.substr(0, startIndex)
     const openLinkIndex = preMatchStr.lastIndexOf('<a ')
     const closeLinkIndex = preMatchStr.lastIndexOf('</a>')
-    console.log({ startIndex, matchIndex, openLinkIndex, closeLinkIndex, matchStr })
     if (openLinkIndex === -1 || closeLinkIndex > openLinkIndex) {
       const whatsappNumber = matchStr.replaceAll('-', '').replace(/^0/, '972')
       const whatsappLink = whatsappNumber.startsWith('9725') ? ` <a href="https://wa.me/${whatsappNumber}"><img src="/whatsapp.svg"></a>` : ''
