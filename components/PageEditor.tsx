@@ -88,6 +88,17 @@ const detailsPrefix = {
   Mobile: 'נייד: ',
 }
 
+function getDetailsPrefix(action: string, title: string, quill: Quill): string {
+  if (action === 'Mobile') {
+    const titleWords = title.split(' ')
+    if (titleWords.length === 3 && titleWords[1].startsWith('ו')) {
+      return (quill.getText().includes(titleWords[0] + ':') ? titleWords[1].substring(1) : titleWords[0]) + ': '
+    }
+  }
+
+  return detailsPrefix[action]
+}
+
 const sanitizeMail = (email: string): string => {
   if (!email.includes('@')) {
     throw email + ' לא נראה כמו כתובת אימייל תקינה.'
@@ -129,6 +140,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   const [isSaving, setIsSaving] = useState(false)
   const [allTags, setAllTags] = useState<string[]>()
   const quillObj = useRef<Quill>()
+  const titleInputRef = useRef<HTMLInputElement>(null)
 
   const detailsHandler = (action: string) => {
     const quill = quillObj.current
@@ -145,7 +157,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
       setToast({ content: e, type: 'fail', position: 'bottom' })
       return
     }
-    const prefix = detailsPrefix[action]
+    const prefix = getDetailsPrefix(action, titleInputRef.current?.value, quill)
     const text = prefix + value + '\n\n'
     quill.insertText(range.index, text, 'user')
 
@@ -267,7 +279,6 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
 
   useEffect(() => void getAllTags().then(setAllTags), [])
 
-  const titleInputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     setTimeout(() => {
       titleInputRef.current?.focus()
