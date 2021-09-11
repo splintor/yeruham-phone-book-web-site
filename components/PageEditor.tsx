@@ -212,17 +212,13 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
         }
       }
     })
-  }, [quill])
 
-  React.useEffect(() => {
-    if (quill) {
-      quill.clipboard.dangerouslyPasteHTML(editorValue)
-      quill.on('text-change', () => {
-        setEditorValue(quill.root.innerHTML)
-        setEditedSource(quill.root.innerHTML)
-      })
-      quillObj.current = quill
-    }
+    quill.clipboard.dangerouslyPasteHTML(editorValue)
+    quill.on('text-change', () => {
+      setEditorValue(quill.root.innerHTML)
+      setEditedSource(quill.root.innerHTML)
+    })
+    quillObj.current = quill
   }, [quill])
 
   const htmlToSave = viewSource ? editedSource : editorValue
