@@ -124,7 +124,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   const [newTag, setNewTag] = useState('')
   const [editorValue, setEditorValue] = useState(initialPage.html)
   const [viewSource, setViewSource] = useState(false)
-  const [viewSourceLTR, setViewSourceLTR] = useState(false)
+  const [viewSourceLTR, setViewSourceLTR] = useState(true)
   const [editedSource, setEditedSource] = useState(editorValue)
   const [isSaving, setIsSaving] = useState(false)
   const [allTags, setAllTags] = useState<string[]>()
