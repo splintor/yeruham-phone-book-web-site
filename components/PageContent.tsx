@@ -20,16 +20,16 @@ interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' |
   isGuestLogin: boolean
   closePage(): void
   isEdited?: boolean
+  isDeleteConfirmationVisible: boolean
 }
 
 export function PageContent({ search, tag, pushState, setToast, pages, totalCount, closePage, isGuestLogin, ...props }: PageContentProps): ReactElement {
   const [isEditing, setIsEditing] = useState(props.isEdited || Boolean(localStorage.getItem(editedPageCacheKey(props.page.title))))
-  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false)
   const escapePressed = useKeyPress('Escape')
   const [page, setPage] = useState(props.page)
   const { title, tags } = page
 
-  if (escapePressed && !isDeleteConfirmationVisible) {
+  if (escapePressed && !props.isDeleteConfirmationVisible) {
     closePage?.()
   }
 
@@ -89,16 +89,8 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
           <div className="card p-1 mb-3" key={page.title}>
             <div className="card-body p-2">
               <PageEditButtons page={page}
-                               pages={pages}
-                               totalCount={totalCount}
-                               tags={tags}
-                               tag={tag}
-                               search={search}
                                isGuestLogin={isGuestLogin}
                                startEditing={() => setIsEditing(true)}
-                               setToast={setToast}
-                               pushState={pushState}
-                               setIsDeleteConfirmationVisible={setIsDeleteConfirmationVisible}
                                closePage={closePage}/>
               <h5 className="card-title">
                 <TitleLink title={page.title} key={page.title}/>

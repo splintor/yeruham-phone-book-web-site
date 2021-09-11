@@ -8,6 +8,7 @@ import { searchForPages } from '../utils/requests.client'
 import { initTagManager, logToGTM } from '../utils/tag-manager'
 import { getSearchUrl, getTagUrl, pageUrl } from '../utils/url'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
+import { DeleteConfirmationModal } from './DeleteConfirmationModal'
 import { NavBar } from './NavBar'
 import { PageContent } from './PageContent'
 import { PageEditButtons } from './PageEditButtons'
@@ -30,6 +31,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   const [search, setSearch] = useState(searchFromResults || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false)
   const [toast, setToast] = useState<ToastOptions>()
   const debouncedSearchTerm = useDebounce(search, 300)
   const stringBeingSearched = useRef(search)
@@ -146,7 +148,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     pushState(getSearchUrl(search), { search, ...results })
   }
 
-  const performSearch = async (e: BaseSyntheticEvent) => {
+  async function performSearch(e: BaseSyntheticEvent) {
     e.preventDefault()
     if (!search) {
       return
@@ -187,7 +189,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     })
   }, [displayedPage.page, pages, isSearching])
 
-  const markUserEdit = (userSearch: string) => {
+  function markUserEdit(userSearch: string) {
     setFromUserEdit(true)
     setSearch(userSearch)
   }
@@ -212,59 +214,60 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     </div>}
 
     <main className={'container mw-100' + (showWelcome ? ' showWelcome' : '')}>
-    {showWelcome
-      ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
-      : displayedPage.page
-        ? <PageContent status={pageStatus} {...displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
-                       pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}/>
-        : <div className="p-2">
-          {isSearching
-            ? <div className="d-flex justify-content-center text-primary mt-4"><div>
-                  <span className="spinner-border spinner-border-sm me-1" role="status"/>
-                    מחפש...
-              </div></div>
-            : <>
-              {tag && <h3><TagLink tag={tag} pushState={pushState} kind="title"/></h3>}
-              <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
-              {
-                tags && tags.map(t => <span className="fs-4" key={t}>
-                  <TagLink key={t} tag={t} pushState={pushState} kind="title"/>
-                </span>)
-              }
-              {
-                pages?.map((page) => <div className="result card p-1 mb-3" key={page.title}>
-                  <div className="card-body p-2">
-                    <PageEditButtons page={page}
-                                     pages={pages}
-                                     totalCount={totalCount}
-                                     tags={tags}
-                                     tag={tag}
-                                     search={search}
-                                     isGuestLogin={isGuestLogin}
-                                     startEditing={() => setDisplayedPage({ page, isEdited: true })}
-                                     setToast={setToast}
-                                     pushState={pushState}/>
-                    <h5 className="card-title">
-                      <TitleLink title={page.title} key={page.title} onClick={e => {
-                        e.preventDefault()
-                        pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
-                        setPageStatus(200)
-                        setDisplayedPage({ page })
-                      }}/>
-                    </h5>
-                    <div>
-                      {page.tags?.map(tag => <TagLink key={tag} tag={tag} pushState={pushState} kind="small"/>)}
+      {showWelcome
+        ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
+        : displayedPage.page
+          ? <PageContent status={pageStatus} {...displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
+                         pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}
+                         isDeleteConfirmationVisible={isDeleteConfirmationVisible}/>
+          : <div className="p-2">
+            {isSearching
+              ? <div className="d-flex justify-content-center text-primary mt-4"><div>
+                    <span className="spinner-border spinner-border-sm me-1" role="status"/>
+                      מחפש...
+                </div></div>
+              : <>
+                {tag && <h3><TagLink tag={tag} pushState={pushState} kind="title"/></h3>}
+                <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
+                {
+                  tags && tags.map(t => <span className="fs-4" key={t}>
+                    <TagLink key={t} tag={t} pushState={pushState} kind="title"/>
+                  </span>)
+                }
+                {
+                  pages?.map((page) => <div className="result card p-1 mb-3" key={page.title}>
+                    <div className="card-body p-2">
+                      <PageEditButtons page={page}
+                                       isGuestLogin={isGuestLogin}
+                                       startEditing={() => setDisplayedPage({ page, isEdited: true })}/>
+                      <h5 className="card-title">
+                        <TitleLink title={page.title} key={page.title} onClick={e => {
+                          e.preventDefault()
+                          pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
+                          setPageStatus(200)
+                          setDisplayedPage({ page })
+                        }}/>
+                      </h5>
+                      <div>
+                        {page.tags?.map(tag => <TagLink key={tag} tag={tag} pushState={pushState} kind="small"/>)}
+                      </div>
+                      <input type="checkbox" id={page.title} defaultChecked={pages.length === 1}/>
+                      <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
+                      <label htmlFor={page.title} role="button">הצג עוד...</label>
                     </div>
-                    <input type="checkbox" id={page.title} defaultChecked={pages.length === 1}/>
-                    <PageHtmlRenderer pushState={pushState} className="preview" page={page} pages={pages} totalCount={totalCount} search={search} tags={tags} tag={tag}/>
-                    <label htmlFor={page.title} role="button">הצג עוד...</label>
-                  </div>
-                </div>)
-              }
-            </>
-          }
-        </div>
-    }
-  </main>
+                  </div>)
+                }
+              </>
+            }
+          </div>
+      }
+    </main>
+    <DeleteConfirmationModal setModalVisible={setIsDeleteConfirmationVisible}
+                             pushState={pushState}
+                             setToast={setToast}
+                             pages={pages}
+                             search={search}
+                             tag={tag}
+                             tags={tags}/>
   </>)
 }
