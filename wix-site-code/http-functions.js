@@ -438,7 +438,7 @@ export async function get_tag(request) {
   pages
     .filter(p => p.tags.length > 1)
     .forEach(p => p.tags
-      .filter(t => t !== searchedTag && t !== publicTagName)
+      .filter(t => t !== searchedTag && t !== publicTagName && !pages.every(p2 => p2.tags.includes(t)))
       .forEach(t => tagsSet.add(t)))
 
   const tags = tagsSet.size > 0 ? Array.from(tagsSet).sort() : undefined

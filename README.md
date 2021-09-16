@@ -8,7 +8,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 
 ### Things left to be done:
 1. TODO: Prevent having slashes in title, as it fails save
-2. TODO: When opening tags, only show sub-tags, that is, tags thatt exists in only some of the tag pages
 3. TODO: Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
 4. TODO [mobile]: Update app to use the new site
 5. TODO: Add "Copy" button next to phone numbers
