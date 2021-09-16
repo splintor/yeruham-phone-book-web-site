@@ -57,10 +57,11 @@ async function loadCacheData(phoneNumber) {
 
   const timeSpan = Date.now() - start
   const title = getPhoneTitle(phoneNumber)
+  const info = `המידע כולל ${activePages.length} דפים, ${phones.size} מספרי טלפון ו-${tagsList.length} קטגוריות. עודכן לאחרונה ב-${new Date(maxDate)}.`
   if (title) {
-    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}`)
+    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}. ${info}`)
   } else {
-    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות`)
+    sendInfoLog(`המידע נטען לזכרון תוך ${timeSpan / 1000} שניות. ${info}`)
   }
 }
 
