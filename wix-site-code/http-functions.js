@@ -246,7 +246,7 @@ export async function post_page(request) {
 
     await wixData.save('pages_history', { pageId: existing._id, changedBy: phoneNumber, oldTitle: existing.title, oldHtml: existing.html, oldTags: existing.tags }, suppressAuthAndHooks)
     if (page.isDeleted) {
-      updateMessage = `הדף ${page.title} נמחק ע"י ${getPhoneTitle(phoneNumber   )}`
+      updateMessage = `הדף *${page.title}* נמחק ע"י ${getPhoneTitle(phoneNumber)}`
     } else if (existing.isDeleted) {
       updateMessage = `הדף *${page.title}* שוחזר ע"י ${getPhoneTitle(phoneNumber)}`
     } else {
