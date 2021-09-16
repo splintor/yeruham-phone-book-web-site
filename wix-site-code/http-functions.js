@@ -410,7 +410,7 @@ export async function get_pages(request) {
   }
 
   const updatedAfter = request.query && request.query.UpdatedAfter
-  const pages = updatedAfter ? allPages.filter(p => p._updatedDate.toISOString() >= updatedAfter) : allPages
+  const pages = updatedAfter ? allPages.filter(p => p._updatedDate.toISOString() > updatedAfter) : allPages
 
   const title = getPhoneTitle(loginCheck.body.phoneNumber)
   if (updatedAfter) {
