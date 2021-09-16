@@ -289,7 +289,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   return <div className="results page-editor m-1">
     <form className="row g-1 mb-1">
       <span className="col-auto flex-grow-1">
-        <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} ref={titleInputRef}/>
+        <input className="form-control" value={title} onChange={e => setTitle(e.target.value.replace(/\//g, '-'))} ref={titleInputRef}/>
       </span>
       <span className="col-auto">
         <button className="btn btn-primary me-1" onClick={save} disabled={!title.trim() || !htmlToSave.trim()}>
