@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getRequestLogData, sendResponse } from '../../../../utils/api'
+import { sendResponse } from '../../../../utils/api'
 import { searchPages } from '../../../../utils/data-layer'
 
 export default async function search(request: NextApiRequest, response: NextApiResponse): Promise<void> {
