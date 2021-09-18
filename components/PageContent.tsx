@@ -6,6 +6,7 @@ import { PageData } from '../types/PageData'
 import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { editedPageCacheKey, ToastOptions } from './App'
+import { LoginPage } from './LoginPage'
 import { PageEditButtons } from './PageEditButtons'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
@@ -75,11 +76,9 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
 
   switch (props.status) {
     case 404:
-      return <div className="results page">
+      return isGuestLogin ? <LoginPage/> : <div className="results page">
         <h5 className="p-2">
           <p>הדף <span className="fw-bold">{title}</span> לא נמצא בספר הטלפונים.</p>
-          <p>&nbsp;</p>
-          {isGuestLogin && <p>יכול להיות שזה מפני שלא בוצעה <a href={`/`}>כניסה למערכת</a>.</p>}
         </h5>
       </div>
 
