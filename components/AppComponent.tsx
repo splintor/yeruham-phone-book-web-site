@@ -202,7 +202,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   // noinspection HtmlUnknownTarget
   return (<>
     <NavBar authTitle={authTitle} showWelcome={showWelcome}
-            search={search} goToHome={goToHome} performSearch={performSearch}
+            page={displayedPage.page} search={search} tag={tag} setToast={setToast} goToHome={goToHome} performSearch={performSearch}
             markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
     {toast && <div className={`alert ${toast.type === 'fail' ? 'alert-danger' : 'alert-success'} ${toast.position === 'bottom' ? 'position-fixed bottom-0 w-100 mb-0' : ''}`}>
       <div className="d-flex">

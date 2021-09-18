@@ -7,7 +7,7 @@ import { requestProps } from '../../utils/requestProps'
 
 // noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, query}) => {
-  const { search } = query as { search: string}
+  const search = (query.search as string).replace(/_/g, ' ')
   const result = await searchPages(req, search)
   return {
     props: {
