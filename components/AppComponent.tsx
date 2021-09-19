@@ -129,7 +129,9 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
 
   useEffect(() => {
     window.addEventListener('popstate', (e: PopStateEvent) => {
-      processDynamicState(e.state as AppProps)
+      if (e.state) {
+        processDynamicState(e.state as AppProps)
+      }
       return false
     })
   }, [])
