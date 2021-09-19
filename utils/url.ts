@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { ToastOptions } from '../components/App'
 import { PageData } from "../types/PageData"
 import { copyTextToClipboard } from './clipboard'
@@ -11,3 +12,19 @@ export async function copyPageLink(page: PageData, search: string, tag: string, 
   await copyTextToClipboard(location.origin + url.replace(/ /g, '_'))
   setToast({ content: 'כתובת הדף הועתקה.', position: 'bottom', timeout: 3_000 })
 }
+
+export function useHashAuth(): string {
+  const [hashAuth, setHashAuth] = useState<string>()
+  useEffect(() => {
+    const [, hashAuth] = location.hash.split('#auth:')
+    if (hashAuth) {
+      setHashAuth(hashAuth)
+    }
+  }, [])
+
+  return hashAuth
+}
+
+// https://stackoverflow.com/a/5298684/46635
+export const clearHashAuth = (): void =>
+  history.replaceState("", document.title, window.location.pathname + window.location.search)

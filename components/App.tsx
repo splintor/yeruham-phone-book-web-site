@@ -4,6 +4,7 @@ import React, { ReactElement, ReactNode, useEffect, useState } from 'react'
 import { AppProps } from '../types/AppProps'
 import { publicTagName, siteTitle } from '../utils/consts'
 import { AuthData, parseAuthCookies } from '../utils/cookies'
+import { useHashAuth } from '../utils/url'
 import { AppComponent } from './AppComponent'
 import { LoginPage } from './LoginPage'
 
@@ -45,8 +46,8 @@ export default function App(appProps: AppProps): ReactElement {
         : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות הציבוריים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן'
 
   const [authData, setAuthData] = useState<AuthData>()
-
   useEffect(() => setAuthData(parseAuthCookies()), [])
+  const hashAuth = useHashAuth()
   const isPageAllowed = status !== 401 && (authData?.auth || !newPage)
 
 
@@ -68,7 +69,7 @@ export default function App(appProps: AppProps): ReactElement {
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.rtl.min.css"
             integrity="sha384-jHiSqEim4+W1UCvv8kTcMbtCZlRF8MxbgKdfpvncia8gdN1UImBnhTpKtufREzv7" crossOrigin="anonymous"/>
     </Head>
-    {authData ? isPageAllowed ? <AppComponent authData={authData} {...appProps} /> : <LoginPage/> : ''}
+    {authData ? (isPageAllowed && !hashAuth) ? <AppComponent authData={authData} {...appProps} /> : <LoginPage hashAuth={hashAuth}/> : ''}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossOrigin="anonymous"/>
   </div>
 }

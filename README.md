@@ -9,7 +9,6 @@ The actual Wix code is stored on the site and [duplicated here](./wix-site-code)
 ### Things left to be done:
 - [data] Remove general tags - like "Krafts" and "Businesses"
 - [data] Shorten titles to make them fit in app
-- Add option to page login number in URL (so it can be quickly opened from mobile app)
 - Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)

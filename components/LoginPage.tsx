@@ -1,6 +1,7 @@
 import React, { FormEvent, ReactElement, useEffect, useRef, useState } from 'react'
 import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { setAuthCookies } from '../utils/cookies'
+import { clearHashAuth } from '../utils/url'
 import { GitHubCorner } from './GitHubCorner'
 
 enum ErrorType {
@@ -25,14 +26,18 @@ function renderError(errorType: ErrorType) {
   }
 }
 
-export function LoginPage(): ReactElement {
-  const [phoneNumber, setPhoneNumber] = useState('')
+export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
+  const [phoneNumber, setPhoneNumber] = useState(hashAuth || '')
   const [isLoading, setIsLoading] = useState(false)
   const [errorType, setErrorType] = useState(ErrorType.None)
   const phoneInputRef = useRef<HTMLInputElement>()
 
-  useEffect(() => {
-    setTimeout(() => phoneInputRef.current?.focus(), 0)
+  useEffect(() => void setTimeout(() => phoneInputRef.current?.focus(), 0), [])
+  useEffect(function () {
+    if (hashAuth) {
+      clearHashAuth()
+      void login()
+    }
   }, [])
 
   useEffect(() => {
@@ -47,15 +52,14 @@ export function LoginPage(): ReactElement {
   const isLoginDisabled = phoneNumber?.replace(/[-+]/g, '').length < 9 || isLoading
   const loginTitle = isLoading ? <span><span className="spinner-border spinner-border-sm me-1"/>בודק...</span> : 'כניסה'
 
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+  async function login(): Promise<void> {
     setErrorType(ErrorType.None)
     setIsLoading(true)
     try {
       const res = await fetch(`/api/login/${phoneNumber}`)
       if (res.ok) {
         const { auth, authTitle } = await res.json()
-        setAuthCookies(auth, authTitle)
+        setAuthCookies(auth, authTitle, !hashAuth)
         location.reload()
         return // leave isLoading true until page is reloaded
       } else {
@@ -65,6 +69,11 @@ export function LoginPage(): ReactElement {
       setErrorType(ErrorType.NetworkError)
     }
     setIsLoading(false)
+  }
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    await login()
   }
 
   const onGuestLogin = async (e: FormEvent) => {

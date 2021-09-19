@@ -3,11 +3,13 @@ import { IncomingMessage } from 'http'
 
 const authTitleKey = 'authTitle'
 const authTitleIsNewKey = 'authTitleIsNew'
-export function setAuthCookies(auth: string, authTitle: string): void {
+export function setAuthCookies(auth: string, authTitle: string, markAsNew = true): void {
   document.cookie = [`auth=${auth}`, 'path=/', 'max-age=2147483647'].join(';')
   if (auth && authTitle) {
     localStorage.setItem(authTitleKey, authTitle)
-    localStorage.setItem(authTitleIsNewKey, '1')
+    if (markAsNew) {
+      localStorage.setItem(authTitleIsNewKey, '1')
+    }
   } else {
     localStorage.removeItem(authTitleKey)
   }
