@@ -25,8 +25,8 @@ export const getTagPages = (req: IncomingMessage, tag: string): Promise<Response
 export const getAllTags = (req: IncomingMessage): Promise<Response> =>
   fetch(`${urlPrefix}/tags`, getRequestOptions(req))
 
-export const getAllPages = (req: IncomingMessage, updatedAfter: string): Promise<Response> =>
-  fetch(`${urlPrefix}/pages${updatedAfter ? `?UpdatedAfter=${updatedAfter}` : ''}`, getRequestOptions(req))
+export const getAllPages = (req: IncomingMessage, updatedAfter: string, requestedBy: string): Promise<Response> =>
+  fetch(`${urlPrefix}/pages?UpdatedAfter=${updatedAfter || ''}&RequestedBy=${requestedBy || ''}`, getRequestOptions(req))
 
 export const savePage = (req: NextApiRequest): Promise<Response> =>
   fetch(`${urlPrefix}/page`, {
