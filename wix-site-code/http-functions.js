@@ -410,9 +410,14 @@ export async function get_pages(request) {
   }
 
   const updatedAfter = request.query && request.query.UpdatedAfter
+  const requestedBy = request.query && request.query.RequestedBy
   const pages = updatedAfter ? allPages.filter(p => p._updatedDate.toISOString() > updatedAfter) : allPages
 
-  const title = getPhoneTitle(loginCheck.body.phoneNumber)
+  let title = getPhoneTitle(loginCheck.body.phoneNumber)
+  if (requestedBy) {
+    const requestedByTitle = getPhoneTitle(requestedBy)
+    title += ` (בשם ${requestedByTitle})`
+  }
   if (updatedAfter) {
     sendInfoLog(`בוצעה בקשה לרשימת הדפים מאז *${updatedAfter}* ע"י *${title}*, וחזרו *${pages.length}* דפים`)
   } else {
