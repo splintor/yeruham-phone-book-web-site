@@ -30,13 +30,17 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
   const [page, setPage] = useState(props.page)
   const { title, tags } = page
 
-  if (escapePressed && !props.isDeleteConfirmationVisible) {
-    closePage?.()
-  }
-
   useEffect(() => setPage(props.page), [props.page])
 
   const clearPageCache = (): void => localStorage.removeItem(editedPageCacheKey(props.page.title))
+
+  if (escapePressed && !props.isDeleteConfirmationVisible) {
+    if (isEditing) {
+      cancelEditing(escapePressed)
+    } else {
+      closePage?.()
+    }
+  }
 
   const saveChanges = async (pageToSave: PageData) => {
     const { title, _id } = pageToSave
@@ -64,7 +68,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
     setToast({ position: 'bottom', content: <div>הדף <b>{title}</b> {_id ? 'נשמר' : 'נוצר'} בהצלחה.</div> })
   }
 
-  function cancelEditing(e: React.MouseEvent): void {
+  function cancelEditing(e: React.MouseEvent | Event): void {
     e.preventDefault()
     clearPageCache()
     if (props.isEdited) {
