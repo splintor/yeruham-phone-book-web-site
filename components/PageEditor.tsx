@@ -2,6 +2,7 @@ import React, { FormEvent, ReactElement, useEffect, useRef, useState } from 'rea
 import 'quill/dist/quill.snow.css'
 import { Quill } from 'quill'
 import { useQuill } from 'react-quilljs'
+import { useKeyPress } from '../hooks/useKeyPress'
 import { AppProps } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { getAllTags } from '../utils/api'
@@ -141,6 +142,22 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   const [allTags, setAllTags] = useState<string[]>()
   const quillObj = useRef<Quill>()
   const titleInputRef = useRef<HTMLInputElement>(null)
+  const sPressed = useKeyPress('s')
+  const enterPressed = useKeyPress('Enter')
+
+  if (sPressed && (sPressed.ctrlKey || sPressed.metaKey)) {
+    sPressed.preventDefault()
+  } else if (enterPressed && (enterPressed.ctrlKey || enterPressed.metaKey)) {
+    enterPressed.preventDefault()
+  }
+
+  useEffect(() => {
+    if (sPressed && (sPressed.ctrlKey || sPressed.metaKey)) {
+      void save(sPressed)
+    } else if (enterPressed && (enterPressed.ctrlKey || enterPressed.metaKey)) {
+      void save(enterPressed)
+    }
+  }, [sPressed, enterPressed])
 
   const detailsHandler = (action: string) => {
     const quill = quillObj.current
@@ -236,7 +253,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   const htmlToSave = viewSource ? editedSource : editorValue
   const getDataToSave = () => ({ ...page, title: title.trim(), html: htmlToSave.trim(), tags })
 
-  async function save(event: React.MouseEvent<HTMLButtonElement>) {
+  async function save(event: Event | React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     try {
       const tagsWereUpdated = page.tags !== tags
