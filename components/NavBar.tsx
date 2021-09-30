@@ -3,6 +3,7 @@ import { PageData } from '../types/PageData'
 import { siteTitle } from '../utils/consts'
 import { ToastOptions } from './App'
 import { AppMenu } from './AppMenu'
+import { Logo } from './Logo'
 import { SearchBox } from './SearchBox'
 import { TitleLink } from './TitleLink'
 
@@ -24,7 +25,7 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, page, search, tag, se
     <div className="container-fluid pe-0">
       <div className="text-nowrap">
         <a className="navbar-brand app-icon" href="/">
-          <img src="/logo.png" alt={siteTitle} title={`${siteTitle}\nקרדיט על צילום הלוגו: ליאור אלמגור – www.fromycamera.com`} width="40" height="40"/>
+          <Logo width="40" height="40"/>
         </a>
         <TitleLink title={siteTitle} href="/" className="navbar-brand" onClick={e => {
           e.preventDefault()

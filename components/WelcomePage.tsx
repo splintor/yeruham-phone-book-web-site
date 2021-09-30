@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
-import { adminEmail, adminPhone, publicTagName, siteTitle } from '../utils/consts'
+import { adminEmail, adminPhone, publicTagName } from '../utils/consts'
+import { Logo } from './Logo'
 import { SearchBox, SearchBoxProps } from './SearchBox'
 
 export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: string } & SearchBoxProps): ReactElement => (
@@ -22,7 +23,7 @@ export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: strin
         הערות והצעות כדאי לשלוח ב<a href={`mailto:${adminEmail}?subject=ספר הטלפונים של ירוחם`}>מייל</a> או ב<a href={`https://wa.me/${adminPhone.replace(/^0/, '+972-')}`}>ווטסאפ</a>
       </div>
       <a href="/" className="mt-3 d-flex justify-content-center">
-        <img src="/logo.png" alt={siteTitle} width={'75%'}/>
+        <Logo width="75%"/>
       </a>
     </div>
   </div>

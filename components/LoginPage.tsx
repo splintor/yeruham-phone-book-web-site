@@ -3,6 +3,7 @@ import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
 import { setAuthCookies } from '../utils/cookies'
 import { clearHashAuth } from '../utils/url'
 import { GitHubCorner } from './GitHubCorner'
+import { Logo } from './Logo'
 
 enum ErrorType {
   None,
@@ -87,7 +88,7 @@ export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
   return <>
     <div className="container d-flex vh-100">
       <div className="row justify-content-center align-self-center card border-primary mx-auto">
-        <img src="/logo.png" alt={siteTitle} className="card-img-top w-50 p-2  align-self-center"/>
+        <Logo className="card-img-top w-50 p-2  align-self-center"/>
         <h3 className="card-header card-title">{siteTitle}</h3>
         <div className="card-body p-2">
           <div>ספר הטלפונים מיועד לתושבי ירוחם בלבד.</div>
