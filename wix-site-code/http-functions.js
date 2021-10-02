@@ -4,7 +4,15 @@ import { response, ok, created, notFound, badRequest } from 'wix-http-functions'
 import wixData from 'wix-data'
 // noinspection NpmUsedModulesInstalled
 import { fetch } from 'wix-fetch'
-import { adminPhoneNumber, mobileAppPhoneNumber, authPassword, telegramBotApiToken, telegramUpdateChannelChatId, telegramInfoChannelChatId } from './secret'
+import {
+  adminPhoneNumber,
+  mobileAppPhoneNumber,
+  authPassword,
+  telegramBotApiToken,
+  telegramUpdateChannelChatId,
+  telegramInfoChannelChatId,
+  telegramBotPhoneNumber
+} from './secret'
 import { encrypt, decrypt, getKeyFromPassword } from './crypt'
 import { mappedString } from './hebrewMapping'
 
@@ -94,7 +102,7 @@ async function processData(phoneNumber, pagesList) {
 export async function get_login(request) {
   const phoneNumber = request.path[0]
 
-  if (phoneNumber === adminPhoneNumber || phoneNumber === mobileAppPhoneNumber) {
+  if (specialNumbers[phoneNumber]) {
     sendInfoLog(`בוצעה כניסה למערכת בעזרת המספר *${phoneNumber}*`)
     return okResponse({ auth: buildAuth(phoneNumber), authTitle: getPhoneTitle(phoneNumber) })
   }
@@ -120,21 +128,23 @@ export async function get_login(request) {
     return okResponse({ auth: buildAuth(phoneNumber), authTitle: foundPage.title })
   } else {
     sendInfoLog(`בוצע נסיון כושל להכנס למערכת מהמספר *${phoneNumber}*`)
-    return unauthorizedResponse('Failed to login')
+    return unauthorizedResponse('Failed to log in')
   }
 }
 
-function getPhoneTitle(phoneNumber) {
-  if (phoneNumber === adminPhoneNumber) {
-    return 'מנהל מערכת'
-  }
+const specialNumbers = {
+  [adminPhoneNumber]: 'מנהל מערכת',
+  [mobileAppPhoneNumber]: 'אפליקציית ספר הטלפונים',
+  [telegramBotPhoneNumber]: 'בוט טלגרם',
+}
 
-  if (phoneNumber === mobileAppPhoneNumber) {
-    return 'אפליקציית ספר הטלפונים'
-  }
-
+function getPhoneNumberFromPhonesList(phoneNumber) {
   const page = phones.get(phoneNumber)
   return page && page.title || phoneNumber
+}
+
+function getPhoneTitle(phoneNumber) {
+  return specialNumbers[phoneNumber] || getPhoneNumberFromPhonesList(phoneNumber)
 }
 
 // URL: https://<wix-site-url>/_functions/checkLogin
@@ -150,7 +160,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
       return unauthorizedResponse(`Invalid auth header: ${auth}`)
     }
 
-    if (phoneNumber === adminPhoneNumber || phoneNumber === mobileAppPhoneNumber) {
+    if (specialNumbers[phoneNumber]) {
       return okResponse({ phoneNumber })
     }
 
