@@ -6,30 +6,7 @@ We store the data on a [Wix site data collection](https://www.wix.com/corvid/fea
 with [services](./wix-site-code) to access the data.
 The actual Wix code is stored on the site and [duplicated here](./wix-site-code) to make it open and to track changes.
 
-### Things left to be done:
-- [data] Remove general tags - like "Krafts" and "Businesses"
-- [data] Shorten titles to make them fit in app
-- Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
-- Add "Copy" button next to phone numbers
-- Show icon for each result (and enable defining icons for pages/categories)
-- [mobile]: Find how to make site links open the app on Android
-- Show auto-complete dropdown for in-phonebook links in editor
-- Highlight search in result page
-- Add Kosher/Mehadrin info to food places
-- Enable customization/themes
-- Link unlinked e-mail addresses (check if there are any)
-- Set a nightly backup of the data (to a private GitHub gist?)
-- Handle cross-domain authentication
-- Data sanitation:
-     * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
-     * verify social network links use relative images
-- X Think of how to handle deletion (also so the flutter app can be updated about changes)
-- X Handle page history
-- Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
-- Consider moving to tailwind.css / svelte+sapper / shoelace
-
-
-### Benefits in new sites
+### Benefits in new site over the old site in Google Sites 
 1. It won't close on 2021
 1. It has nicer and simpler URLs, based only on title, thus removing the need to come up with an English id, and helps to detect duplicates
 1. It enables custom favicon
