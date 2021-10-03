@@ -20,8 +20,8 @@ function renderError(errorType: ErrorType) {
       return <div>
         מספר הטלפון שהוכנס לא קיים בספר הטלפונים.
         <div>אם הינך תושב/ת ירוחם, שלח/י את פרטיך
-          ל-<a href={`mailto:${adminEmail}?subject=נא להוסיף אותי לספר הטלפונים של ירוחם`}>{adminEmail}</a>{' '}<br/>
-          או למספר <span className="adminPhone">{adminPhone}</span> ונשמח להוסיף אותך!
+          ב<a href={`mailto:${adminEmail}?subject=נא להוסיף אותי לספר הטלפונים של ירוחם`}>מייל</a> או ב<a href={`https://wa.me/${adminPhone.replace(/^0/, '+972-')}?text=נא להוסיף אותי לספר הטלפונים של ירוחם`}>ווטסאפ</a>{' '}
+          ונשמח להוסיף אותך!
         </div>
       </div>
   }
