@@ -65,6 +65,7 @@ export default function App(appProps: AppProps): ReactElement {
         <meta property="og:image" itemProp="image" content={`${origin}/logo-square.jpg`} key="image"/>
       </>}
       <link rel="icon" href="/favicon.ico"/>
+      <link rel="apple-touch-icon" href="/logo192.png"/>
       <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="opensearch.xml" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.rtl.min.css"
             integrity="sha384-jHiSqEim4+W1UCvv8kTcMbtCZlRF8MxbgKdfpvncia8gdN1UImBnhTpKtufREzv7" crossOrigin="anonymous"/>
