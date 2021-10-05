@@ -1,19 +1,19 @@
-function Error({ statusCode, err }) {
+function Error(props) {
   return (
     <p>
-      {statusCode
-        ? `קרתה שגיאה מספר ${statusCode} בשרת`
+      {props.statusCode
+        ? `קרתה שגיאה מספר ${props.statusCode} בשרת`
         : <div>
           <span>קרתה שגיאה בדפדפן:</span>
-          <pre style={{color: 'red'}}>{JSON.stringify(err || {}, null, 2)}</pre>
+          <pre style={{color: 'red'}}>{JSON.stringify(props, null, 2)}</pre>
         </div>}
     </p>
   )
 }
 
-Error.getInitialProps = ({ res, err }) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404
-  return { statusCode, err }
+Error.getInitialProps = (props) => {
+  const statusCode = props.res ? props.res.statusCode : props.err ? props.err.statusCode : undefined
+  return { statusCode, ...props }
 }
 
 // noinspection JSUnusedGlobalSymbols
