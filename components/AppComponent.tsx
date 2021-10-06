@@ -18,6 +18,9 @@ import { TitleLink } from './TitleLink'
 import { WelcomePage } from './WelcomePage'
 
 export function AppComponent(appProps: AppProps & { authData: AuthData }): ReactElement {
+  if (location.hash === '#error1') {
+    throw '#error1'
+  }
   const [fromUserEdit, setFromUserEdit] = useState(false)
   const [searchFocusId, setSearchFocusId] = useState(0)
   const [pageStatus, setPageStatus] = useState(appProps.status)
@@ -40,8 +43,15 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   const showWelcome = !isSearching && !displayedPage.page && !pages
   const { authTitle } = appProps.authData
   const isGuestLogin = !authTitle
+  if (location.hash === '#error2') {
+    throw '#error2'
+  }
 
   useEffect(() => {
+    if (location.hash === '#error3') {
+      throw '#error3'
+    }
+
     window.history.replaceState(appProps, '', location.href)
     initTagManager(appProps.url, authTitle)
     if (isAuthTitleNew()) {
