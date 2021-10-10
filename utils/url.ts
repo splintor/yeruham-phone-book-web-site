@@ -9,7 +9,7 @@ export const getTagUrl = (tag: string): string => tag ? `/tag/${tag}`  : '/'
 
 export async function copyPageLink(page: PageData, search: string, tag: string, setToast: (toastOptions: ToastOptions) => void): Promise<void> {
   const url = page?.title ? pageUrl(page.title) : tag ? getTagUrl(tag) : search ? getSearchUrl(search) : '/'
-  await copyTextToClipboard(location.origin + url.replace(/ /g, '_'))
+  await copyTextToClipboard(location.origin + url.replace(/ /g, '_').replace(/"/g, '%22'))
   setToast({ content: 'כתובת הדף הועתקה.', position: 'bottom', timeout: 3_000 })
 }
 
