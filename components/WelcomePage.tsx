@@ -14,7 +14,7 @@ export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: strin
       <SearchBox {...searchBoxProps}/>
       <div className="mt-2">
         האתר זמין גם כ<a href="https://play.google.com/store/apps/details?id=com.splintor.yeruhamphonebook">אפליקצית
-        אנדרואיד</a> וכ<a href="https://groups.google.com/d/msg/yerucham1/QWQYnxeXNfU/Q104gimvAAAJ">בוט בטלגרם</a>
+        אנדרואיד</a> וכ<a href="https://telegram.me/yeruhamPhoneBookbot">בוט בטלגרם</a>
       </div>
       <div className="mt-2">
         הסבר על השימוש באתר אפשר למצוא <a href="/help">כאן</a>
