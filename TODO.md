@@ -1,3 +1,4 @@
+- Logs - add number next to name in all log messages
 - [data] Remove general tags - like "Krafts" and "Businesses"
 - [data] Shorten titles to make them fit in app
 - Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
