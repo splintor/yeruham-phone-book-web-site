@@ -19,9 +19,7 @@ function renderError(errorType: ErrorType) {
     case ErrorType.NotFound:
       return <div>
         מספר הטלפון שהוכנס לא קיים בספר הטלפונים.
-        <div>אם הינך תושב/ת ירוחם, שלח/י את פרטיך
-          ב<a href={`mailto:${adminEmail}?subject=נא להוסיף אותי לספר הטלפונים של ירוחם`}>מייל</a> או ב<a href={`https://wa.me/${adminPhone.replace(/^0/, '+972-')}?text=נא להוסיף אותי לספר הטלפונים של ירוחם. אני תושב ירוחם וקוראים לי`}>ווטסאפ</a>{' '}
-          ונשמח להוסיף אותך!
+        <div>אם הינך תושב/ת ירוחם, <a href="https://forms.gle/zr3ZbiFYce2ZbArF9" target="ypb_registration">מלא/י פרטיך כאן</a> ונשמח להוסיף אותך!
         </div>
       </div>
   }
