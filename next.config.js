@@ -1,6 +1,6 @@
 module.exports = {
   target: 'server',
-  async rewrites() {
+  rewrites() {
     return [
       {
         source: '/search-suggestions/:searchTerm',
