@@ -1,7 +1,13 @@
+- Productize: Enable customizing logo and about text.
+- Productize: Make site accessible if no pages exists (for initial bootstrap)
 - Logs - add number next to name in all log messages
-- [data] Remove general tags - like "Krafts" and "Businesses"
-- [data] Shorten titles to make them fit in app
-- Update Daniel's Telegram bot (Update URL to get data from, send "Refresh" command on update) - https://github.com/erezdaniel7/yeruhamPhoneBookbot/blob/master/app.js
+- Enable adding images (as data URLs)
+- Fix strange client errors on old browsers (recreated on Android emulator browser)
+- App: Facebook icons are not displayed
+- Fix Showing Edit/Remove buttons in mobile web. Appears when editing item in list view.
+- App: Log app actions
+
+
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)
 - [mobile]: Find how to make site links open the app on Android
