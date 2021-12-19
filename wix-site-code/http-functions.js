@@ -140,7 +140,7 @@ const specialNumbers = {
 
 function getPhoneNumberFromPhonesList(phoneNumber) {
   const page = phones.get(phoneNumber)
-  return page && page.title || phoneNumber
+  return page ? `${page.title} (${phoneNumber})` : phoneNumber
 }
 
 function getPhoneTitle(phoneNumber) {
