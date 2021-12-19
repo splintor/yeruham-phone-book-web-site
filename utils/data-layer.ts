@@ -34,3 +34,10 @@ export const savePage = (req: NextApiRequest): Promise<Response> =>
     headers: { 'Content-Type': 'application/json', Authorization: parseAuthCookies(req).auth },
     body: JSON.stringify(req.body),
   })
+
+export const sendToLog = (req: NextApiRequest): Promise<Response> =>
+  fetch(`${urlPrefix}/log`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: parseAuthCookies(req).auth },
+    body: JSON.stringify(req.body),
+  })

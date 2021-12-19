@@ -227,6 +227,17 @@ export async function get_page(request) {
 }
 
 // noinspection JSUnusedGlobalSymbols
+export async function post_log(request) {
+  const loginCheck = await get_checkLogin(request)
+  if (loginCheck.status !== 200) {
+    return loginCheck
+  }
+
+  const { text } = await request.body.json()
+  sendInfoLog(text);
+}
+
+// noinspection JSUnusedGlobalSymbols
 export async function post_page(request) {
   const loginCheck = await get_checkLogin(request)
   if (loginCheck.status !== 200) {
