@@ -1,5 +1,5 @@
 import React, { FormEvent, ReactElement, useEffect, useRef, useState } from 'react'
-import { adminEmail, adminPhone, siteTitle } from '../utils/consts'
+import { siteTitle } from '../utils/consts'
 import { setAuthCookies } from '../utils/cookies'
 import { clearHashAuth } from '../utils/url'
 import { GitHubCorner } from './GitHubCorner'

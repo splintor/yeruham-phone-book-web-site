@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getRequestLogData, sendResponse, sendUnsupportedMethodResponse } from '../../../utils/api'
+import { sendResponse, sendUnsupportedMethodResponse } from '../../../utils/api'
 import { getPage, savePage } from '../../../utils/data-layer'
 
 export default async function page(request: NextApiRequest, response: NextApiResponse): Promise<void> {

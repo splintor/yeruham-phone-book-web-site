@@ -53,7 +53,7 @@ function getIdentityPage(pageA, pageB) {
 }
 
 async function loadCacheData(phoneNumber) {
-  const start = Date.now()
+  // const start = Date.now()
   let pagesList = []
   let result = await wixData.query('pages').limit(1000).find()
   while (result) {
@@ -234,7 +234,7 @@ export async function post_log(request) {
   }
 
   const { text } = await request.body.json()
-  sendInfoLog(text);
+  sendInfoLog(text)
 }
 
 // noinspection JSUnusedGlobalSymbols
@@ -282,14 +282,14 @@ export async function post_page(request) {
   sendUpdateLog(updateMessage)
   sendInfoLog(updateMessage)
 
-  const start = Date.now()
+  // const start = Date.now()
   if (!page._id) {
     page._id = _id
   }
   const updatedSitesList = isExistingPage ? allPages.map(p => p._id === _id ? page : p) : [...allPages, page]
   await processData(phoneNumber, updatedSitesList)
 
-  const timeSpan = Date.now() - start
+  // const timeSpan = Date.now() - start
   // const title = getPhoneTitle(phoneNumber)
   // if (title) {
   //   sendInfoLog(`המידע עודכן בזכרון תוך ${timeSpan / 1000} שניות ע"י ${title}`)
