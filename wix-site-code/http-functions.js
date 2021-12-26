@@ -236,7 +236,7 @@ export async function post_log(request) {
   const { text } = await request.body.json()
   sendInfoLog(text)
 
-  return okResponse({ message: `Test was sent to log` })
+  return okResponse({ message: `Text "${text}" was sent to log` })
 }
 
 // noinspection JSUnusedGlobalSymbols
