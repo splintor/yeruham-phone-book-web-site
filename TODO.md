@@ -11,6 +11,7 @@
 - Don't go back when deleting an item in results list
 - Handle מנצפך in search
 
+
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)
 - [mobile]: Find how to make site links open the app on Android
