@@ -267,7 +267,13 @@ export async function post_page(request) {
       return okResponse({ message: `No change was needed in page ${page.title}.` })
     }
 
-    await wixData.save('pages_history', { pageId: existing._id, changedBy: phoneNumber, oldTitle: existing.title, oldHtml: existing.html, oldTags: existing.tags }, suppressAuthAndHooks)
+    await wixData.save('pages_history', {
+      pageId: existing._id,
+      changedBy: phoneNumber,
+      oldTitle: existing.title,
+      oldHtml: existing.html,
+      oldTags: existing.tags
+    }, suppressAuthAndHooks)
     if (page.isDeleted) {
       updateMessage = `הדף *${page.title}* נמחק ע"י ${getPhoneTitle(phoneNumber)}`
     } else if (existing.isDeleted) {
@@ -323,15 +329,28 @@ function parseToWords(s) {
   return [...parseToWords(s.substring(0, pos)), s.substring(pos + 1, nextPos - pos - 1), ...parseToWords(s.substring(nextPos + 1))]
 }
 
+function searchable(s) {
+  return s
+    .toLowerCase()
+    .replace(/[-"']/g, '')
+    .replace(/ם/g, 'מ')
+    .replace(/ן/g, 'נ')
+    .replace(/ץ/g, 'צ')
+    .replace(/ף/g, 'פ')
+    .replace(/ך/g, 'כ')
+}
+
 function isPageMatchWord(page, word) {
   if (word.startsWith('##')) {
     const re = new RegExp(word.substring(2))
     return page.title.match(re) || page.html.match(re) || page.html.replace(/-/g, '').match(re)
   }
 
-  return page.title.toLowerCase().includes(word) ||
-    page.html.toLowerCase().includes(word) ||
-    (word.match(/^[\d-]*$/) && page.html.replace(/-/g, '').includes(word.replace(/-/g, '')))
+  const searchableWord = searchable(word)
+
+  return searchable(page.title).includes(searchableWord) ||
+    searchable(page.html).includes(searchableWord) ||
+    (page.tags && page.tags.some(t => t.includes(word)))
 }
 
 function compareSearchIndexes(s1, s2, word) {
