@@ -1,15 +1,14 @@
 - Productize: Enable customizing logo and about text.
 - Productize: Make site accessible if no pages exists (for initial bootstrap)
-- Logs - add number next to name in all log messages
 - Enable adding images (as data URLs)
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
 - App: Facebook icons are not displayed
 - Fix Showing Edit/Remove buttons in mobile web. Appears when editing item in list view.
-- App: Log app actions
 - When only one categoty is found - open it (חשמלאים)
 - Add "delete reason" in delete dialog
 - Don't go back when deleting an item in results list
 - Handle מנצפך in search
+- Enable linking to Anchors in page (which will also be cited in links preview)
 
 
 - Add "Copy" button next to phone numbers
