@@ -4,7 +4,6 @@
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
 - When only one categoty is found - open it (חשמלאים)
 - Add "delete reason" in delete dialog
-- Don't go back when deleting an item in results list
 - Enable linking to Anchors in page (which will also be cited in links preview)
 
 

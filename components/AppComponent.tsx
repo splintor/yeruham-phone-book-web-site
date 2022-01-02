@@ -40,7 +40,8 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   const stringBeingSearched = useRef(search)
   const lastSearch = useRef(search)
   const router = useRouter()
-  const showWelcome = !isSearching && !displayedPage.page && !pages
+  const isPageView = Boolean(displayedPage.page)
+  const showWelcome = !isSearching && !isPageView && !pages
   const { authTitle } = appProps.authData
   const isGuestLogin = !authTitle
   if (location.hash === '#error2') {
@@ -74,7 +75,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   }, [toast])
 
   useEffect(() => {
-    if (!displayedPage.page && pages?.length > 0) {
+    if (!isPageView && pages?.length > 0) {
       document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
         for (let i = p.children.length - 1; i >= 0; --i) {
           const c = p.children[i] as HTMLElement
@@ -97,7 +98,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         }, 0)
       })
     }
-  }, [pages, displayedPage.page])
+  }, [pages, isPageView])
 
   useEffect(() => {
     const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
@@ -206,10 +207,11 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     setSearch(userSearch)
   }
 
-  const closePage = pages && displayedPage.page && (() => {
+  const closePage = pages && isPageView && (() => {
     setDisplayedPage({ page: null })
     pushState(tag ? getTagUrl(tag) : getSearchUrl(search), { pages, totalCount, tags, tag, search })
   })
+
 
   // noinspection HtmlUnknownTarget
   return (<>
@@ -228,7 +230,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     <main className={'container mw-100' + (showWelcome ? ' showWelcome' : '')}>
       {showWelcome
         ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
-        : displayedPage.page
+        : isPageView
           ? <PageContent status={pageStatus} {...displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
                          pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}
                          isDeleteConfirmationVisible={isDeleteConfirmationVisible}/>
@@ -277,6 +279,8 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     <DeleteConfirmationModal setModalVisible={setIsDeleteConfirmationVisible}
                              pushState={pushState}
                              setToast={setToast}
+                             setSearchResults={setSearchResults}
+                             isPageView={isPageView}
                              pages={pages}
                              search={search}
                              tag={tag}

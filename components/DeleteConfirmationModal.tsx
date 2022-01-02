@@ -1,17 +1,19 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
-import { AppProps } from '../types/AppProps'
+import { AppProps, SearchResults } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { savePage } from '../utils/api'
 import { pageUrl } from '../utils/url'
 import { deletedPageTitleKey, ToastOptions } from './App'
 
 interface DeleteConfirmationModalProps extends Pick<AppProps, 'search' | 'tags' | 'tag' | 'pages' | 'totalCount'> {
+  isPageView: boolean
+  setSearchResults(results: SearchResults): void
   setModalVisible(isVisible: boolean): void
   setToast(toastOptions: ToastOptions): void
   pushState(url: string, state: Partial<AppProps>): void
 }
 
-export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, pages, totalCount, tags, tag, search }: DeleteConfirmationModalProps): ReactElement {
+export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, pages, totalCount, tags, tag, search, isPageView, setSearchResults }: DeleteConfirmationModalProps): ReactElement {
   const modalRef = useRef<HTMLDivElement>()
   const cancelButtonRef = useRef<HTMLButtonElement>()
   const [isDeleting, setIsDeleting] = useState(false)
@@ -39,9 +41,11 @@ export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, 
       })
     }
 
-    if (pages?.length && (pages.length > 1 || pages[0].title !== page.title)) {
+    if (isPageView && pages?.length && (pages.length > 1 || pages[0].title !== page.title)) {
       sessionStorage.setItem(deletedPageTitleKey, page.title)
       history.back()
+    } else if (!isPageView) {
+      setSearchResults({ pages: pages.filter(p => p._id !== page._id), tags, totalCount, search })
     } else {
       pushState('/', {})
     }
