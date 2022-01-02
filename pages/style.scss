@@ -95,8 +95,10 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     display: none !important;
   }
 
-  &:hover .page-edit-buttons .d-md-block {
-    display: block !important;
+  @media (min-width: 768px) {
+    &:hover .page-edit-buttons .d-md-block {
+      display: block !important;
+    }
   }
 
   .card-body {

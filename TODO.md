@@ -2,8 +2,6 @@
 - Productize: Make site accessible if no pages exists (for initial bootstrap)
 - Enable adding images (as data URLs)
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
-- App: Facebook icons are not displayed
-- Fix Showing Edit/Remove buttons in mobile web. Appears when editing item in list view.
 - When only one categoty is found - open it (חשמלאים)
 - Add "delete reason" in delete dialog
 - Don't go back when deleting an item in results list
