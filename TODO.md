@@ -2,7 +2,6 @@
 - Productize: Make site accessible if no pages exists (for initial bootstrap)
 - Enable adding images (as data URLs)
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
-- When only one categoty is found - open it (חשמלאים)
 - Add "delete reason" in delete dialog
 - Enable linking to Anchors in page (which will also be cited in links preview)
 
