@@ -5,7 +5,6 @@
 - When only one categoty is found - open it (חשמלאים)
 - Add "delete reason" in delete dialog
 - Don't go back when deleting an item in results list
-- Handle מנצפך in search
 - Enable linking to Anchors in page (which will also be cited in links preview)
 
 
