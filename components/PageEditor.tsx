@@ -50,11 +50,15 @@ const CustomToolbar = () =>
       <select className="ql-background" />
     </span>
     <span className="ql-formats">
-      <select className="ql-details customSelect">
-        <option value="Email">הוסף כתובת מייל</option>
-        <option value="Phone">הוסף מספר טלפון</option>
-        <option value="Mobile">הוסף מספר נייד</option>
-      </select>
+      <button className="ql-mobile" title="הוסף מספר נייד">
+        <div className="unicode-icon">&#128241;</div>
+      </button>
+      <button className="ql-phone" title="הוסף מספר טלפון">
+        <div className="unicode-icon">&#128222;</div>
+      </button>
+      <button className="ql-email" title="הוסף כתובת מייל">
+        <div className="unicode-icon">&#64;</div>
+      </button>
     </span>
     <span className="ql-formats">
       <button className="ql-link"/>
@@ -85,15 +89,15 @@ const detailsPromptText = {
   Email: 'הכנס כתובת מייל:',
   Phone: 'הכנס מספר טלפון:',
   Mobile: 'הכנס מספר נייד:',
-}
+} as const
 
 const detailsPrefix = {
   Email: 'email: ',
   Phone: 'טלפון: ',
   Mobile: 'נייד: ',
-}
+} as const
 
-function getDetailsPrefix(action: string, title: string, quill: Quill): string {
+function getDetailsPrefix(action: keyof typeof detailsPromptText, title: string, quill: Quill): string {
   if (action === 'Mobile') {
     const titleWords = title.split(' ')
     if (titleWords.length === 3 && titleWords[1].startsWith('ו')) {
@@ -157,7 +161,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
   }, [sPressed, enterPressed])
 
-  const detailsHandler = (action: string) => {
+  const detailsHandler = (action: keyof typeof detailsPromptText) => {
     const quill = quillObj.current
     const range = quill.getSelection(true)
     let value = prompt(detailsPromptText[action])
@@ -200,7 +204,9 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
         facebook: () => addSocialNetworkIcon('/facebook.png'),
         twitter: () => addSocialNetworkIcon('/twitter.png'),
         instagram: () => addSocialNetworkIcon('/instagram.jpg'),
-        details: detailsHandler,
+        phone: () => detailsHandler('Phone'),
+        mobile: () => detailsHandler('Mobile'),
+        email: () => detailsHandler('Email'),
         viewSource: () => setViewSource(true),
       }
     },

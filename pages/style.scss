@@ -185,6 +185,11 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
       }
     }
 
+    .unicode-icon {
+      font-size: 1.2em;
+      margin-block-start: -5px;
+    }
+
     .ql-picker {
       line-height: initial;
     }
@@ -192,47 +197,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     .ql-picker .ql-picker-label svg {
       right: auto;
       left: 0;
-    }
-
-    .customSelect {
-      &:not(.ql-expanded) .ql-picker-label:not(:hover), .ql-picker-item:not(:hover) {
-        color: inherit;
-
-        svg polygon {
-          stroke: currentColor;
-        }
-      }
-
-      .ql-picker-label:before {
-        margin-inline-end: 20px;
-      }
-
-      .ql-picker-item:before {
-        content: attr(data-label);
-      }
-    }
-
-    .ql-details .ql-picker-label:before {
-      content: "פרטים";
-    }
-
-    .withIcons.ql-expanded .ql-picker-item {
-      &:before {
-        background-repeat: no-repeat;
-        background-position: right center;
-        background-size: 20px 20px;
-        padding-inline-start: 24px;
-      }
-
-      &[data-value="Facebook"]:before {
-        background-image: url("/facebook.png");
-      }
-      &[data-value="Twitter"]:before {
-        background-image: url("/twitter.png");
-      }
-      &[data-value="Instagram"]:before {
-        background-image: url("/instagram.jpg");
-      }
     }
   }
 

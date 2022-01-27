@@ -8,7 +8,6 @@
 - Consider switching to working with redis - https://app.redislabs.com/#/subscriptions/subscription/1670090/bdb-view/10835436/configuration
 - Show last change date (Which should be a link that opens a History window)
 - Fix issue with adding numbers
-- Editor: Replace dropdowns with buttons
 
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)
