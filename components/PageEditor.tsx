@@ -60,11 +60,15 @@ const CustomToolbar = () =>
       <button className="ql-link"/>
     </span>
     <span className="ql-formats">
-      <select className="ql-socialNetworks customSelect withIcons">
-        <option value="Facebook">הוסף קישור לפייסבוק</option>
-        <option value="Twitter">הוסף קישור לטוויטר</option>
-        <option value="Instagram">הוסף קישור לאינסטגרם</option>
-      </select>
+      <button className="ql-instagram" title="הוסף קישור לאינסטגרם">
+        <img src="/instagram.jpg" alt="Instagram icon"/>
+      </button>
+      <button className="ql-twitter" title="הוסף קישור לטוויטר">
+        <img src="/twitter.png" alt="Twitter icon"/>
+      </button>
+      <button className="ql-facebook" title="הוסף קישור לפייסבוק">
+        <img src="/facebook.png" alt="Facebook Icon"/>
+      </button>
     </span>
     <span className="ql-formats">
       <button className="ql-viewSource" title="עריכת קוד מקור">
@@ -121,12 +125,6 @@ const detailsSanitation = {
   Email: sanitizeMail,
   Phone: sanitizePhone,
   Mobile: sanitizePhone,
-}
-
-const socialNetworkIcons = {
-  Instagram: '/instagram.jpg',
-  Twitter: '/twitter.png',
-  Facebook: '/facebook.png',
 }
 
 export default function PageEditor({ page, onCancel, onSave, pushState, setToast }: EditorProps): ReactElement {
@@ -186,10 +184,10 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     quill.setSelection(range.index + text.length, 0, 'user')
   }
 
-  const socialNetworkLinkHandler = (action: string) => {
+  const addSocialNetworkIcon = (imageSrc: string) => {
     const quill = quillObj.current
     const range = quill.getSelection(true)
-    quill.insertEmbed(range.index, 'image', socialNetworkIcons[action], 'user')
+    quill.insertEmbed(range.index, 'image', imageSrc, 'user')
     quill.setSelection(range.index, 1, 'user')
     quill.theme.tooltip.edit('link', '}קישור לפרופיל{')
   }
@@ -199,7 +197,9 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     toolbar: {
       container: "#toolbar",
       handlers: {
-        socialNetworks: socialNetworkLinkHandler,
+        facebook: () => addSocialNetworkIcon('/facebook.png'),
+        twitter: () => addSocialNetworkIcon('/twitter.png'),
+        instagram: () => addSocialNetworkIcon('/instagram.jpg'),
         details: detailsHandler,
         viewSource: () => setViewSource(true),
       }

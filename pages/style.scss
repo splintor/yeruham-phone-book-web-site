@@ -178,6 +178,11 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     button {
       width: auto;
       line-height: initial;
+
+      img {
+        margin-block-start: -5px;
+        width: 95%;
+      }
     }
 
     .ql-picker {
@@ -209,10 +214,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
     .ql-details .ql-picker-label:before {
       content: "פרטים";
-    }
-
-    .ql-socialNetworks .ql-picker-label:before {
-      content: "רשתות חברתיות";
     }
 
     .withIcons.ql-expanded .ql-picker-item {
