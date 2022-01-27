@@ -4,7 +4,11 @@
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
 - Add "delete reason" in delete dialog
 - Enable linking to Anchors in page (which will also be cited in links preview)
-
+- Remove מילות חיפוש from Whatsapp preview text
+- Consider switching to working with redis - https://app.redislabs.com/#/subscriptions/subscription/1670090/bdb-view/10835436/configuration
+- Show last change date (Which should be a link that opens a History window)
+- Fix issue with adding numbers
+- Editor: Replace dropdowns with buttons
 
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)
