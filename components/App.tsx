@@ -42,7 +42,7 @@ export default function App(appProps: AppProps): ReactElement {
       ? `רשימת הדפים בקטגוריה ${tag}`
       : page
         ? page?.tags?.includes(publicTagName)
-          ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ')
+          ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ').replace(/מילת חיפוש.*/, '').replace(/מילות חיפוש.*/, '')
           : ''
         : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות והעסקים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן.'
 
