@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, MouseEvent } from 'react'
 import { PageData } from '../types/PageData'
 
 interface Props {
@@ -9,8 +9,31 @@ interface Props {
 }
 
 export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }: Props): ReactElement => {
+  function showHistory(event: MouseEvent) {
+    event.preventDefault()
+  }
+
+  function getLastEditedText() {
+    const today = new Date()
+    const lastEdited = new Date(page._updatedDate)
+    if (today.toLocaleDateString() === lastEdited.toLocaleDateString()) {
+      return `נערך לאחרונה היום ב-${lastEdited.toLocaleTimeString()}`
+    }
+
+    if (new Date(today.setDate(today.getDate() - 1)).toLocaleDateString() === lastEdited.toLocaleDateString()) {
+      return `נערך לאחרונה אתמול ב-${lastEdited.toLocaleTimeString()}`
+    }
+
+    if (new Date(today.setDate(today.getDate() - 2)).toLocaleDateString() === lastEdited.toLocaleDateString()) {
+      return `נערך לאחרונה שלשום ב-${lastEdited.toLocaleTimeString()}`
+    }
+
+    return `נערך לאחרונה ב-${lastEdited.toLocaleString()}`
+  }
+
   return isGuestLogin ? null : (<div className="page-edit-buttons float-end d-flex">
     <div className="d-none d-md-block">
+      <a href="/" className="history-link" onClick={showHistory}>{getLastEditedText()}</a>
       <button className="btn btn-sm btn-outline-primary" onClick={startEditing}>עריכה</button>
       <button className="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal"
               data-bs-target="#deleteConfirmation" data-bs-page={JSON.stringify(page)}>מחיקה

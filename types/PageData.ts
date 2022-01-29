@@ -6,5 +6,5 @@ export interface PageData {
   tags?: string[]
   isDeleted?: boolean
   _id?: string
-  _updateDate?: string
+  _updatedDate?: string
 }

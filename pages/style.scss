@@ -75,6 +75,16 @@ body {
   }
 }
 
+.history-link {
+  color: darkgrey;
+  text-decoration: none;
+  margin-inline-end: 5px;
+
+  &:hover {
+    color: darkgrey;
+  }
+}
+
 // https://blog.maximerouiller.com/post/remove-the-x-from-internet-explorer-and-chrome-input-type-search/
 // clears the 'X' from Internet Explorer
 input[type=search]::-ms-clear {  display: none; width : 0; height: 0; }
