@@ -6,6 +6,7 @@
 - Enable linking to Anchors in page (which will also be cited in links preview)
 - Consider switching to working with redis - https://app.redislabs.com/#/subscriptions/subscription/1670090/bdb-view/10835436/configuration
 - Show last change date (Which should be a link that opens a History window)
+- Check why deleting a page on mobile doesn't work
 
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)
