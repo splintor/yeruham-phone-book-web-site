@@ -6,6 +6,13 @@ In order to clone this repo and build your own phonebook, follow these steps:
 1. Click **Fork** (on the top right of the GitHub page) - you now have a new repo for your phonebook site!
 1. You need the repo to have a proper name - go to the **Settings** tab, and use a different name, like `my-group-phone-book-web-site`, then click **Rename**.
 
+## Customize site
+1. The site was initially built for Yeruham phonebook. You need to customize it to show the details of you and your group.
+2. In your site repo (on github.com), go to `utils/consts.ts` and click the *pencil* icon to edit the file.
+3. Change `siteTitle` to contain the title of your site.
+4. Change `adminEmail` and `adminPhone` to contain your details, so you will recieve feedback about the site.
+5. Todo - more customizations.
+
 ## Create Wix site
 1. The phonebook data is stored in a Wix site. If you don't have a Wix account, create one at https://users.wix.com/signin. The easiest way is to use your Google account.
 2. Go to https://wix.new - this will create a new Wix site in edit mode.
@@ -15,19 +22,22 @@ In order to clone this repo and build your own phonebook, follow these steps:
 6. A new file is created. Name it `http-functions.js`.
 7. Go to the [wix-site-code/http-functions.js](wix-site-code/http-functions.js) in your repo, and copy its content to the clipboard.
 8. In the Wix site editor, select your new `http-functions.js` file. It is opened in the lower code panel on the right. Select its content and replace it with the content you copied.
-9. In the Wix editor, select **Settings** and then **Business Info**.
-10. In the opened **Dashboard** window, select **Website settings**.
-11. Choose a name for your Wix site (this name will only be seen by you), e.g. `My Group Phonebook`.
-12. Set a clear **Site address (URL)**, e.g. `my-group-phonebook`.
-13. Click **Save** and then close the **Dashboard** window.
-14. Refresh the page to make the Wix editor get the changes you did in the Dashboard.
-15. Select the **Databases** section, then click the **+** icon next to **Content Collections** and select **New Collection**.
-16. In the opened dialog, click **Start Creating** if needed, then set the name of the nae collection to `pages`.
-17. Under **What's this collection for** select **Custom Use**, then click **Set Custom Permissions** and set all four permissions to **Anyone**.
-18. Click **Set & Create Collection**.
-19. Click **Publish** (in the top-right corner).
-20. **Copy the site URL** that appears in the publishing results message (you will need it in the next section - **Deploy to Vercel**), then click **Done**.
-21. In the **Edit Your Site for Mobile** message, click **Cancel**, then you can close the Wix editor.
+9. Repeat items 5-8 for the files `crypt.js`, `hebrewMapping.js` and `secret.js`.
+10. In the Wix editor, select **Settings** and then **Business Info**.
+11. In the opened **Dashboard** window, select **Website settings**.
+12. Choose a name for your Wix site (this name will only be seen by you), e.g. `My Group Phonebook`.
+13. Set a clear **Site address (URL)**, e.g. `my-group-phonebook`.
+14. Click **Save** and then close the **Dashboard** window.
+15. Refresh the page to make the Wix editor get the changes you did in the Dashboard.
+16. Select the **Databases** section, then click the **+** icon next to **Content Collections** and select **New Collection**.
+17. In the opened dialog, click **Start Creating** if needed, then set the name of the new collection to `pages`.
+18. Switch to **Additional Settings** tab and in the **Set permissions for your collection** field, select **Custom Use**.
+19. Click **Set Custom Permissions** and set all four permissions to **Anyone**.
+20. Click **Set & Create Collection**.
+21. Repeat steps 16-20 to create `pages_history` collection.
+22. Click **Publish** (in the top-right corner).
+23. **Copy the site URL** that appears in the publishing results message (you will need it in the next section - **Deploy to Vercel**), then click **Done**.
+24. In the **Edit Your Site for Mobile** message, click **Cancel**, then you can close the Wix editor.
 
 ## Deploy to Vercel
 1. To host your phonebook website, we use Vercel. If you don't already have an account there, go to https://vercel.com/signup and create one. The easiest way to do it is to use your GitHub account.
@@ -41,9 +51,15 @@ In order to clone this repo and build your own phonebook, follow these steps:
     Then click **Add**.
 1. Click **Deploy**.
 
-## Customize data
+## Add data
 1. Your new site is created. Now you need to customize it for your group. Click **Go to Dashboard**.
-1. By default, your site is located at the URL `https://<Github project name>.vercel.app. If you want a different URL, you will need to purchase a domain. See https://vercel.com/docs/concepts/projects/custom-domains.
+2. Open your new site. By default, your site is located at the URL `https://<Github project name>.vercel.app. If you want a different URL, you will need to purchase a domain. See https://vercel.com/docs/concepts/projects/custom-domains.
+3. In the login window, type your phone number and click **כניסה**. Since the database is still empty, you will be loggedin succesfully with any phone number, and your name will be **כניסה ראשונית**.
+4. Click the **menu icon** at the top-left, and select **הוספת דף חדש**
+5. Fill in your name in the title, and a text that contains your phone number in the body and click **שמירה**.
+Note: Make sure you put the correct phone number, as you will later use it to login to the system.
+6. Now you can start adding the pages for all the other members of the group. Note that once you entered a page for a member, this member can login to the site and add other members as well.
+
 
 TODO: Enable customizing the site and explain how to do it.
-TODO: Find  a way to build initial login and document it.
+

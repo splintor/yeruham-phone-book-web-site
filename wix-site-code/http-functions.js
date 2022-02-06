@@ -75,7 +75,7 @@ async function loadCacheData(phoneNumber) {
 
 async function processData(phoneNumber, pagesList) {
   allPages = pagesList
-  maxDate = allPages.reduce((d, p) => Math.max(p._updatedDate, d), allPages[0]._updatedDate)
+  maxDate = allPages.length > 0 ? allPages.reduce((d, p) => Math.max(p._updatedDate, d), allPages[0]._updatedDate) : undefined
   activePages = pagesList.filter(p => !p.isDeleted)
 
   const phonesMap = new Map()
@@ -120,7 +120,7 @@ export async function get_login(request) {
 
   if (!foundPage) {
     await loadCacheData(phoneNumber)
-    foundPage = phones.get(strippedPhoneNumber)
+    foundPage = phones.length > 0 ? phones.get(strippedPhoneNumber) : { title:  'כניסה ראשונית'}
   }
 
   if (foundPage) {
@@ -173,7 +173,7 @@ export async function get_checkLogin(request, { requireAdmin } = {}) {
     }
 
     const strippedPhoneNumber = removePhoneDelimiters(phoneNumber)
-    if (!phones.has(strippedPhoneNumber)) {
+    if (phones.size > 0 && !phones.has(strippedPhoneNumber)) {
       return unauthorizedResponse(`Auth phone not found: ${strippedPhoneNumber}`)
     }
 
