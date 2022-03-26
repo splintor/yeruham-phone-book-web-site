@@ -13,7 +13,7 @@ interface PageHistoryModalProps extends Pick<AppProps, 'search' | 'tags' | 'tag'
   pushState(url: string, state: Partial<AppProps>): void
 }
 
-export function PageHistoryModal({ setModalVisible, setToast, pushState, pages, totalCount, tags, tag, search, isPageView, setSearchResults }: DeleteConfirmationModalProps): ReactElement {
+export function PageHistoryModal({ setModalVisible, setToast, pushState, pages, totalCount, tags, tag, search, isPageView, setSearchResults }: PageHistoryModalProps): ReactElement {
   const modalRef = useRef<HTMLDivElement>()
   const cancelButtonRef = useRef<HTMLButtonElement>()
   const [isDeleting, setIsDeleting] = useState(false)
