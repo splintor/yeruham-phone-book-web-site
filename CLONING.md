@@ -8,10 +8,10 @@ In order to clone this repo and build your own phonebook, follow these steps:
 
 ## Customize site
 1. The site was initially built for Yeruham phonebook. You need to customize it to show the details of you and your group.
-2. In your site repo (on github.com), drill down to see the content of the `README.md` file and click the *pencil* icon and edit it to describe the project of your site.
-3. In your site repo (on github.com), go to `site-info.json` and click the *pencil* icon to edit the file.
+2. In your site repo (on github.com), drill down to see the content of the `README.md` file and click the *pencil* icon and edit it to describe the project of your site, then click `Commit changes`.
+3. In your site repo (on github.com), go to `site-info.json` and click the *pencil* icon to edit the file, then click `Commit changes`.
 4. Change the fields there to match the data of your site.
-5. Go to the `public` directory, and then click the `+` button and upload logo files to be used in the site. You will need:
+5. Go to the `public` directory, and then click the `+` button and upload logo files to be used in the site, and then click `Commit changes`. You will need these files:
    1. `favicon.ico` (will be used in the browser tab icon)
    2. `logo192.png` (will be used in the Safari browser tab icon)
    3. `logo-square.jpg` (will be used in WhatsApp preview)
