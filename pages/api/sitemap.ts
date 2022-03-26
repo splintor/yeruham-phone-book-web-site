@@ -13,7 +13,6 @@ export default async (request: NextApiRequest, response: NextApiResponse): Promi
   smStream.end()
 
   const sitemap = await streamToPromise(smStream)
-  response.setHeader("Content-Type", "text/xml")
-  response.write(sitemap.toString())
-  response.end()
+  response.setHeader('Content-Type', 'application/xml')
+  response.end(sitemap.toString())
 }

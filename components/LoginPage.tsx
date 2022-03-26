@@ -1,5 +1,5 @@
 import React, { FormEvent, ReactElement, useEffect, useRef, useState } from 'react'
-import { siteTitle } from '../utils/consts'
+import siteInfo from '../site-info.json'
 import { setAuthCookies } from '../utils/cookies'
 import { clearHashAuth } from '../utils/url'
 import { GitHubCorner } from './GitHubCorner'
@@ -19,7 +19,8 @@ function renderError(errorType: ErrorType) {
     case ErrorType.NotFound:
       return <div>
         מספר הטלפון שהוכנס לא קיים בספר הטלפונים.
-        <div>אם הינך תושב/ת ירוחם, <a href="https://forms.gle/zr3ZbiFYce2ZbArF9" target="ypb_registration">מלא/י פרטיך כאן</a> ונשמח להוסיף אותך!
+        <div>אם הינך תושב/ת ירוחם, <a href="https://forms.gle/zr3ZbiFYce2ZbArF9" target="ypb_registration">מלא/י פרטיך
+          כאן</a> ונשמח להוסיף אותך!
         </div>
       </div>
   }
@@ -87,10 +88,10 @@ export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
     <div className="container d-flex vh-100">
       <div className="row justify-content-center align-self-center card border-primary mx-auto">
         <Logo className="card-img-top w-50 p-2  align-self-center"/>
-        <h3 className="card-header card-title">{siteTitle}</h3>
+        <h3 className="card-header card-title">{siteInfo.siteTitle}</h3>
         <div className="card-body p-2">
-          <div>ספר הטלפונים מיועד לתושבי ירוחם בלבד.</div>
-          <div>כדי לוודא שהינך תושב/ת ירוחם, יש להכניס את מספר הטלפון שלך:</div>
+          <div>{siteInfo.loginTitle}</div>
+          <div>{siteInfo.loginDescription}</div>
           <form onSubmit={onSubmit} className="row justify-content-center gx-2 py-3">
             <div className="col-auto">
               <input className="col-md-auto form-control"
@@ -112,12 +113,14 @@ export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
             </div>
           </form>
 
-          <div>אם אינך מירוחם, תוכל/י להכנס כאורח/ת ולראות עסקים ומוסדות ציבור.</div>
-          <form onSubmit={onGuestLogin} className="row justify-content-center gx-2 py-3">
-            <div className="col-auto">
-              <button className="btn btn-outline-secondary" type="submit">כניסה כאורח/ת</button>
-            </div>
-          </form>
+          {siteInfo.guestDescription && (<>
+            <div>{siteInfo.guestDescription}</div>
+            <form onSubmit={onGuestLogin} className="row justify-content-center gx-2 py-3">
+              <div className="col-auto">
+                <button className="btn btn-outline-secondary" type="submit">כניסה כאורח/ת</button>
+              </div>
+            </form>
+          </>)}
           {errorAlert && <div className={'alert alert-danger ' + ErrorType[errorType]}>{errorAlert}</div>}
         </div>
       </div>

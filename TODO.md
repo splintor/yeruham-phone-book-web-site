@@ -1,5 +1,5 @@
-- Productize: Enable customizing logo and about text.
-- Productize: Make site accessible if no pages exists (for initial bootstrap)
+- [site and mobile] When logging, prefer to use the non-public profile for name. Ideally, also find private name.
+- [site and mobile] When logging click, log what page it is coming from, and if possible, what person it is related to in this page
 - Enable adding images (as data URLs)
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
 - Add "delete reason" in delete dialog

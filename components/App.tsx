@@ -2,7 +2,8 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react'
 import { AppProps } from '../types/AppProps'
-import { publicTagName, siteTitle } from '../utils/consts'
+import { publicTagName } from '../utils/consts'
+import siteInfo from '../site-info.json'
 import { AuthData, parseAuthCookies } from '../utils/cookies'
 import { useHashAuth } from '../utils/url'
 import { AppComponent } from './AppComponent'
@@ -21,14 +22,14 @@ export interface ToastOptions {
 
 export function getPageTitle({ search, tag, page, newPage }: Partial<AppProps>): string {
   return page
-    ? `${page.title} - ${siteTitle}`
+    ? `${page.title} - ${siteInfo.siteTitle}`
     : tag
-      ? `${tag} - ${siteTitle}`
+      ? `${tag} - ${siteInfo.siteTitle}`
       : newPage
-        ? `דף חדש - ${siteTitle}`
+        ? `דף חדש - ${siteInfo.siteTitle}`
         : search
-          ? `חיפוש: ${search} - ${siteTitle}`
-          : siteTitle
+          ? `חיפוש: ${search} - ${siteInfo.siteTitle}`
+          : siteInfo.siteTitle
 }
 
 export default function App(appProps: AppProps): ReactElement {
@@ -44,16 +45,14 @@ export default function App(appProps: AppProps): ReactElement {
         ? page?.tags?.includes(publicTagName)
           ? page.html.replace(/<[^>]+>|&nbsp;/g, ' ').replace(/מילת חיפוש.*/, '').replace(/מילות חיפוש.*/, '')
           : ''
-        : 'כל הפרטים על מוסדות, עסקים ואנשים בירוחם. פרטי המוסדות והעסקים פתוחים לכולם. פרטי התושבים נגישים לתושבי ירוחם בלבד. תושבי ירוחם גם יכולים לערוך את הפרטים באתר ולדאוג שהוא ישאר מעודכן.'
+        : siteInfo.siteDescription
 
   const [authData, setAuthData] = useState<AuthData>()
   useEffect(() => setAuthData(parseAuthCookies()), [])
   const hashAuth = useHashAuth()
   const isPageAllowed = status !== 401 && (authData?.auth || !newPage)
 
-
-  // suppress JSUnresolvedLibraryURL
-  // noinspection JSUnresolvedLibraryURL
+  // noinspection JSUnresolvedLibraryURL,HtmlUnknownTarget
   return <div className="app">
     <Head>
       <title>{pageTitle}</title>
@@ -67,7 +66,7 @@ export default function App(appProps: AppProps): ReactElement {
       </>}
       <link rel="icon" href="/favicon.ico"/>
       <link rel="apple-touch-icon" href="/logo192.png"/>
-      <link rel="search" type="application/opensearchdescription+xml" title="חיפוש בספר הטלפונים של ירוחם" href="/opensearch.xml" />
+      <link rel="search" type="application/opensearchdescription+xml" title={`חיפוש ב${siteInfo.siteTitle}`} href="/opensearch.xml" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.rtl.min.css"
             integrity="sha384-jHiSqEim4+W1UCvv8kTcMbtCZlRF8MxbgKdfpvncia8gdN1UImBnhTpKtufREzv7" crossOrigin="anonymous"/>
     </Head>

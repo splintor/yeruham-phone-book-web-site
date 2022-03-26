@@ -8,10 +8,14 @@ In order to clone this repo and build your own phonebook, follow these steps:
 
 ## Customize site
 1. The site was initially built for Yeruham phonebook. You need to customize it to show the details of you and your group.
-2. In your site repo (on github.com), go to `utils/consts.ts` and click the *pencil* icon to edit the file.
-3. Change `siteTitle` to contain the title of your site.
-4. Change `adminEmail` and `adminPhone` to contain your details, so you will recieve feedback about the site.
-5. Todo - more customizations.
+2. In your site repo (on github.com), drill down to see the content of the `README.md` file and click the *pencil* icon and edit it to describe the project of your site.
+3. In your site repo (on github.com), go to `site-info.json` and click the *pencil* icon to edit the file.
+4. Change the fields there to match the data of your site.
+5. Go to the `public` directory, and then click the `+` button and upload logo files to be used in the site. You will need:
+   1. `favicon.ico` (will be used in the browser tab icon)
+   2. `logo192.png` (will be used in the Safari browser tab icon)
+   3. `logo-square.jpg` (will be used in WhatsApp preview)
+   4. `logo.png` (will be used in the site)
 
 ## Create Wix site
 1. The phonebook data is stored in a Wix site. If you don't have a Wix account, create one at https://users.wix.com/signin. The easiest way is to use your Google account.
@@ -59,7 +63,7 @@ In order to clone this repo and build your own phonebook, follow these steps:
 5. Fill in your name in the title, and a text that contains your phone number in the body and click **שמירה**.
 Note: Make sure you put the correct phone number, as you will later use it to login to the system.
 6. Now you can start adding the pages for all the other members of the group. Note that once you entered a page for a member, this member can login to the site and add other members as well.
-
+7. Add a page titled 'הסבר על השימוש באתר'. This is the page that will be displayed when opening the site's help.
 
 TODO: Enable customizing the site and explain how to do it.
 

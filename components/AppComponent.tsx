@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import React, { BaseSyntheticEvent, ReactElement, useEffect, useRef, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { AppProps, SearchResults } from '../types/AppProps'
+import siteInfo from '../site-info.json'
 import { AuthData, isAuthTitleNew } from '../utils/cookies'
 import { getSearchResultTitle } from '../utils/getSearchResultTitle'
 import { searchForPages } from '../utils/requests.client'
@@ -56,7 +57,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     window.history.replaceState(appProps, '', location.href)
     initTagManager(appProps.url, authTitle)
     if (isAuthTitleNew()) {
-      setToast({ position: 'top', timeout: 5000, content: <div>הי <b>{authTitle}</b>, איזה כיף שהתחברת לספר הטלפונים של ירוחם!</div> })
+      setToast({ position: 'top', timeout: 5000, content: <div>הי <b>{authTitle}</b>, איזה כיף שהתחברת ל{siteInfo.siteTitle}!</div> })
     }
   }, [])
 

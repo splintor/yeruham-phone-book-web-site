@@ -14,6 +14,10 @@ module.exports = {
         source: "/sitemap.xml",
         destination: "/api/sitemap",
       },
+      {
+        source: "/opensearch.xml",
+        destination: "/api/opensearch",
+      },
     ]
   },
 }

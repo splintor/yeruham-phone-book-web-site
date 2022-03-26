@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent, ReactElement } from 'react'
 import { PageData } from '../types/PageData'
-import { siteTitle } from '../utils/consts'
+import siteInfo from '../site-info.json'
 import { ToastOptions } from './App'
 import { AppMenu } from './AppMenu'
 import { Logo } from './Logo'
@@ -27,7 +27,7 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, page, search, tag, se
         <a className="navbar-brand app-icon" href="/">
           <Logo width="40" height="40"/>
         </a>
-        <TitleLink title={siteTitle} href="/" className="navbar-brand" onClick={e => {
+        <TitleLink title={siteInfo.siteTitle} href="/" className="navbar-brand" onClick={e => {
           e.preventDefault()
           goToHome()
         }}/>

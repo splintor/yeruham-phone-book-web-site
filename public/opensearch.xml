@@ -1,8 +1,0 @@
-<OpenSearchDescription
-        xmlns="http://a9.com/-/spec/opensearch/1.1/"
-        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-    <ShortName>ספר הטלפונים של ירוחם</ShortName>
-    <Description>חיפוש מהיר בספר הטלפונים של ירוחם</Description>
-    <Url type="text/html" template="https://yeruham-phone-book.vercel.app/search/{searchTerms}"/>
-    <Url type="application/x-suggestions+json" rel="suggestions" method="GET" template="https://yeruham-phone-book.vercel.app/search-suggestions/{searchTerms}" />
-</OpenSearchDescription>

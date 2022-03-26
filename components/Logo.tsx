@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import { siteTitle } from '../utils/consts'
+import siteInfo from '../site-info.json'
 
 interface Props {
   width?: string;
@@ -8,4 +8,4 @@ interface Props {
 }
 
 export const Logo = (props: Props): ReactElement =>
-  <img src="/logo.png" alt={siteTitle} title={`${siteTitle}\nקרדיט על צילום הלוגו: ליאור אלמגור – www.fromycamera.com`} {...props} />
+  <img src="/logo.png" alt={siteInfo.siteTitle} title={`${siteInfo.siteTitle}\n${siteInfo.logoDescription}`} {...props} />
