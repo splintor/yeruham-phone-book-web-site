@@ -213,7 +213,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     pushState(tag ? getTagUrl(tag) : getSearchUrl(search), { pages, totalCount, tags, tag, search })
   })
 
-
   // noinspection HtmlUnknownTarget
   return (<>
     <NavBar authTitle={authTitle} showWelcome={showWelcome}

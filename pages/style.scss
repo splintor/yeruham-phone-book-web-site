@@ -5,36 +5,43 @@
 }
 
 body {
-  $primary-color: #5F1B68;
-  $primary-color-hover: #750085;
+  --primary-color: #5F1B68;
+  --primary-color-hover: #750085;
+  --primary-text-color: #fff;
+
   .bg-primary, .btn-primary {
-    background-color: $primary-color !important;
+    background-color: var(--primary-color) !important;
+    color: var(--primary-text-color) !important;
+  }
+
+  .bg-primary a:not(.dropdown-item) {
+    color: var(--primary-text-color) !important;
   }
 
   .border-primary, .btn-primary {
-    border-color: $primary-color !important;
+    border-color: var(--primary-color) !important;
   }
 
   .btn-primary:hover {
-    background-color: $primary-color-hover !important;
-    border-color: $primary-color-hover !important;
+    background-color: var(--primary-color-hover) !important;
+    border-color: var(--primary-color-hover) !important;
   }
 
   .btn-outline-primary {
-    border-color: $primary-color !important;
-    color: $primary-color !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
 
     &:hover {
-      color: white !important;
-      background-color: $primary-color !important;
+      color: var(--primary-text-color) !important;
+      background-color: var(--primary-color) !important;
     }
   }
 
   .link-primary {
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
 
     &:hover, &:focus {
-      color: $primary-color-hover !important;
+      color: var(--primary-color-hover) !important;
     }
   }
 }

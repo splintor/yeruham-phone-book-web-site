@@ -52,6 +52,18 @@ export default function App(appProps: AppProps): ReactElement {
   const hashAuth = useHashAuth()
   const isPageAllowed = status !== 401 && (authData?.auth || !newPage)
 
+  useEffect(() => {
+    if (siteInfo.titleBackgroundColor) {
+      document.body.style.setProperty('--primary-color', siteInfo.titleBackgroundColor)
+    }
+    if (siteInfo.titleBackgroundHoverColor) {
+      document.body.style.setProperty('--primary-color-hover', siteInfo.titleBackgroundHoverColor)
+    }
+    if (siteInfo.titleTextColor) {
+      document.body.style.setProperty('--primary-text-color', siteInfo.titleTextColor)
+    }
+  }, [])
+
   // noinspection JSUnresolvedLibraryURL,HtmlUnknownTarget
   return <div className="app">
     <Head>
