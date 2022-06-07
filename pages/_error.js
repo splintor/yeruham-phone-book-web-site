@@ -13,7 +13,7 @@ function Error(props) {
 
 Error.getInitialProps = (props) => {
   const statusCode = props.res ? props.res.statusCode : props.err ? props.err.statusCode : undefined
-  return { statusCode, ...props }
+  return { statusCode }
 }
 
 // noinspection JSUnusedGlobalSymbols
