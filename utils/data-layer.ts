@@ -1,7 +1,6 @@
 import { IncomingMessage } from 'http'
 import { NextApiRequest } from 'next'
 import { parseAuthCookies } from './cookies'
-import fetch from 'isomorphic-fetch'
 
 const urlPrefix = `${process.env.WIX_PAGE_URL}/_functions`
 
