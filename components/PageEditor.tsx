@@ -178,12 +178,11 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     }
     const prefix = getDetailsPrefix(action, titleInputRef.current?.value, quill)
     const text = prefix + value + '\n\n'
-    quill.insertText(range.index, text, 'user')
 
     if (action === 'Email') {
-      quill.setSelection(range.index + prefix.length, value.length)
-      quill.theme.tooltip.edit('link', 'mailto:' + value)
-      quill.theme.tooltip.save()
+      quill.insertText(range.index, text, 'link', `mailto:${value}`, 'user')
+    } else {
+      quill.insertText(range.index, text, 'user')
     }
     quill.setSelection(range.index + text.length, 0, 'user')
   }
