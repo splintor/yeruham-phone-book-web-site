@@ -116,13 +116,16 @@ const sanitizeMail = (email: string): string => {
 }
 
 const sanitizePhone = (phone: string): string => {
-  if (!phone.match(/^[\d-+*\s\u2066\u2069\u200e\u200f]+$/)) {
+  const sanitizedPhone = phone
+    .replace(/[-\s\u2000-\u206F]/g, '')
+    .replace(/^\+972/, '')
+    .replace(/^([1-9])/, '0$1');
+
+  if (!sanitizedPhone.match(/^[\d*\s]+$/)) {
     throw phone + ' לא נראה כמו מספר טלפון תקין.'
   }
-  return phone
-    .replace(/[-\s\u2066\u2069\u200e\u200f]/g, '')
-    .replace(/^\+972/, '')
-    .replace(/^([1-9])/, '0$1')
+
+  return sanitizedPhone;
 }
 
 const detailsSanitation = {
