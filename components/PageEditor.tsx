@@ -119,13 +119,13 @@ const sanitizePhone = (phone: string): string => {
   const sanitizedPhone = phone
     .replace(/[-\s\u2000-\u206F]/g, '')
     .replace(/^\+972/, '')
-    .replace(/^([1-9])/, '0$1');
+    .replace(/^([1-9])/, '0$1')
 
   if (!sanitizedPhone.match(/^[\d*\s]+$/)) {
     throw phone + ' לא נראה כמו מספר טלפון תקין.'
   }
 
-  return sanitizedPhone;
+  return sanitizedPhone
 }
 
 const detailsSanitation = {
