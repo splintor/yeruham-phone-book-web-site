@@ -1,5 +1,4 @@
 module.exports = {
-  target: 'server',
   rewrites() {
     return [
       {
