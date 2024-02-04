@@ -1,6 +1,6 @@
 - [site and mobile] When logging, prefer to use the non-public profile for name. Ideally, also find private name.
 - [site and mobile] When logging click, log what page it is coming from, and if possible, what person it is related to in this page
-- Enable adding images (as data URLs)
+- Enable adding images (as data URLs, or upload to server - see https://github.com/quilljs/quill/issues/1089)
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
 - Add "delete reason" in delete dialog
 - Enable linking to Anchors in page (which will also be cited in links preview)
