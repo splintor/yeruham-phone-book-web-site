@@ -195,7 +195,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     const range = quill.getSelection(true)
     quill.insertEmbed(range.index, 'image', imageSrc, 'user')
     quill.setSelection(range.index, 1, 'user')
-    quill.theme.tooltip.edit('link', '}קישור לפרופיל{')
+    // quill.theme.tooltip.edit('link', '}קישור לפרופיל{')
   }
 
   // noinspection JSUnusedGlobalSymbols
