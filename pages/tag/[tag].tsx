@@ -7,7 +7,7 @@ import { requestProps } from '../../utils/requestProps'
 
 // noinspection JSUnusedGlobalSymbols
 export const getServerSideProps: GetServerSideProps<AppProps> = async ({ req, query}) => {
-  const tag = (query.tag as string).replace(/_/g, ' ')
+  const tag = (query.tag as string).replace(/_/g, ' ').replace(/\u201d/g, '"')
   const result = await getTagPages(req, tag)
   return {
     props: {

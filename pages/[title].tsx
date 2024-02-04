@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = asyn
     }
   }
 
-  const result = await getPage(req, title as string)
+  const result = await getPage(req, (title as string).replace(/\u201d/g, '"'));
   return {
     props: {
       status: result.status,
