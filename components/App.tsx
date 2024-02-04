@@ -71,9 +71,9 @@ export default function App(appProps: AppProps): ReactElement {
       <meta name="viewport" content="width=device-width, initial-scale=1" key="viewport"/>
       <meta name="description" content={description} key="description"/>
       {showPreview && <>
-        <meta property="og:title" content={pageTitle} key="pageTitle"/>
+        <meta property="og:title" content={decodeURI(pageTitle)} key="pageTitle"/>
         <meta property="og:description" content={description} key="previewDescription"/>
-        <meta property="og:url" content={url} key="url"/>
+        <meta property="og:url" content={decodeURI(url)} key="url"/>
         <meta property="og:image" itemProp="image" content={`${origin}/logo-square.jpg`} key="image"/>
       </>}
       <link rel="icon" href="/favicon.ico"/>
