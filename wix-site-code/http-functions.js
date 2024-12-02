@@ -326,7 +326,7 @@ function parseToWords(s) {
     nextPos = s.length
   }
 
-  return [...parseToWords(s.substring(0, pos)), s.substring(pos + 1, nextPos - pos - 1), ...parseToWords(s.substring(nextPos + 1))]
+  return [...parseToWords(s.substring(0, pos)), s.substring(pos + 1, nextPos - pos), ...parseToWords(s.substring(nextPos + 1))]
 }
 
 function searchable(s) {
