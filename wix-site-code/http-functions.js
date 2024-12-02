@@ -341,7 +341,7 @@ function searchable(s) {
 }
 
 function isPageMatchWord(page, word) {
-  if (word.startsWith('##')) {
+  if (word.startsWith('##') || word.startsWith('__') || word.startsWith('$$')) {
     const re = new RegExp(word.substring(2))
     return page.title.match(re) || page.html.match(re) || page.html.replace(/-/g, '').match(re)
   }
