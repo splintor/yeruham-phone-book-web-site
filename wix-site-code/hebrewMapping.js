@@ -44,6 +44,7 @@ const mapping = { // taken from https://github.com/ai/convert-layout/blob/master
   ' ': ' ',
   '-': '-',
   '_': '_',
+  '+': ' ',
 }
 
 export function mappedString(s) {
