@@ -18,5 +18,5 @@ export function CopyToClipboard(props: CopyToClipboardProps): ReactElement {
     void copyPageLink(props.page, props.search, props.tag, props.setToast)
   }
 
-  return <a href="#" className="copy" onClick={copyToClipboard}>&#x1F4CB;</a>
+  return <a href="#" className="copy" onClick={copyToClipboard}>&#10697;</a>
 }
