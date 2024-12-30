@@ -3,8 +3,9 @@
 - Enable adding images (as data URLs, or upload to server - see https://github.com/quilljs/quill/issues/1089)
 - Fix strange client errors on old browsers (recreated on Android emulator browser)
 - Add "delete reason" in delete dialog
-- Enable linking to Anchors in page (which will also be cited in links preview)
+- Enable linking to anchors in page (which will also be cited in links preview)
 - Consider switching to working with redis - https://app.redislabs.com/#/subscriptions/subscription/1670090/bdb-view/10835436/configuration
+     or maybe with Vercel-KV - https://vercel.com/docs/storage/vercel-kv
 - Show last change date (Which should be a link that opens a History window)
 - Check why deleting a page on mobile doesn't work
 
