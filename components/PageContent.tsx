@@ -11,6 +11,7 @@ import { PageEditButtons } from './PageEditButtons'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
+import { CopyToClipboard } from './CopyToClipboard';
 
 const PageEditor = dynamic(() => import('./PageEditor'), { ssr: false })
 
@@ -97,6 +98,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
                                closePage={closePage}/>
               <h5 className="card-title">
                 <TitleLink title={page.title} key={page.title}/>
+                <CopyToClipboard page={page} setToast={setToast} />
               </h5>
               <div>
                 {tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} kind="small"/>)}

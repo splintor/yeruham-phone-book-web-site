@@ -257,3 +257,13 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
     }
   }
 }
+
+h5 a.copy {
+  display: none;
+  margin-inline-start: 10px;
+  font-size: .7em;
+}
+
+h5:hover a.copy {
+  display: inline;
+}

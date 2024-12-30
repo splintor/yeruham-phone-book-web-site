@@ -8,6 +8,7 @@ import { getSearchResultTitle } from '../utils/getSearchResultTitle'
 import { searchForPages } from '../utils/requests.client'
 import { initTagManager, logToGTM } from '../utils/tag-manager'
 import { getSearchUrl, getTagUrl, pageUrl } from '../utils/url'
+import type { PageData } from '../types/PageData'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
 import { DeleteConfirmationModal } from './DeleteConfirmationModal'
 import { NavBar } from './NavBar'
@@ -17,6 +18,7 @@ import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
 import { WelcomePage } from './WelcomePage'
+import { CopyToClipboard } from './CopyToClipboard'
 
 export function AppComponent(appProps: AppProps & { authData: AuthData }): ReactElement {
   if (location.hash === '#error1') {
@@ -132,7 +134,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     setSearchFocusId(Date.now())
   }
 
-  function onUpdatePageTitle(page) {
+  function onUpdatePageTitle(page: PageData) {
     const props: AppProps = { ...appProps, page }
     window.history.replaceState(props, '', pageUrl(page.title))
     document.title = getPageTitle(props)
@@ -242,7 +244,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                 </div></div>
               : <>
                 {tag && <h3><TagLink tag={tag} pushState={pushState} kind="title"/></h3>}
-                <h5>{getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}</h5>
+                <h5>
+                  {getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}
+                  <CopyToClipboard page={displayedPage.page} search={search} tag={tag} setToast={setToast} />
+                </h5>
                 {
                   tags && tags.map(t => <span className="fs-4" key={t}>
                     <TagLink key={t} tag={t} pushState={pushState} kind="title"/>
@@ -261,6 +266,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                           setPageStatus(200)
                           setDisplayedPage({ page })
                         }}/>
+                        <CopyToClipboard page={page} tag={''} search={''} setToast={setToast} />
                       </h5>
                       <div>
                         {page.tags?.map(tag => <TagLink key={tag} tag={tag} pushState={pushState} kind="small"/>)}

@@ -1,21 +1,16 @@
 import React, { BaseSyntheticEvent, ReactElement } from 'react'
-import { PageData } from '../types/PageData'
 import siteInfo from '../site-info.json'
-import { ToastOptions } from './App'
 import { AppMenu } from './AppMenu'
 import { Logo } from './Logo'
 import { SearchBox } from './SearchBox'
 import { TitleLink } from './TitleLink'
+import type { CopyToClipboardProps } from './CopyToClipboard'
 
-interface NavBarProps {
+interface NavBarProps extends CopyToClipboardProps {
   authTitle: string
-  page: PageData
-  search: string
-  tag: string
-  setToast(toastOptions: ToastOptions): void
   showWelcome: boolean
-  goToHome()
-  performSearch(e: BaseSyntheticEvent)
+  goToHome(): void
+  performSearch(e: BaseSyntheticEvent): void
   markUserEdit(userSearch: string): void
   searchFocusId: number
 }
