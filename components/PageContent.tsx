@@ -11,7 +11,7 @@ import { PageEditButtons } from './PageEditButtons'
 import { PageHtmlRenderer } from './PageHtmlRenderer'
 import { TagLink } from './TagLink'
 import { TitleLink } from './TitleLink'
-import { CopyToClipboard } from './CopyToClipboard';
+import { CopyToClipboard } from './CopyToClipboard'
 
 const PageEditor = dynamic(() => import('./PageEditor'), { ssr: false })
 
