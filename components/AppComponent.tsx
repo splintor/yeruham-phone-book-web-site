@@ -266,7 +266,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                           setPageStatus(200)
                           setDisplayedPage({ page })
                         }}/>
-                        <CopyToClipboard page={page} tag={''} search={''} setToast={setToast} />
+                        <CopyToClipboard page={page} tag="" search="" setToast={setToast} />
                       </h5>
                       <div>
                         {page.tags?.map(tag => <TagLink key={tag} tag={tag} pushState={pushState} kind="small"/>)}

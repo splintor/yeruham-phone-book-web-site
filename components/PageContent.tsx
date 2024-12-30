@@ -16,9 +16,9 @@ import { CopyToClipboard } from './CopyToClipboard'
 const PageEditor = dynamic(() => import('./PageEditor'), { ssr: false })
 
 interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'pages' | 'totalCount'> {
-  pushState(url: string, state: Partial<AppProps>)
-  onUpdatePageTitle(page: PageData)
-  setToast(toastOptions: ToastOptions)
+  pushState(url: string, state: Partial<AppProps>): void
+  onUpdatePageTitle(page: PageData): void
+  setToast(toastOptions: ToastOptions): void
   isGuestLogin: boolean
   closePage(): void
   isEdited?: boolean
@@ -98,7 +98,7 @@ export function PageContent({ search, tag, pushState, setToast, pages, totalCoun
                                closePage={closePage}/>
               <h5 className="card-title">
                 <TitleLink title={page.title} key={page.title}/>
-                <CopyToClipboard page={page} setToast={setToast} />
+                <CopyToClipboard page={page} search="" tag="" setToast={setToast} />
               </h5>
               <div>
                 {tags && tags.map(t => <TagLink key={t} tag={t} pushState={pushState} kind="small"/>)}
