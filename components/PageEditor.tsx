@@ -180,14 +180,17 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
       return
     }
     const prefix = getDetailsPrefix(action, titleInputRef.current?.value, quill)
-    const text = prefix + value + '\n\n'
 
     if (action === 'Email') {
-      quill.insertText(range.index, text, 'link', `mailto:${value}`, 'user')
+      quill.insertText(range.index, prefix)
+      quill.insertText(range.index + prefix.length, value, 'link', `mailto:${value}`, 'user')
+      quill.insertText(range.index + prefix.length + value.length, '\n\n')
+      quill.setSelection(range.index + prefix.length + value.length + '\n\n'.length, 0, 'user')
     } else {
+      const text = prefix + value + '\n\n'
       quill.insertText(range.index, text, 'user')
+      quill.setSelection(range.index + text.length, 0, 'user')
     }
-    quill.setSelection(range.index + text.length, 0, 'user')
   }
 
   const addSocialNetworkIcon = (imageSrc: string) => {
