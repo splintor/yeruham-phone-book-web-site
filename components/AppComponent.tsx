@@ -246,7 +246,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                 {tag && <h3><TagLink tag={tag} pushState={pushState} kind="title"/></h3>}
                 <h5>
                   {getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}
-                  <CopyToClipboard page={displayedPage.page} search={search} tag={tag} setToast={setToast} />
+                  {totalCount > 0 && <CopyToClipboard page={displayedPage.page} search={search} tag={tag} setToast={setToast} />}
                 </h5>
                 {
                   tags && tags.map(t => <span className="fs-4" key={t}>
