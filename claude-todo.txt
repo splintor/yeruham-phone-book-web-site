@@ -57,7 +57,6 @@ CODEBASE & DX
 -------------
 - [TODO] Consider moving to tailwind.css / svelte+sapper / shoelace
        → [NEW] Rather than a full framework switch, upgrading Next.js 12 → 14/15 (with React 18) would give major gains with less risk. Tailwind is worth considering alongside that upgrade. Preact (also in TODO) is less relevant if staying with Next.js.
-- [NEW] Enable TypeScript strict mode — tsconfig.json has strict: false. Enable incrementally (start with strictNullChecks) to catch real bugs.
 - [NEW] Add tests — zero test files currently. Unit tests for utilities (html-prettify, url, cookies) and basic API route tests would catch regressions.
 - [NEW] Dependency audit:
        * memory-cache (last published 2018) → use lru-cache or Next.js built-in caching
