@@ -1,0 +1,70 @@
+Yeruham Phone Book - Improvement Suggestions
+=============================================
+
+Items from existing TODO.md are marked with [TODO]. New suggestions are marked with [NEW].
+Items marked X in the original TODO are considered done and omitted.
+
+BUGS & FIXES
+-------------
+- [TODO] Fix strange client errors on old browsers (recreated on Android emulator browser)
+       → [NEW] Adding Sentry or similar error monitoring would help diagnose these without needing to reproduce locally.
+- [TODO] Check why deleting a page on mobile doesn't work
+- [TODO] Link unlinked e-mail addresses (check if there are any)
+- [TODO] Data sanitation:
+       * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
+       * Verify social network links use relative images
+
+EDITOR IMPROVEMENTS
+-------------------
+- [TODO] Enable adding images (as data URLs, or upload to server)
+- [TODO] Show auto-complete dropdown for in-phonebook links in editor
+- [TODO] Add "delete reason" in delete dialog
+- [TODO] Enable linking to anchors in page (which will also be cited in links preview)
+- [NEW] Consider replacing Quill 1.x with TipTap or Plate — modern, extensible, better React integration. This would also make the image and autocomplete features above easier to implement.
+
+SEARCH & DISPLAY
+----------------
+- [TODO] Highlight search terms in result page
+- [TODO] Add "Copy" button next to phone numbers
+- [TODO] Show icon for each result (and enable defining icons for pages/categories)
+- [TODO] Show last change date (should be a link that opens a History window)
+
+LOGGING & ANALYTICS
+-------------------
+- [TODO] [site and mobile] When logging, prefer to use the non-public profile for name. Ideally, also find private name.
+- [TODO] [site and mobile] When logging click, log what page it is coming from, and if possible, what person it is related to in this page
+- [NEW] Add error monitoring (Sentry or similar) — production errors are hard to debug without it.
+
+BACKEND & INFRASTRUCTURE
+------------------------
+- [TODO] Consider switching to Redis / Vercel-KV to replace Wix backend
+       → [NEW] Vercel Postgres or Supabase are also good options. Removing the Wix dependency would simplify the architecture and give full control over data/auth.
+- [TODO] Set a nightly backup of the data (to a private GitHub gist?)
+- [TODO] Handle cross-domain authentication
+- [NEW] Add a Content Security Policy — the site loads Bootstrap and Quill from CDNs, CSP headers would improve security.
+
+MOBILE & APP INTEGRATION
+-------------------------
+- [TODO] [mobile] Find how to make site links open the app on Android
+
+CUSTOMIZATION & COMMUNITY
+--------------------------
+- [TODO] Enable customization/themes
+- [TODO] Add Kosher/Mehadrin info to food places
+- [NEW] Internationalization (i18n) — Hebrew strings are inline throughout components. Extracting to a locale file would make the project easier to clone for other communities (per CLONING.md).
+- [NEW] Add a CONTRIBUTING.md — the project has good docs but no contributor guide.
+
+CODEBASE & DX
+-------------
+- [TODO] Consider moving to tailwind.css / svelte+sapper / shoelace
+       → [NEW] Rather than a full framework switch, upgrading Next.js 12 → 14/15 (with React 18) would give major gains with less risk. Tailwind is worth considering alongside that upgrade. Preact (also in TODO) is less relevant if staying with Next.js.
+- [NEW] Enable TypeScript strict mode — tsconfig.json has strict: false. Enable incrementally (start with strictNullChecks) to catch real bugs.
+- [NEW] Add tests — zero test files currently. Unit tests for utilities (html-prettify, url, cookies) and basic API route tests would catch regressions.
+- [NEW] Dependency audit:
+       * memory-cache (last published 2018) → use lru-cache or Next.js built-in caching
+       * next-absolute-url → replaceable with a 2-line utility
+       * @babel/runtime — likely not needed with modern Next.js
+       * cookie ^0.4.1 → current is 1.x
+- [NEW] Fix package name — "learn-starter" in package.json is left over from the starter template.
+- [NEW] Move @types/react-dom to devDependencies.
+- [NEW] Lazy-load more components — only PageEditor uses dynamic imports. PageHistoryModal, DeleteConfirmationModal, and the tag dropdown could also be lazy-loaded.
