@@ -59,8 +59,5 @@ CODEBASE & DX
        → [NEW] Rather than a full framework switch, upgrading Next.js 12 → 14/15 (with React 18) would give major gains with less risk. Tailwind is worth considering alongside that upgrade. Preact (also in TODO) is less relevant if staying with Next.js.
 - [NEW] Add tests — zero test files currently. Unit tests for utilities (html-prettify, url, cookies) and basic API route tests would catch regressions.
 - [NEW] Dependency audit:
-       * memory-cache (last published 2018) → use lru-cache or Next.js built-in caching
-       * next-absolute-url → replaceable with a 2-line utility
-       * @babel/runtime — likely not needed with modern Next.js
        * cookie ^0.4.1 → current is 1.x
 - [NEW] Lazy-load more components — only PageEditor uses dynamic imports. PageHistoryModal, DeleteConfirmationModal, and the tag dropdown could also be lazy-loaded.

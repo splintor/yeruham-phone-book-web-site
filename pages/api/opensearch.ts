@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import absoluteUrl from 'next-absolute-url'
 import siteInfo from '../../site-info.json'
 
 export default async function opensearch(request: NextApiRequest, response: NextApiResponse): Promise<void> {
-  const { origin } = absoluteUrl(request)
+  const host = request.headers.host || 'localhost:3000'
+  const protocol = request.headers['x-forwarded-proto'] || 'http'
+  const origin = `${protocol}://${host}`
   response.setHeader('Content-Type', 'application/xml')
   response.end(`<OpenSearchDescription
   xmlns="http://a9.com/-/spec/opensearch/1.1/"
