@@ -54,7 +54,7 @@ Phone-number login → Wix validates → returns auth token → stored in cookie
 
 ## Task tracking
 
-When completing an item from `claude-todo.txt` or `TODO.md`, remove the corresponding line from the file as part of the same commit.
+When completing an item from `claude-todo.txt` or `TODO.md`, remove the corresponding line from the file as part of the same commit. Also check the other file for the same item and remove it there too.
 
 ## Conventions
 
