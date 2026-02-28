@@ -65,6 +65,4 @@ CODEBASE & DX
        * next-absolute-url → replaceable with a 2-line utility
        * @babel/runtime — likely not needed with modern Next.js
        * cookie ^0.4.1 → current is 1.x
-- [NEW] Fix package name — "learn-starter" in package.json is left over from the starter template.
-- [NEW] Move @types/react-dom to devDependencies.
 - [NEW] Lazy-load more components — only PageEditor uses dynamic imports. PageHistoryModal, DeleteConfirmationModal, and the tag dropdown could also be lazy-loaded.
