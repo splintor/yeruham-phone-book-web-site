@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'http'
 
-function getOrigin(req: IncomingMessage): string {
+export function getOrigin(req: IncomingMessage): string {
   const host = req.headers.host || 'localhost:3000'
   const protocol = req.headers['x-forwarded-proto'] || 'http'
   return `${protocol}://${host}`

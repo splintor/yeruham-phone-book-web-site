@@ -1,10 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import siteInfo from '../../site-info.json'
+import { getOrigin } from '../../utils/requestProps'
 
 export default async function opensearch(request: NextApiRequest, response: NextApiResponse): Promise<void> {
-  const host = request.headers.host || 'localhost:3000'
-  const protocol = request.headers['x-forwarded-proto'] || 'http'
-  const origin = `${protocol}://${host}`
+  const origin = getOrigin(request)
   response.setHeader('Content-Type', 'application/xml')
   response.end(`<OpenSearchDescription
   xmlns="http://a9.com/-/spec/opensearch/1.1/"
