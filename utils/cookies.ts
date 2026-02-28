@@ -30,7 +30,7 @@ export interface AuthData {
 }
 
 export function parseAuthCookies(request?: IncomingMessage): AuthData {
-  const { auth } = parse((request ? request.headers.cookie : document.cookie) || '')
+  const { auth = '' } = parse((request ? request.headers.cookie : document.cookie) || '')
   const authTitle = !request && auth && localStorage.getItem(authTitleKey) || ''
   return { auth, authTitle }
 }

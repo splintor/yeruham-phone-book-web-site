@@ -58,6 +58,4 @@ CODEBASE & DX
 - [TODO] Consider moving to tailwind.css / svelte+sapper / shoelace
        → [NEW] Rather than a full framework switch, upgrading Next.js 12 → 14/15 (with React 18) would give major gains with less risk. Tailwind is worth considering alongside that upgrade. Preact (also in TODO) is less relevant if staying with Next.js.
 - [NEW] Add tests — zero test files currently. Unit tests for utilities (html-prettify, url, cookies) and basic API route tests would catch regressions.
-- [NEW] Dependency audit:
-       * cookie ^0.4.1 → current is 1.x
 - [NEW] Lazy-load more components — only PageEditor uses dynamic imports. PageHistoryModal, DeleteConfirmationModal, and the tag dropdown could also be lazy-loaded.
