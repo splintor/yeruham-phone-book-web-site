@@ -52,7 +52,7 @@ export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }:
           e.preventDefault()
           startEditing()
         }}>עריכה</a></li>
-        <li><a className="dropdown-item" href="/" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">מחיקה</a>
+        <li><a className="dropdown-item" href="/" data-bs-toggle="modal" data-bs-target="#deleteConfirmation" data-bs-page={JSON.stringify(page)}>מחיקה</a>
         </li>
       </ul>
     </div>

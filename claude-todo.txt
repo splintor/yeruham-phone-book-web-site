@@ -8,7 +8,6 @@ BUGS & FIXES
 -------------
 - [TODO] Fix strange client errors on old browsers (recreated on Android emulator browser)
        → [NEW] Adding Sentry or similar error monitoring would help diagnose these without needing to reproduce locally.
-- [TODO] Check why deleting a page on mobile doesn't work
 - [TODO] Link unlinked e-mail addresses (check if there are any)
 - [TODO] Data sanitation:
        * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
