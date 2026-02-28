@@ -52,6 +52,10 @@ Phone-number login → Wix validates → returns auth token → stored in cookie
 - `/tag/[tag]` — Pages filtered by tag
 - `/new_page` — Special route for creating new pages
 
+## Task tracking
+
+When completing an item from `claude-todo.txt` or `TODO.md`, remove the corresponding line from the file as part of the same commit.
+
 ## Conventions
 
 - **No semicolons** (enforced by ESLint)
