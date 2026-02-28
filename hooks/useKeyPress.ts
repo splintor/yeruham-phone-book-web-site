@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 
 export function useKeyPress(targetKey: string): KeyboardEvent | undefined {
-  const [keyPressed, setKeyPressed] = useState<KeyboardEvent>(undefined)
+  const [keyPressed, setKeyPressed] = useState<KeyboardEvent>()
 
   function downHandler(event: KeyboardEvent) {
     if (event.key === targetKey) {

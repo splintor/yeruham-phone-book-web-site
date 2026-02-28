@@ -30,7 +30,7 @@ export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
   const [phoneNumber, setPhoneNumber] = useState(hashAuth || '')
   const [isLoading, setIsLoading] = useState(false)
   const [errorType, setErrorType] = useState(ErrorType.None)
-  const phoneInputRef = useRef<HTMLInputElement>()
+  const phoneInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => void setTimeout(() => phoneInputRef.current?.focus(), 0), [])
   useEffect(function () {

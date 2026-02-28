@@ -4,9 +4,9 @@ import { PageData } from '../types/PageData'
 import { ToastOptions } from './App'
 
 export interface CopyToClipboardProps {
-  page: PageData
+  page?: PageData
   search: string
-  tag: string
+  tag?: string
   setToast(toastOptions: ToastOptions): void
 }
 

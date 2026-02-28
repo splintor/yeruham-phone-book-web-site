@@ -10,7 +10,8 @@ interface PageParams extends ParsedUrlQuery {
   title: string
 }
 
-export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = async ({ query, params: { title }, req}) => {
+export const getServerSideProps: GetServerSideProps<AppProps, PageParams> = async ({ query, params, req}) => {
+  const { title } = params!
   if (title === 'new_page') {
     return {
       props: {

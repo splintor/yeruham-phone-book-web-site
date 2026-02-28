@@ -9,19 +9,19 @@ interface DeleteConfirmationModalProps extends Pick<AppProps, 'search' | 'tags' 
   isPageView: boolean
   setSearchResults(results: SearchResults): void
   setModalVisible(isVisible: boolean): void
-  setToast(toastOptions: ToastOptions): void
+  setToast(toastOptions?: ToastOptions): void
   pushState(url: string, state: Partial<AppProps>): void
 }
 
 export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, pages, totalCount, tags, tag, search, isPageView, setSearchResults }: DeleteConfirmationModalProps): ReactElement {
-  const modalRef = useRef<HTMLDivElement>()
-  const cancelButtonRef = useRef<HTMLButtonElement>()
+  const modalRef = useRef<HTMLDivElement>(null)
+  const cancelButtonRef = useRef<HTMLButtonElement>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [page, setPage] = useState<PageData>(null)
+  const [page, setPage] = useState<PageData | null>(null)
   useEffect(() => {
     modalRef.current?.addEventListener('show.bs.modal', (event: MouseEvent) => {
       const button = event.relatedTarget as HTMLButtonElement
-      const deletedPage = JSON.parse(button.getAttribute('data-bs-page')) as PageData
+      const deletedPage = JSON.parse(button.getAttribute('data-bs-page')!) as PageData
       setPage(deletedPage)
       return setModalVisible?.(true)
     })
@@ -29,12 +29,13 @@ export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, 
   }, [modalRef.current])
 
   async function deletePage() {
+    if (!page) return
     setIsDeleting(true)
     await savePage({ ...page, isDeleted: true })
 
     const cancelDelete = (e: React.MouseEvent) => {
       e.preventDefault()
-      setToast(null)
+      setToast(undefined)
       savePage({ ...page, isDeleted: false }).then(() => {
         pushState(pageUrl(page.title), { page, pages, totalCount, tags, tag, search })
         setToast({ position: 'bottom', content: <div>המחיקה של הדף <b>{page.title}</b> בוטלה.</div> })
@@ -45,7 +46,7 @@ export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, 
       sessionStorage.setItem(deletedPageTitleKey, page.title)
       history.back()
     } else if (!isPageView) {
-      setSearchResults({ pages: pages.filter(p => p._id !== page._id), tags, totalCount, search })
+      setSearchResults({ pages: pages?.filter(p => p._id !== page._id), tags, totalCount, search })
     } else {
       pushState('/', {})
     }
@@ -54,7 +55,7 @@ export function DeleteConfirmationModal({ setModalVisible, setToast, pushState, 
       content: <div>הדף <b>{page.title}</b> נמחק בהצלחה. <a href="/" onClick={cancelDelete}>בטל מחיקה</a></div>
     })
     setIsDeleting(false)
-    cancelButtonRef.current.click()
+    cancelButtonRef.current?.click()
   }
 
   return <div className="modal fade" id="deleteConfirmation" ref={modalRef} tabIndex={-1}

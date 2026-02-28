@@ -33,7 +33,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     tags: appProps.tags,
     search: appProps.search,
   })
-  const [displayedPage, setDisplayedPage] = useState(appProps.newPage ? { page: { title: appProps.initialTitle || '', html: '' }, isEdited: true } : { page: appProps.page })
+  const [displayedPage, setDisplayedPage] = useState<{ page?: PageData, isEdited?: boolean }>(appProps.newPage ? { page: { title: appProps.initialTitle || '', html: '' }, isEdited: true } : { page: appProps.page })
   const [search, setSearch] = useState(searchFromResults || '')
   const [tag, setTag] = useState(appProps.tag)
   const [isSearching, setIsSearching] = useState(false)
@@ -78,7 +78,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
   }, [toast])
 
   useEffect(() => {
-    if (!isPageView && pages?.length > 0) {
+    if (!isPageView && (pages?.length ?? 0) > 0) {
       document.querySelectorAll?.('.preview, .preview > table > tbody > tr > td > div').forEach((p: HTMLElement) => {
         for (let i = p.children.length - 1; i >= 0; --i) {
           const c = p.children[i] as HTMLElement
@@ -107,7 +107,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     const deletedPageTitle = sessionStorage.getItem(deletedPageTitleKey)
     if (deletedPageTitle) {
       sessionStorage.removeItem(deletedPageTitleKey)
-      setSearchResults({ pages: pages.filter(p => p.title !== deletedPageTitle), tags, totalCount, search })
+      setSearchResults({ pages: pages?.filter(p => p.title !== deletedPageTitle), tags, totalCount, search })
     }
   }, [setSearchResults, pages, tags, totalCount])
 
@@ -115,7 +115,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     const { search, page, pages, tags, tag, totalCount } = state
     setSearch(search || '')
     setPageStatus(200)
-    setDisplayedPage({ page: page || null, isEdited: state.newPage || false })
+    setDisplayedPage({ page, isEdited: state.newPage })
     setIsSearching(false)
     setSearchResults({ pages, tags, totalCount, search })
     setTag(tag)
@@ -160,8 +160,8 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
 
   const updateSearchInPage = ({ search, ...results }: SearchResults) => {
     setFromUserEdit(false)
-    stringBeingSearched.current = search
-    pushState(getSearchUrl(search), { search, ...results })
+    stringBeingSearched.current = search || ''
+    pushState(getSearchUrl(search || ''), { search, ...results })
   }
 
   async function performSearch(e: BaseSyntheticEvent) {
@@ -170,10 +170,11 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       return
     }
 
-    setDisplayedPage({ page: null })
+    setDisplayedPage({})
     setIsSearching(true)
     setFromUserEdit(false)
-    updateSearchInPage(await searchForPages(search))
+    const results = await searchForPages(search)
+    if (results) updateSearchInPage(results)
   }
 
   useEffect(() => {
@@ -190,7 +191,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       setIsSearching(true)
       stringBeingSearched.current = debouncedSearchTerm
       searchForPages(debouncedSearchTerm).then(results => {
-        if (stringBeingSearched.current === debouncedSearchTerm && lastSearch.current === debouncedSearchTerm) {
+        if (results && stringBeingSearched.current === debouncedSearchTerm && lastSearch.current === debouncedSearchTerm) {
           updateSearchInPage(results)
         }
       })
@@ -210,10 +211,10 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     setSearch(userSearch)
   }
 
-  const closePage = pages && isPageView && (() => {
-    setDisplayedPage({ page: null })
+  const closePage = (pages && isPageView) ? (() => {
+    setDisplayedPage({})
     pushState(tag ? getTagUrl(tag) : getSearchUrl(search), { pages, totalCount, tags, tag, search })
-  })
+  }) : undefined
 
   // noinspection HtmlUnknownTarget
   return (<>
@@ -225,7 +226,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         <div className="toast-body">
           {toast.content}
         </div>
-        <button type="button" className="btn-close me-2 m-auto" onClick={() => setToast(null)}/>
+        <button type="button" className="btn-close me-2 m-auto" onClick={() => setToast(undefined)}/>
       </div>
     </div>}
 
@@ -233,7 +234,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       {showWelcome
         ? <WelcomePage authTitle={authTitle} search={search} performSearch={performSearch} markUserEdit={markUserEdit} searchFocusId={searchFocusId}/>
         : isPageView
-          ? <PageContent status={pageStatus} {...displayedPage} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
+          ? <PageContent status={pageStatus} page={displayedPage.page!} isEdited={displayedPage.isEdited} pages={pages} search={search} tag={tag} totalCount={totalCount} closePage={closePage}
                          pushState={pushState} setToast={setToast} onUpdatePageTitle={onUpdatePageTitle} isGuestLogin={isGuestLogin}
                          isDeleteConfirmationVisible={isDeleteConfirmationVisible}/>
           : <div className="p-2">
@@ -246,7 +247,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                 {tag && <h3><TagLink tag={tag} pushState={pushState} kind="title"/></h3>}
                 <h5>
                   {getSearchResultTitle(pages, tags, totalCount, search, tag, !authTitle)}
-                  {totalCount > 0 && <CopyToClipboard page={displayedPage.page} search={search} tag={tag} setToast={setToast} />}
+                  {(totalCount ?? 0) > 0 && <CopyToClipboard page={displayedPage.page} search={search} tag={tag} setToast={setToast} />}
                 </h5>
                 {
                   tags && tags.map(t => <span className="fs-4" key={t}>

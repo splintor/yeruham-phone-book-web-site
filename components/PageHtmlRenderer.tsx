@@ -30,7 +30,7 @@ function enrichHtml({ html }: PageData) {
     }
 
     const matchStr = match[1]
-    const matchIndex = match.index
+    const matchIndex = match.index!
     startIndex += matchIndex
     const preMatchStr = html.substr(0, startIndex)
     const openLinkIndex = preMatchStr.lastIndexOf('<a ')
@@ -62,5 +62,5 @@ export const PageHtmlRenderer = ({ pushState, className, ...props}: PageHtmlRend
     }
   }
 
-  return <div dangerouslySetInnerHTML={{ __html: enrichHtml(props.page) }} className={`page-html ${className}`} onClick={onContentClick}/>
+  return <div dangerouslySetInnerHTML={{ __html: enrichHtml(props.page!) }} className={`page-html ${className}`} onClick={onContentClick}/>
 }

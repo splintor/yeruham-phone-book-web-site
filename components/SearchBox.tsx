@@ -9,8 +9,8 @@ export interface SearchBoxProps {
 }
 
 export function SearchBox({ search, ...props }: SearchBoxProps): ReactElement {
-  const searchInput = useRef(null)
-  const focusSearchInput = (element = null) => {
+  const searchInput = useRef<HTMLInputElement | null>(null)
+  const focusSearchInput = (element?: HTMLInputElement | null) => {
     if (element) {
       searchInput.current = element
     }

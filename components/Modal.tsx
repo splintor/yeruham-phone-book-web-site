@@ -12,9 +12,10 @@ interface ModalProps {
   onSubmit(): void
 }
 
-export function Modal({ title, setShow, ...props }: ModalProps): React.ReactElement<ModalProps> {
+export function Modal({ title, setShow, ...props }: ModalProps): React.ReactElement<ModalProps> | null {
   const close = () => setShow(false)
-  return props.show && <>
+  if (!props.show) return null
+  return <>
     <div key={`${title}Overlay`} className="overlay" onClick={close}/>
     <div key="${title}Modal" className="modal">
       <div className="modal-title">{title}</div>

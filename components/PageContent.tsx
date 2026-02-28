@@ -15,12 +15,13 @@ import { CopyToClipboard } from './CopyToClipboard'
 
 const PageEditor = dynamic(() => import('./PageEditor'), { ssr: false })
 
-interface PageContentProps extends Pick<AppProps, 'status' | 'page' | 'search' | 'tag' | 'pages' | 'totalCount'> {
+interface PageContentProps extends Pick<AppProps, 'status' | 'search' | 'tag' | 'pages' | 'totalCount'> {
+  page: PageData
   pushState(url: string, state: Partial<AppProps>): void
   onUpdatePageTitle(page: PageData): void
   setToast(toastOptions: ToastOptions): void
   isGuestLogin: boolean
-  closePage(): void
+  closePage?(): void
   isEdited?: boolean
   isDeleteConfirmationVisible: boolean
 }

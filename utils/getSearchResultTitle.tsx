@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { PageData } from '../types/PageData'
 
-export function getSearchResultTitle(pages: PageData[], tags: string[], totalCount: number, search: string, tag: string, isGuestLogin: boolean): ReactNode {
+export function getSearchResultTitle(pages: PageData[] | undefined, tags: string[] | undefined, totalCount: number | undefined, search: string | undefined, tag: string | undefined, isGuestLogin: boolean): ReactNode {
   const pagesCount = pages && pages.length || 0
   const tagsCount = tags && tags.length || 0
 
@@ -33,10 +33,10 @@ export function getSearchResultTitle(pages: PageData[], tags: string[], totalCou
       }
 
     default:
-      const wrap = totalCount > pagesCount
+      const wrap = (totalCount ?? 0) > pagesCount
         ? (s: string) => <><span>{`${s}. `}</span><span className="text-nowrap">{`מציג את ${pagesCount} הדפים הראשונים`}:</span></>
         : (s: string) => s + ':'
-      const pageCount = totalCount ?? pagesCount
+      const pageCount = totalCount || pagesCount
       switch (tagsCount) {
         case 0:
           return wrap(`נמצאו ${pageCount} דפים`)

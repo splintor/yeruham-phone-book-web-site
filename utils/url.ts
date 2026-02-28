@@ -7,13 +7,13 @@ export const pageUrl = (title: string): string => '/' + title.replace(/ /g, '_')
 export const getSearchUrl = (search: string): string => search ? `/search/${search}` : '/'
 export const getTagUrl = (tag: string): string => tag ? `/tag/${tag}`  : '/'
 
-export async function copyPageLink(page: PageData, search: string, tag: string, setToast: (toastOptions: ToastOptions) => void): Promise<void> {
+export async function copyPageLink(page: PageData | undefined, search: string, tag: string | undefined, setToast: (toastOptions: ToastOptions) => void): Promise<void> {
   const url = page?.title ? pageUrl(page.title) : tag ? getTagUrl(tag) : search ? getSearchUrl(search) : '/'
   await copyTextToClipboard(location.origin + url.replace(/ /g, '_').replace(/"/g, '\u201D'))
   setToast({ content: 'כתובת הדף הועתקה.', position: 'bottom', timeout: 3_000 })
 }
 
-export function useHashAuth(): string {
+export function useHashAuth(): string | undefined {
   const [hashAuth, setHashAuth] = useState<string>()
   useEffect(() => {
     const [, hashAuth] = location.hash.split('#auth:')

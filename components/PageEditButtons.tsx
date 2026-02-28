@@ -8,14 +8,14 @@ interface Props {
   closePage?(): void
 }
 
-export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }: Props): ReactElement => {
+export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }: Props): ReactElement | null => {
   function showHistory(event: MouseEvent) {
     event.preventDefault()
   }
 
   function getLastEditedText() {
     const today = new Date()
-    const lastEdited = new Date(page._updatedDate)
+    const lastEdited = new Date(page._updatedDate || '')
     if (today.toLocaleDateString() === lastEdited.toLocaleDateString()) {
       return `נערך לאחרונה היום ב-${lastEdited.toLocaleTimeString()}`
     }

@@ -35,7 +35,7 @@ function toLines(markup: string): string[] {
 
 function addIndentation(htmlLines: string[]): string {
   let level = 0
-  const opened = []
+  const opened: string[] = []
 
   return htmlLines.reverse().reduce((indented, elTag) => {
     if (opened.length

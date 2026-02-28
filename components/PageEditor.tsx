@@ -135,7 +135,7 @@ const detailsSanitation = {
 }
 
 export default function PageEditor({ page, onCancel, onSave, pushState, setToast }: EditorProps): ReactElement {
-  const initialPage = JSON.parse(localStorage.getItem(editedPageCacheKey(page.title)) || null) as PageData || page
+  const initialPage = JSON.parse(localStorage.getItem(editedPageCacheKey(page.title)) || 'null') as PageData || page
   const [title, setTitle] = useState(initialPage.title)
   const [tags, setTags] = useState(initialPage.tags)
   const [newTag, setNewTag] = useState('')
@@ -179,7 +179,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
       setToast({ content: e, type: 'fail', position: 'bottom' })
       return
     }
-    const prefix = getDetailsPrefix(action, titleInputRef.current?.value, quill)
+    const prefix = getDetailsPrefix(action, titleInputRef.current?.value || '', quill)
 
     if (action === 'Email') {
       quill.insertText(range.index, prefix)
@@ -286,8 +286,8 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   }, [title, tags, htmlToSave])
 
   const removeTag = (tag: string) => {
-    const filterTags = tags.filter(t => t !== tag)
-    setTags(filterTags.length === 0 ? null : filterTags)
+    const filterTags = tags?.filter(t => t !== tag)
+    setTags(!filterTags?.length ? undefined : filterTags)
   }
 
   const addTag = tag => {
