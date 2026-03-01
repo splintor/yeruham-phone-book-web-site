@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react'
 import { AppProps } from '../types/AppProps'
 import { PageData } from '../types/PageData'
 import { parseAuthCookies } from '../utils/cookies'
+import { highlightSearch } from '../utils/highlight-search'
 import { pageUrl } from '../utils/url'
 
 interface PageHtmlRendererProps extends Pick<AppProps, 'page' | 'search' | 'tags' | 'tag' | 'pages' | 'newPage' | 'totalCount'> {
@@ -62,5 +63,5 @@ export const PageHtmlRenderer = ({ pushState, className, ...props}: PageHtmlRend
     }
   }
 
-  return <div dangerouslySetInnerHTML={{ __html: enrichHtml(props.page!) }} className={`page-html ${className}`} onClick={onContentClick}/>
+  return <div dangerouslySetInnerHTML={{ __html: highlightSearch(enrichHtml(props.page!), props.search) }} className={`page-html ${className}`} onClick={onContentClick}/>
 }

@@ -23,7 +23,6 @@ EDITOR IMPROVEMENTS
 
 SEARCH & DISPLAY
 ----------------
-- [TODO] Highlight search terms in result page
 - [TODO] Add "Copy" button next to phone numbers
 - [TODO] Show icon for each result (and enable defining icons for pages/categories)
 - [TODO] Show last change date (should be a link that opens a History window)

@@ -12,7 +12,6 @@
 - Show icon for each result (and enable defining icons for pages/categories)
 - [mobile]: Find how to make site links open the app on Android
 - Show auto-complete dropdown for in-phonebook links in editor
-- Highlight search in result page
 - Add Kosher/Mehadrin info to food places
 - Enable customization/themes
 - Link unlinked e-mail addresses (check if there are any)

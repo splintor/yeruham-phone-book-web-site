@@ -258,6 +258,12 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   }
 }
 
+mark {
+  background-color: #fff3cd;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
 h5 a.copy {
   display: none;
   margin-inline-start: 10px;

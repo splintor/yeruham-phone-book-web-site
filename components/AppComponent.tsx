@@ -261,7 +261,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                                        isGuestLogin={isGuestLogin}
                                        startEditing={() => setDisplayedPage({ page, isEdited: true })}/>
                       <h5 className="card-title">
-                        <TitleLink title={page.title} key={page.title} onClick={e => {
+                        <TitleLink title={page.title} search={search} key={page.title} onClick={e => {
                           e.preventDefault()
                           pushState(pageUrl(page.title), { pages, totalCount, tags, tag, search })
                           setPageStatus(200)
