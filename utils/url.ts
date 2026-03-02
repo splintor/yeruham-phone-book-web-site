@@ -4,8 +4,9 @@ import { PageData } from "../types/PageData"
 import { copyTextToClipboard } from './clipboard'
 
 export const pageUrl = (title: string): string => '/' + title.replace(/ /g, '_')
-export const getSearchUrl = (search: string): string => search ? `/search/${search}` : '/'
-export const getTagUrl = (tag: string): string => tag ? `/tag/${tag}`  : '/'
+const escapeUrlSegment = (s: string): string => s.replace(/ /g, '_').replace(/"/g, '\u201D')
+export const getSearchUrl = (search: string): string => search ? `/search/${escapeUrlSegment(search)}` : '/'
+export const getTagUrl = (tag: string): string => tag ? `/tag/${escapeUrlSegment(tag)}`  : '/'
 
 export async function copyPageLink(page: PageData | undefined, search: string, tag: string | undefined, setToast: (toastOptions: ToastOptions) => void): Promise<void> {
   const url = page?.title ? pageUrl(page.title) : tag ? getTagUrl(tag) : search ? getSearchUrl(search) : '/'
