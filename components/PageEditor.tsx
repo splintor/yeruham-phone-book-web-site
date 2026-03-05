@@ -64,6 +64,7 @@ const CustomToolbar = () =>
       <button className="ql-link"/>
     </span>
     <span className="ql-formats">
+      {/* eslint-disable @next/next/no-img-element */}
       <button className="ql-instagram" title="הוסף קישור לאינסטגרם">
         <img src="/instagram.jpg" alt="Instagram icon"/>
       </button>
@@ -73,6 +74,7 @@ const CustomToolbar = () =>
       <button className="ql-facebook" title="הוסף קישור לפייסבוק">
         <img src="/facebook.png" alt="Facebook Icon"/>
       </button>
+      {/* eslint-enable @next/next/no-img-element */}
     </span>
     <span className="ql-formats">
       <button className="ql-viewSource" title="עריכת קוד מקור">
@@ -162,6 +164,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     } else if (enterPressed && (enterPressed.ctrlKey || enterPressed.metaKey)) {
       void save(enterPressed)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sPressed, enterPressed])
 
   const detailsHandler = (action: keyof typeof detailsPromptText) => {
@@ -259,6 +262,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
       setEditedSource(quill.root.innerHTML)
     })
     quillObj.current = quill
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quill])
 
   const htmlToSave = viewSource ? editedSource : editorValue
@@ -283,6 +287,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
     if (title) {
       localStorage.setItem(editedPageCacheKey(page.title), JSON.stringify(getDataToSave()))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, tags, htmlToSave])
 
   const removeTag = (tag: string) => {

@@ -8,4 +8,5 @@ interface Props {
 }
 
 export const Logo = (props: Props): ReactElement =>
+  // eslint-disable-next-line @next/next/no-img-element
   <img src="/logo.png" alt={siteInfo.siteTitle} title={`${siteInfo.siteTitle}\n${siteInfo.logoDescription}`} {...props} />

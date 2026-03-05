@@ -33,7 +33,7 @@ export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }:
 
   return isGuestLogin ? null : (<div className="page-edit-buttons float-end d-flex">
     <div className="d-none d-md-block">
-      <a href="/" className="history-link" onClick={showHistory}>{getLastEditedText()}</a>
+      <button className="history-link" onClick={showHistory}>{getLastEditedText()}</button>
       <button className="btn btn-sm btn-outline-primary" onClick={startEditing}>עריכה</button>
       <button className="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal"
               data-bs-target="#deleteConfirmation" data-bs-page={JSON.stringify(page)}>מחיקה
@@ -48,10 +48,10 @@ export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }:
         </svg>
       </button>
       <ul className="dropdown-menu dropdown-menu-start" style={{ minWidth: 'auto' }}>
-        <li><a className="dropdown-item" href="/" onClick={e => {
-          e.preventDefault()
+        <li><button className="dropdown-item" onClick={() => {
           startEditing()
-        }}>עריכה</a></li>
+        }}>עריכה</button></li>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <li><a className="dropdown-item" href="/" data-bs-toggle="modal" data-bs-target="#deleteConfirmation" data-bs-page={JSON.stringify(page)}>מחיקה</a>
         </li>
       </ul>

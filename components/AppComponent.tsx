@@ -61,6 +61,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     if (isAuthTitleNew()) {
       setToast({ position: 'top', timeout: 5000, content: <div>הי <b>{authTitle}</b>, איזה כיף שהתחברת ל{siteInfo.siteTitle}!</div> })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -109,7 +110,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       sessionStorage.removeItem(deletedPageTitleKey)
       setSearchResults({ pages: pages?.filter(p => p.title !== deletedPageTitle), tags, totalCount, search })
     }
-  }, [setSearchResults, pages, tags, totalCount])
+  }, [setSearchResults, pages, tags, totalCount, search])
 
   const processDynamicState = (state: Partial<AppProps>) => {
     const { search, page, pages, tags, tag, totalCount } = state
@@ -148,6 +149,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
       }
       return false
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -156,6 +158,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
     if (activeSearch !== search || activeTag !== tag) {
       document.title = getPageTitle({ ...appProps, search: activeSearch, tag: activeTag })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, search, tag])
 
   const updateSearchInPage = ({ search, ...results }: SearchResults) => {
@@ -196,6 +199,7 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
         }
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm, showWelcome])
 
   useEffect(() => {

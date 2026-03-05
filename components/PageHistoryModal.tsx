@@ -26,7 +26,7 @@ export function PageHistoryModal({ setModalVisible, setToast, pushState, pages, 
       return setModalVisible?.(true)
     })
     modalRef.current?.addEventListener('hidden.bs.modal', () => setModalVisible?.(false))
-  }, [modalRef.current])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function deletePage() {
     if (!page) return
@@ -52,7 +52,7 @@ export function PageHistoryModal({ setModalVisible, setToast, pushState, pages, 
     }
     setToast({
       position: 'bottom',
-      content: <div>הדף <b>{page.title}</b> נמחק בהצלחה. <a href="/" onClick={cancelDelete}>בטל מחיקה</a></div>
+      content: <div>הדף <b>{page.title}</b> נמחק בהצלחה. <button className="btn btn-link p-0" onClick={cancelDelete}>בטל מחיקה</button></div>
     })
     setIsDeleting(false)
     cancelButtonRef.current?.click()

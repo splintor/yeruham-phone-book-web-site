@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Script from 'next/script'
 import { useRouter } from 'next/router'
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react'
 import { AppProps } from '../types/AppProps'
@@ -85,6 +86,6 @@ export default function App(appProps: AppProps): ReactElement {
     <ErrorBoundary>
       {authData ? (isPageAllowed && !hashAuth) ? <AppComponent authData={authData} {...appProps} /> : <LoginPage hashAuth={hashAuth}/> : ''}
     </ErrorBoundary>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossOrigin="anonymous"/>
+    <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossOrigin="anonymous" strategy="afterInteractive"/>
   </div>
 }

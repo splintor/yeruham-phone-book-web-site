@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React, { ReactElement } from 'react'
 import siteInfo from '../site-info.json'
 import { publicTagName } from '../utils/consts'
@@ -10,9 +11,9 @@ export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: strin
     <div className="row align-self-center card border-primary mx-auto px-1 py-3">
       <div className="mb-2">
         {siteInfo.welcomeSearchTitle ? <label htmlFor="search-box">{siteInfo.welcomeSearchTitle}</label> : authTitle
-          ? <label htmlFor="search-box">חיפוש אדם, <a href={`/tag/${publicTagName}`}>עסק או מוסד</a><span
-            className="d-md-inline d-none"> (אפשר גם <a href="/new_page">להוסיף דף חדש</a>)</span>:</label>
-          : <label htmlFor="search-box">חיפוש <a href={`/tag/${publicTagName}`}>עסק או מוסד ציבורי</a>:</label>}
+          ? <label htmlFor="search-box">חיפוש אדם, <Link href={`/tag/${publicTagName}`}>עסק או מוסד</Link><span
+            className="d-md-inline d-none"> (אפשר גם <Link href="/new_page">להוסיף דף חדש</Link>)</span>:</label>
+          : <label htmlFor="search-box">חיפוש <Link href={`/tag/${publicTagName}`}>עסק או מוסד ציבורי</Link>:</label>}
       </div>
       <SearchBox {...searchBoxProps}/>
       {siteInfo.androidAppLink && siteInfo.telegramBotLink && (
@@ -22,15 +23,15 @@ export const WelcomePage = ({ authTitle, ...searchBoxProps }: { authTitle: strin
         </div>
       )}
       <div className="mt-2">
-        הסבר על השימוש באתר אפשר למצוא <a href="/help">כאן</a>
+        הסבר על השימוש באתר אפשר למצוא <Link href="/help">כאן</Link>
       </div>
       <div className="mt-2">
         הערות והצעות כדאי לשלוח ב<a href={`mailto:${siteInfo.adminEmail}?subject=${siteInfo.siteTitle}`}>מייל</a> או ב<a
         href={`https://wa.me/${siteInfo.adminPhone.replace(/^0/, '+972-')}`}>ווטסאפ</a>
       </div>
-      <a href="/" className="mt-3 d-flex justify-content-center">
+      <Link href="/" className="mt-3 d-flex justify-content-center">
         <Logo width="75%"/>
-      </a>
+      </Link>
     </div>
   </div>
 )

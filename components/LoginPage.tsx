@@ -38,6 +38,7 @@ export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
       clearHashAuth()
       void login()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

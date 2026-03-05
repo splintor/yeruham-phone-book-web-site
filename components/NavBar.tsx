@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React, { BaseSyntheticEvent, ReactElement } from 'react'
 import siteInfo from '../site-info.json'
 import { AppMenu } from './AppMenu'
@@ -19,9 +20,9 @@ export const NavBar = ({ authTitle, showWelcome, goToHome, page, search, tag, se
   <nav className="navbar navbar-expand-sm navbar-dark bg-primary">
     <div className="container-fluid pe-0">
       <div className="text-nowrap">
-        <a className="navbar-brand app-icon" href="/">
+        <Link className="navbar-brand app-icon" href="/">
           <Logo width="40" height="40"/>
-        </a>
+        </Link>
         <TitleLink title={siteInfo.siteTitle} href="/" className="navbar-brand" onClick={e => {
           e.preventDefault()
           goToHome()
