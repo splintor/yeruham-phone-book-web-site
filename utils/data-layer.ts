@@ -27,6 +27,9 @@ export const getAllTags = (req: IncomingMessage): Promise<Response> =>
 export const getAllPages = (req: IncomingMessage, updatedAfter: string, requestedBy: string): Promise<Response> =>
   fetch(`${urlPrefix}/pages?UpdatedAfter=${updatedAfter || ''}&RequestedBy=${requestedBy || ''}`, getRequestOptions(req))
 
+export const getPageHistory = (req: IncomingMessage, pageId: string): Promise<Response> =>
+  fetch(`${urlPrefix}/pageHistory/${encodeURI(pageId)}`, getRequestOptions(req))
+
 export const savePage = (req: NextApiRequest): Promise<Response> =>
   fetch(`${urlPrefix}/page`, {
     method: 'POST',

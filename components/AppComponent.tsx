@@ -11,6 +11,7 @@ import { getSearchUrl, getTagUrl, pageUrl } from '../utils/url'
 import type { PageData } from '../types/PageData'
 import { deletedPageTitleKey, getPageTitle, ToastOptions } from './App'
 import { DeleteConfirmationModal } from './DeleteConfirmationModal'
+import { PageHistoryModal } from './PageHistoryModal'
 import { NavBar } from './NavBar'
 import { PageContent } from './PageContent'
 import { PageEditButtons } from './PageEditButtons'
@@ -296,5 +297,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                              search={search}
                              tag={tag}
                              tags={tags}/>
+    <PageHistoryModal/>
   </>)
 }

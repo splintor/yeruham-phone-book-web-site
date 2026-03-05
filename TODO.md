@@ -6,8 +6,6 @@
 - Enable linking to anchors in page (which will also be cited in links preview)
 - Consider switching to working with redis - https://app.redislabs.com/#/subscriptions/subscription/1670090/bdb-view/10835436/configuration
      or maybe with Vercel-KV - https://vercel.com/docs/storage/vercel-kv
-- Show last change date (Which should be a link that opens a History window)
-
 - Add "Copy" button next to phone numbers
 - Show icon for each result (and enable defining icons for pages/categories)
 - [mobile]: Find how to make site links open the app on Android
@@ -21,5 +19,4 @@
     * Verify no page contains link to https://sites.google.com/site/yeruchamphonebook
     * verify social network links use relative images
 - X Think of how to handle deletion (also so the flutter app can be updated about changes)
-- X Handle page history
 - Consider moving to tailwind.css / svelte+sapper / shoelace

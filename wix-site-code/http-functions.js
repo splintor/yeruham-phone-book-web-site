@@ -501,6 +501,30 @@ export async function get_tag(request) {
   return okResponse({ pages, tags })
 }
 
+// URL: https://<wix-site-url>/_functions/pageHistory/<pageId>
+// noinspection JSUnusedGlobalSymbols
+export async function get_pageHistory(request) {
+  const loginCheck = await get_checkLogin(request)
+  if (loginCheck.status !== 200) {
+    return loginCheck
+  }
+
+  if (!phones) {
+    await loadCacheData(loginCheck.body.phoneNumber)
+  }
+
+  const pageId = decodeURI(request.path[0])
+  let result = await wixData.query('pages_history').eq('pageId', pageId).descending('_createdDate').limit(50).find(suppressAuthAndHooks)
+
+  const entries = result.items.map(item => ({
+    ...item,
+    changedBy: getPhoneTitle(item.changedBy),
+  }))
+
+  sendInfoLog(`בוצעה בקשה להיסטוריית הדף *${pageId}* ע"י *${getPhoneTitle(loginCheck.body.phoneNumber)}*, וחזרו *${entries.length}* רשומות`)
+  return okResponse(entries)
+}
+
 // URL: https://<wix-site-url>/_functions/tags
 // noinspection JSUnusedGlobalSymbols
 export async function get_tags() {

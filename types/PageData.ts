@@ -8,3 +8,13 @@ export interface PageData {
   _id?: string
   _updatedDate?: string
 }
+
+export interface PageHistoryEntry {
+  _id: string
+  pageId: string
+  changedBy: string
+  oldTitle: string
+  oldHtml: string
+  oldTags?: string[]
+  _createdDate: string
+}

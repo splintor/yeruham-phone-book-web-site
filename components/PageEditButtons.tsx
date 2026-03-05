@@ -1,4 +1,4 @@
-import React, { ReactElement, MouseEvent } from 'react'
+import React, { ReactElement } from 'react'
 import { PageData } from '../types/PageData'
 
 interface Props {
@@ -9,10 +9,6 @@ interface Props {
 }
 
 export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }: Props): ReactElement | null => {
-  function showHistory(event: MouseEvent) {
-    event.preventDefault()
-  }
-
   function getLastEditedText() {
     const today = new Date()
     const lastEdited = new Date(page._updatedDate || '')
@@ -33,7 +29,7 @@ export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }:
 
   return isGuestLogin ? null : (<div className="page-edit-buttons float-end d-flex">
     <div className="d-none d-md-block">
-      <button className="history-link" onClick={showHistory}>{getLastEditedText()}</button>
+      <button className="history-link" data-bs-toggle="modal" data-bs-target="#pageHistory" data-bs-page={JSON.stringify(page)}>{getLastEditedText()}</button>
       <button className="btn btn-sm btn-outline-primary" onClick={startEditing}>עריכה</button>
       <button className="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal"
               data-bs-target="#deleteConfirmation" data-bs-page={JSON.stringify(page)}>מחיקה
@@ -51,6 +47,7 @@ export const PageEditButtons = ({ page, isGuestLogin, startEditing, closePage }:
         <li><button className="dropdown-item" onClick={() => {
           startEditing()
         }}>עריכה</button></li>
+        <li><button className="dropdown-item" data-bs-toggle="modal" data-bs-target="#pageHistory" data-bs-page={JSON.stringify(page)}>היסטוריה</button></li>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <li><a className="dropdown-item" href="/" data-bs-toggle="modal" data-bs-target="#deleteConfirmation" data-bs-page={JSON.stringify(page)}>מחיקה</a>
         </li>
