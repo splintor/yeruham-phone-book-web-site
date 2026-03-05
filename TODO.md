@@ -22,5 +22,4 @@
     * verify social network links use relative images
 - X Think of how to handle deletion (also so the flutter app can be updated about changes)
 - X Handle page history
-- Consider moving to preact (https://justinnoel.dev/2020/05/12/using-preact-in-a-next-js-project/)
 - Consider moving to tailwind.css / svelte+sapper / shoelace

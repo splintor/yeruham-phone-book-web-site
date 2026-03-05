@@ -145,7 +145,7 @@ export default function PageEditor({ page, onCancel, onSave, pushState, setToast
   const [editedSource, setEditedSource] = useState(editorValue)
   const [isSaving, setIsSaving] = useState(false)
   const [allTags, setAllTags] = useState<string[]>()
-  const quillObj = useRef<Quill>()
+  const quillObj = useRef<Quill | undefined>(undefined)
   const titleInputRef = useRef<HTMLInputElement>(null)
   const sPressed = useKeyPress('s')
   const enterPressed = useKeyPress('Enter')

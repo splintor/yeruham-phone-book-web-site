@@ -1,5 +1,5 @@
 module.exports = {
-  rewrites() {
+  async rewrites() {
     return [
       {
         source: '/search-suggestions/:searchTerm',

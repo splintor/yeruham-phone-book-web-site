@@ -23,12 +23,10 @@ export function AppMenu({ dropdown, authTitle, page, search, tag, setToast }: Ap
     await copyPageLink(page, search, tag, setToast)
   }
 
-  const enterExitLink = (className: string) => <Link href="/">
-    <a className={className} onClick={() => {
+  const enterExitLink = (className: string) => <Link href="/" className={className} onClick={() => {
       setAuthCookies('', '')
       logToGTM({ event: 'logout', authTitle })
-    }}>{authTitle ? 'יציאה' : 'כניסה'}</a>
-  </Link>
+    }}>{authTitle ? 'יציאה' : 'כניסה'}</Link>
 
   return <ul className={ulClassName}>
     <li className={liClassName}><TitleLink className={linkClassName} href={`/tag/${publicTagName}`} title="דפים ציבוריים"/></li>

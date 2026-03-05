@@ -4,8 +4,8 @@ interface State {
   error?: Error;
 }
 
-export class ErrorBoundary extends React.Component<unknown, State> {
-  constructor(props: unknown) {
+export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, State> {
+  constructor(props: { children: React.ReactNode }) {
     super(props)
     this.state = {}
   }
@@ -23,7 +23,7 @@ export class ErrorBoundary extends React.Component<unknown, State> {
     if (error) {      // You can render any custom fallback UI
       return <div>
         <h1>אופס, משהו לא עובד...</h1>
-        <div style={{color: 'red'}}>{error}</div>
+        <div style={{color: 'red'}}>{error.message}</div>
       </div>
     }
     return this.props.children

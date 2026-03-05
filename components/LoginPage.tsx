@@ -65,7 +65,7 @@ export function LoginPage({ hashAuth }: { hashAuth?: string }): ReactElement {
       } else {
         setErrorType(ErrorType.NotFound)
       }
-    } catch (e) {
+    } catch {
       setErrorType(ErrorType.NetworkError)
     }
     setIsLoading(false)

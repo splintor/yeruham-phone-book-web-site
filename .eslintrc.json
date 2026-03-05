@@ -4,29 +4,27 @@
     "@typescript-eslint"
   ],
   "extends": [
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "next"
+  ],
+  "ignorePatterns": [
+    "wix-site-code",
+    "beer-data.js",
+    "next-env.d.ts"
   ],
   "rules": {
     "semi": [
       "error",
       "never"
-    ]
+    ],
+    "@typescript-eslint/no-require-imports": "off"
   },
   "overrides": [
-    {
-      "files": [
-        "*.js"
-      ],
-      "rules": {
-        "@typescript-eslint/explicit-module-boundary-types": "off"
-      }
-    },
     {
       "files": [
         "next.config.js"
       ],
       "rules": {
-        "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "semi": "off"
       }
