@@ -117,7 +117,7 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
     <div className="modal-dialog modal-lg modal-dialog-scrollable">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title" id="pageHistoryLabel">היסטוריית הדף {page?.title && <b>{page.title}</b>}</h5>
+          <h5 className="modal-title" id="pageHistoryLabel">היסטוריית הדף {page?.title && <b>{page.title}</b>}{history.length > 0 && ` (${history.length + 1} גרסאות)`}</h5>
           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="סגירה"/>
         </div>
         <div className="modal-body">
