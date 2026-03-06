@@ -18,8 +18,9 @@ function formatDate(dateStr: string): string {
   return date.toLocaleString()
 }
 
-function VersionEntry({ label, html, page, onRestore }: {
+function VersionEntry({ label, author, html, page, onRestore }: {
   label: string
+  author?: string
   html: string
   page?: PageData
   onRestore?(page: PageData): void
@@ -41,7 +42,7 @@ function VersionEntry({ label, html, page, onRestore }: {
 
   return <div className="border rounded p-2 mb-2">
     <div className="d-flex justify-content-between align-items-center" role="button" onClick={() => setExpanded(!expanded)}>
-      <div><strong>{label}</strong></div>
+      <div><strong>{label}</strong>{author && <span className="text-muted"> — {author}</span>}</div>
       <span>{expanded ? '▲' : '▼'}</span>
     </div>
     {expanded && <div className="mt-2">
@@ -131,7 +132,8 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
           {!loading && !error && history.length > 0 && page && <>
             <VersionEntry
               key="current"
-              label={`גרסה נוכחית — ${formatDate(history[0]._createdDate)} — ${history[0].changedBy}`}
+              label={`גרסה נוכחית — ${formatDate(history[0]._createdDate)}`}
+              author={history[0].changedBy}
               html={page.html}
             />
             {history.map((entry, i) => {
@@ -139,7 +141,8 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
               const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : 'גרסה ראשונה'
               return <VersionEntry
                 key={entry._id}
-                label={`${dateLabel} — ${nextEntry?.changedBy || entry.changedBy}`}
+                label={dateLabel}
+                author={nextEntry?.changedBy || entry.changedBy}
                 html={entry.oldHtml}
                 page={page}
                 onRestore={handleRestore}
