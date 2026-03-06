@@ -280,24 +280,8 @@ h5:hover a.copy {
   display: inline;
 }
 
-.diff-view {
+.history-preview {
   background: #f8f9fa;
-  padding: 8px;
-  border-radius: 4px;
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
-  white-space: pre-wrap;
-}
-
-.diff-added {
-  background-color: #d4edda;
-}
-
-.diff-removed {
-  background-color: #f8d7da;
-  text-decoration: line-through;
-}
-
-.diff-unchanged {
-  color: #6c757d;
 }

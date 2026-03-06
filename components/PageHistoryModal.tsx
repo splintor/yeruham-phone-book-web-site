@@ -1,26 +1,7 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
-import { diffWords } from 'diff'
 import { PageData, PageHistoryEntry } from '../types/PageData'
+import { savePage } from '../utils/api'
 import { getPageHistory } from '../utils/requests.client'
-
-function stripHtml(html: string): string {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  return div.textContent || ''
-}
-
-function DiffView({ oldHtml, newHtml }: { oldHtml: string, newHtml: string }): ReactElement {
-  const oldText = stripHtml(oldHtml)
-  const newText = stripHtml(newHtml)
-  const parts = diffWords(oldText, newText)
-
-  return <div className="diff-view" dir="rtl">
-    {parts.map((part, i) => {
-      const className = part.added ? 'diff-added' : part.removed ? 'diff-removed' : 'diff-unchanged'
-      return <span key={i} className={className}>{part.value}</span>
-    })}
-  </div>
-}
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr)
@@ -37,16 +18,23 @@ function formatDate(dateStr: string): string {
   return date.toLocaleString()
 }
 
-function HistoryEntry({ entry, newerHtml, newerTitle, newerTags, isOldest }: {
+function HistoryEntry({ entry, page, onRestore }: {
   entry: PageHistoryEntry
-  newerHtml?: string
-  newerTitle?: string
-  newerTags?: string[]
-  isOldest: boolean
+  page: PageData
+  onRestore(page: PageData): void
 }): ReactElement {
   const [expanded, setExpanded] = useState(false)
-  const titleChanged = newerTitle !== undefined && entry.oldTitle !== newerTitle
-  const tagsChanged = newerTags !== undefined && (entry.oldTags || []).join(',') !== (newerTags || []).join(',')
+  const [restoring, setRestoring] = useState(false)
+
+  async function restore() {
+    setRestoring(true)
+    const restoredPage = { ...page, title: entry.oldTitle, html: entry.oldHtml, tags: entry.oldTags }
+    const response = await savePage(restoredPage)
+    if (response.ok) {
+      onRestore(restoredPage)
+    }
+    setRestoring(false)
+  }
 
   return <div className="border rounded p-2 mb-2">
     <div className="d-flex justify-content-between align-items-center" role="button" onClick={() => setExpanded(!expanded)}>
@@ -57,27 +45,20 @@ function HistoryEntry({ entry, newerHtml, newerTitle, newerTags, isOldest }: {
       <span>{expanded ? '▲' : '▼'}</span>
     </div>
     {expanded && <div className="mt-2">
-      {titleChanged && <div className="mb-1">
-        <small className="text-muted">כותרת: </small>
-        <span className="diff-removed">{entry.oldTitle}</span>
-        {' → '}
-        <span className="diff-added">{newerTitle}</span>
-      </div>}
-      {tagsChanged && <div className="mb-1">
-        <small className="text-muted">קטגוריות: </small>
-        <span className="diff-removed">{(entry.oldTags || []).join(', ') || '(ללא)'}</span>
-        {' → '}
-        <span className="diff-added">{(newerTags || []).join(', ') || '(ללא)'}</span>
-      </div>}
-      {isOldest
-        ? <div className="text-muted fst-italic">זוהי הגרסה השמורה הראשונה</div>
-        : newerHtml !== undefined && <DiffView oldHtml={entry.oldHtml} newHtml={newerHtml}/>
-      }
+      <div className="page-html history-preview border rounded p-2 mb-2" dir="rtl"
+           dangerouslySetInnerHTML={{ __html: entry.oldHtml }}/>
+      <button className="btn btn-sm btn-outline-primary" disabled={restoring} onClick={restore}>
+        {restoring ? 'משחזר...' : 'שחזר גרסה זו'}
+      </button>
     </div>}
   </div>
 }
 
-export function PageHistoryModal(): ReactElement {
+interface PageHistoryModalProps {
+  onRestore?(page: PageData): void
+}
+
+export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactElement {
   const modalRef = useRef<HTMLDivElement>(null)
   const [page, setPage] = useState<PageData | null>(null)
   const [history, setHistory] = useState<PageHistoryEntry[]>([])
@@ -119,6 +100,17 @@ export function PageHistoryModal(): ReactElement {
     }
   }, [])
 
+  function handleRestore(restoredPage: PageData) {
+    onRestore?.(restoredPage)
+    // Close the modal via Bootstrap API
+    const modal = modalRef.current
+    if (modal) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bsModal = (window as any).bootstrap?.Modal.getInstance(modal)
+      bsModal?.hide()
+    }
+  }
+
   return <div className="modal fade" id="pageHistory" ref={modalRef} tabIndex={-1}
               aria-labelledby="pageHistoryLabel" aria-hidden="true">
     <div className="modal-dialog modal-lg modal-dialog-scrollable">
@@ -136,25 +128,16 @@ export function PageHistoryModal(): ReactElement {
           {!loading && !error && history.length === 0 && <div className="text-muted text-center my-4">
             אין היסטוריה שמורה לדף זה
           </div>}
-          {!loading && !error && history.length > 0 && <>
+          {!loading && !error && history.length > 0 && page && <>
             <div className="text-muted mb-2">
-              <small>גרסה נוכחית — {page?._updatedDate && formatDate(page._updatedDate)}</small>
+              <small>גרסה נוכחית — {page._updatedDate && formatDate(page._updatedDate)}</small>
             </div>
-            {history.map((entry, i) => {
-              const newerHtml = i === 0 ? page?.html : history[i - 1].oldHtml
-              const newerTitle = i === 0 ? page?.title : history[i - 1].oldTitle
-              const newerTags = i === 0 ? page?.tags : history[i - 1].oldTags
-              const isOldest = i === history.length - 1
-
-              return <HistoryEntry
-                key={entry._id}
-                entry={entry}
-                newerHtml={newerHtml}
-                newerTitle={newerTitle}
-                newerTags={newerTags}
-                isOldest={isOldest}
-              />
-            })}
+            {history.map(entry => <HistoryEntry
+              key={entry._id}
+              entry={entry}
+              page={page}
+              onRestore={handleRestore}
+            />)}
           </>}
         </div>
         <div className="modal-footer">

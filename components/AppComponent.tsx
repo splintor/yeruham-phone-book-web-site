@@ -297,6 +297,6 @@ export function AppComponent(appProps: AppProps & { authData: AuthData }): React
                              search={search}
                              tag={tag}
                              tags={tags}/>
-    <PageHistoryModal/>
+    <PageHistoryModal onRestore={page => setDisplayedPage({ page })}/>
   </>)
 }
