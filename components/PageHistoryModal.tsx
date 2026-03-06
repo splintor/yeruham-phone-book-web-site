@@ -18,17 +18,20 @@ function formatDate(dateStr: string): string {
   return date.toLocaleString()
 }
 
-function HistoryEntry({ entry, page, onRestore }: {
-  entry: PageHistoryEntry
-  page: PageData
-  onRestore(page: PageData): void
+function VersionEntry({ label, html, page, onRestore }: {
+  label: string
+  html: string
+  page?: PageData
+  onRestore?(page: PageData): void
 }): ReactElement {
   const [expanded, setExpanded] = useState(false)
   const [restoring, setRestoring] = useState(false)
+  const canRestore = page && onRestore
 
   async function restore() {
+    if (!canRestore) return
     setRestoring(true)
-    const restoredPage = { ...page, title: entry.oldTitle, html: entry.oldHtml, tags: entry.oldTags }
+    const restoredPage = { ...page, html }
     const response = await savePage(restoredPage)
     if (response.ok) {
       onRestore(restoredPage)
@@ -38,18 +41,15 @@ function HistoryEntry({ entry, page, onRestore }: {
 
   return <div className="border rounded p-2 mb-2">
     <div className="d-flex justify-content-between align-items-center" role="button" onClick={() => setExpanded(!expanded)}>
-      <div>
-        <strong>{formatDate(entry._createdDate)}</strong>
-        <span className="text-muted me-2"> — {entry.changedBy}</span>
-      </div>
+      <div><strong>{label}</strong></div>
       <span>{expanded ? '▲' : '▼'}</span>
     </div>
     {expanded && <div className="mt-2">
       <div className="page-html history-preview border rounded p-2 mb-2" dir="rtl"
-           dangerouslySetInnerHTML={{ __html: entry.oldHtml }}/>
-      <button className="btn btn-sm btn-outline-primary" disabled={restoring} onClick={restore}>
+           dangerouslySetInnerHTML={{ __html: html }}/>
+      {canRestore && <button className="btn btn-sm btn-outline-primary" disabled={restoring} onClick={restore}>
         {restoring ? 'משחזר...' : 'שחזר גרסה זו'}
-      </button>
+      </button>}
     </div>}
   </div>
 }
@@ -129,15 +129,22 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
             אין היסטוריה שמורה לדף זה
           </div>}
           {!loading && !error && history.length > 0 && page && <>
-            <div className="text-muted mb-2">
-              <small>גרסה נוכחית — {page._updatedDate && formatDate(page._updatedDate)}</small>
-            </div>
-            {history.map(entry => <HistoryEntry
-              key={entry._id}
-              entry={entry}
-              page={page}
-              onRestore={handleRestore}
-            />)}
+            <VersionEntry
+              key="current"
+              label={`גרסה נוכחית — ${formatDate(history[0]._createdDate)} — ${history[0].changedBy}`}
+              html={page.html}
+            />
+            {history.map((entry, i) => {
+              const nextEntry = history[i + 1]
+              const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : 'גרסה ראשונה'
+              return <VersionEntry
+                key={entry._id}
+                label={`${dateLabel} — ${nextEntry?.changedBy || entry.changedBy}`}
+                html={entry.oldHtml}
+                page={page}
+                onRestore={handleRestore}
+              />
+            })}
           </>}
         </div>
         <div className="modal-footer">
