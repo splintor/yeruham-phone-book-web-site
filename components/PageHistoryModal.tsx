@@ -138,7 +138,7 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
             />
             {history.map((entry, i) => {
               const nextEntry = history[i + 1]
-              const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : 'גרסה ראשונה'
+              const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : `גרסה ראשונה — ${formatDate(entry._createdDate)}`
               return <VersionEntry
                 key={entry._id}
                 label={dateLabel}
