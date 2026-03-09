@@ -109,15 +109,15 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .result {
-  .page-edit-buttons {
-    opacity: .5;
-  }
-
   .page-edit-buttons .d-md-block {
     display: none !important;
   }
 
   @media (min-width: 768px) {
+    .page-edit-buttons {
+      opacity: .5;
+    }
+
     &:hover .page-edit-buttons .d-md-block {
       display: block !important;
     }
