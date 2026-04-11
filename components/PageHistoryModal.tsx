@@ -125,7 +125,7 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
     <div className="modal-dialog modal-lg modal-dialog-scrollable">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title" id="pageHistoryLabel">היסטוריית הדף {page?.title && <b>{page.title}</b>}{!loading && !error && ` (${history.length + 1} ${history.length + 1 === 1 ? 'גרסה' : 'גרסאות'})`}</h5>
+          <h5 className="modal-title" id="pageHistoryLabel">היסטוריית הדף {page?.title && <b>{page.title}</b>}{!loading && !error && ` (${history.length === 0 ? 'גרסה אחת' : `${history.length + 1} גרסאות`})`}</h5>
           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="סגירה"/>
         </div>
         <div className="modal-body">
@@ -156,7 +156,7 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
               })}
             </> : <VersionEntry
               key="current-only"
-              label={`גרסה נוכחית${pageCreatedDate ? ` — ${formatDate(pageCreatedDate)}` : ''}`}
+              label={`גרסה נוכחית${pageCreatedDate || page._createdDate ? ` — ${formatDate((pageCreatedDate || page._createdDate)!)}` : ''}`}
               author={pageCreatedBy}
               html={page.html}
             />}
