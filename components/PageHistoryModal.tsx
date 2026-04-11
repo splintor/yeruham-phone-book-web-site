@@ -117,7 +117,7 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
     <div className="modal-dialog modal-lg modal-dialog-scrollable">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title" id="pageHistoryLabel">היסטוריית הדף {page?.title && <b>{page.title}</b>}{history.length > 0 && ` (${history.length + 1} גרסאות)`}</h5>
+          <h5 className="modal-title" id="pageHistoryLabel">היסטוריית הדף {page?.title && <b>{page.title}</b>}{!loading && !error && ` (${history.length + 1} ${history.length + 1 === 1 ? 'גרסה' : 'גרסאות'})`}</h5>
           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="סגירה"/>
         </div>
         <div className="modal-body">
@@ -126,28 +126,32 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
             טוען היסטוריה...
           </div>}
           {error && <div className="alert alert-danger">{error}</div>}
-          {!loading && !error && history.length === 0 && <div className="text-muted text-center my-4">
-            אין היסטוריה שמורה לדף זה
-          </div>}
-          {!loading && !error && history.length > 0 && page && <>
-            <VersionEntry
-              key="current"
-              label={`גרסה נוכחית — ${formatDate(history[0]._createdDate)}`}
-              author={history[0].changedBy}
-              html={page.html}
-            />
-            {history.map((entry, i) => {
-              const nextEntry = history[i + 1]
-              const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : `גרסה ראשונה — ${formatDate(entry._createdDate)}`
-              return <VersionEntry
-                key={entry._id}
-                label={dateLabel}
-                author={nextEntry?.changedBy || entry.changedBy}
-                html={entry.oldHtml}
-                page={page}
-                onRestore={handleRestore}
+          {!loading && !error && page && <>
+            {history.length > 0 ? <>
+              <VersionEntry
+                key="current"
+                label={`גרסה נוכחית — ${formatDate(history[0]._createdDate)}`}
+                author={history[0].changedBy}
+                html={page.html}
               />
-            })}
+              {history.map((entry, i) => {
+                const nextEntry = history[i + 1]
+                const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : `גרסה ראשונה — ${formatDate(entry._createdDate)}`
+                return <VersionEntry
+                  key={entry._id}
+                  label={dateLabel}
+                  author={nextEntry?.changedBy || entry.changedBy}
+                  html={entry.oldHtml}
+                  page={page}
+                  onRestore={handleRestore}
+                />
+              })}
+            </> : <VersionEntry
+              key="first"
+              label={`גרסה ראשונה${page._createdDate ? ` — ${formatDate(page._createdDate)}` : ''}`}
+              author={page.createdBy}
+              html={page.html}
+            />}
           </>}
         </div>
         <div className="modal-footer">

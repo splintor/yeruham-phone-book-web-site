@@ -213,7 +213,7 @@ export async function get_page(request) {
     } else {
       sendInfoLog(`הדף הציבורי *${item.title}* נפתח`)
     }
-    return okResponse(item)
+    return okResponse({...item, createdBy: getPhoneTitle(item.createdBy)})
   } else {
     if (item) {
       sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי *${item.title}*`)

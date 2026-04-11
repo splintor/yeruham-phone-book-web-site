@@ -7,6 +7,8 @@ export interface PageData {
   isDeleted?: boolean
   _id?: string
   _updatedDate?: string
+  _createdDate?: string
+  createdBy?: string
 }
 
 export interface PageHistoryEntry {
