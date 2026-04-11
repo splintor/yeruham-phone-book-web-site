@@ -3,23 +3,34 @@ import { PageData, PageHistoryEntry } from '../types/PageData'
 import { savePage } from '../utils/api'
 import { getPageHistory } from '../utils/requests.client'
 
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  const today = new Date()
-  const yesterday = new Date(today)
-  yesterday.setDate(yesterday.getDate() - 1)
+const rtf = new Intl.RelativeTimeFormat('he', { numeric: 'auto' })
 
-  if (date.toLocaleDateString() === today.toLocaleDateString()) {
-    return `היום ב-${date.toLocaleTimeString()}`
-  }
-  if (date.toLocaleDateString() === yesterday.toLocaleDateString()) {
-    return `אתמול ב-${date.toLocaleTimeString()}`
-  }
-  return date.toLocaleString()
+function formatRelativeDate(dateStr: string): string {
+  const diffMs = new Date(dateStr).getTime() - Date.now()
+  const diffSeconds = Math.round(diffMs / 1000)
+  const diffMinutes = Math.round(diffSeconds / 60)
+  const diffHours = Math.round(diffMinutes / 60)
+  const diffDays = Math.round(diffHours / 24)
+  const diffWeeks = Math.round(diffDays / 7)
+  const diffMonths = Math.round(diffDays / 30.5)
+  const diffYears = Math.round(diffDays / 365)
+
+  if (Math.abs(diffSeconds) < 60) return rtf.format(diffSeconds, 'second')
+  if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, 'minute')
+  if (Math.abs(diffHours) < 24) return rtf.format(diffHours, 'hour')
+  if (Math.abs(diffDays) < 7) return rtf.format(diffDays, 'day')
+  if (Math.abs(diffWeeks) < 5) return rtf.format(diffWeeks, 'week')
+  if (Math.abs(diffMonths) < 12) return rtf.format(diffMonths, 'month')
+  return rtf.format(diffYears, 'year')
 }
 
-function VersionEntry({ label, author, html, page, onRestore }: {
-  label: string
+function formatExactDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleString('he-IL')
+}
+
+function VersionEntry({ label, date, author, html, page, onRestore }: {
+  label?: string
+  date?: string
   author?: string
   html: string
   page?: PageData
@@ -42,7 +53,11 @@ function VersionEntry({ label, author, html, page, onRestore }: {
 
   return <div className="border rounded p-2 mb-2">
     <div className="d-flex justify-content-between align-items-center" role="button" onClick={() => setExpanded(!expanded)}>
-      <div><strong>{label}</strong>{author && <span className="text-muted"> — {author}</span>}</div>
+      <div>
+        {label && <strong>{label}</strong>}
+        {date && <span className="text-muted" title={formatExactDate(date)}>{label ? ' — ' : ''}{formatRelativeDate(date)}</span>}
+        {author && <span className="text-muted"> — {author}</span>}
+      </div>
       <span>{expanded ? '▲' : '▼'}</span>
     </div>
     {expanded && <div className="mt-2">
@@ -138,16 +153,17 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
             {history.length > 0 ? <>
               <VersionEntry
                 key="current"
-                label={`גרסה נוכחית — ${formatDate(history[0]._createdDate)}`}
+                label="גרסה נוכחית"
+                date={history[0]._createdDate}
                 author={history[0].changedBy}
                 html={page.html}
               />
               {history.map((entry, i) => {
                 const nextEntry = history[i + 1]
-                const dateLabel = nextEntry ? formatDate(nextEntry._createdDate) : `גרסה ראשונה — ${formatDate(entry._createdDate)}`
                 return <VersionEntry
                   key={entry._id}
-                  label={dateLabel}
+                  label={nextEntry ? undefined : 'גרסה ראשונה'}
+                  date={nextEntry ? nextEntry._createdDate : entry._createdDate}
                   author={nextEntry?.changedBy || entry.changedBy}
                   html={entry.oldHtml}
                   page={page}
@@ -156,7 +172,8 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
               })}
             </> : <VersionEntry
               key="current-only"
-              label={`גרסה נוכחית${pageCreatedDate || page._createdDate ? ` — ${formatDate((pageCreatedDate || page._createdDate)!)}` : ''}`}
+              label="גרסה נוכחית"
+              date={pageCreatedDate || page._createdDate}
               author={pageCreatedBy}
               html={page.html}
             />}
