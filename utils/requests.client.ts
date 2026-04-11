@@ -36,7 +36,11 @@ export async function getPageHistory(pageId: string): Promise<PageHistoryData> {
   const { auth } = parseAuthCookies()
   const res = await fetch(`/api/pageHistory/${encodeURIComponent(pageId)}`, { headers: { Cookie: `auth=${auth}` } })
   if (res.ok) {
-    return res.json()
+    const data = await res.json()
+    if (Array.isArray(data)) {
+      return { entries: data }
+    }
+    return data ?? { entries: [] }
   }
   return { entries: [] }
 }
