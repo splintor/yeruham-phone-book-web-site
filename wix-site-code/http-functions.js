@@ -514,17 +514,14 @@ export async function get_pageHistory(request) {
   }
 
   const pageId = decodeURI(request.path[0])
-  const [historyResult, pageResult] = await Promise.all([
-    wixData.query('pages_history').eq('pageId', pageId).descending('_createdDate').limit(50).find(suppressAuthAndHooks),
-    wixData.query('pages').eq('_id', pageId).find(suppressAuthAndHooks),
-  ])
+  const historyResult = await wixData.query('pages_history').eq('pageId', pageId).descending('_createdDate').limit(50).find(suppressAuthAndHooks)
 
   const entries = historyResult.items.map(item => ({
     ...item,
     changedBy: getPhoneTitle(item.changedBy),
   }))
 
-  const [pageItem] = pageResult.items
+  const pageItem = allPages && allPages.find(p => p._id === pageId)
   const createdBy = pageItem ? getPhoneTitle(pageItem.createdBy) : null
   const createdDate = pageItem ? pageItem._createdDate : null
 
