@@ -26,11 +26,17 @@ export async function getTagPages(tag: string): Promise<SearchResults | null> {
   return null
 }
 
-export async function getPageHistory(pageId: string): Promise<PageHistoryEntry[]> {
+export interface PageHistoryData {
+  entries: PageHistoryEntry[]
+  createdBy?: string
+  createdDate?: string
+}
+
+export async function getPageHistory(pageId: string): Promise<PageHistoryData> {
   const { auth } = parseAuthCookies()
   const res = await fetch(`/api/pageHistory/${encodeURIComponent(pageId)}`, { headers: { Cookie: `auth=${auth}` } })
   if (res.ok) {
     return res.json()
   }
-  return []
+  return { entries: [] }
 }

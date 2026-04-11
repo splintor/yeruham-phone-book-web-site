@@ -63,6 +63,8 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
   const modalRef = useRef<HTMLDivElement>(null)
   const [page, setPage] = useState<PageData | null>(null)
   const [history, setHistory] = useState<PageHistoryEntry[]>([])
+  const [pageCreatedBy, setPageCreatedBy] = useState<string | undefined>(undefined)
+  const [pageCreatedDate, setPageCreatedDate] = useState<string | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -77,9 +79,13 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
       setLoading(true)
       setError(null)
       setHistory([])
+      setPageCreatedBy(undefined)
+      setPageCreatedDate(undefined)
 
-      getPageHistory(pageData._id!).then(entries => {
+      getPageHistory(pageData._id!).then(({ entries, createdBy, createdDate }) => {
         setHistory(entries)
+        setPageCreatedBy(createdBy)
+        setPageCreatedDate(createdDate)
         setLoading(false)
       }).catch(() => {
         setError('שגיאה בטעינת ההיסטוריה')
@@ -90,6 +96,8 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
     const onHidden = () => {
       setPage(null)
       setHistory([])
+      setPageCreatedBy(undefined)
+      setPageCreatedDate(undefined)
       setError(null)
     }
 
@@ -147,9 +155,9 @@ export function PageHistoryModal({ onRestore }: PageHistoryModalProps): ReactEle
                 />
               })}
             </> : <VersionEntry
-              key="first"
-              label={`גרסה ראשונה${page._createdDate ? ` — ${formatDate(page._createdDate)}` : ''}`}
-              author={page.createdBy}
+              key="current-only"
+              label={`גרסה נוכחית${pageCreatedDate ? ` — ${formatDate(pageCreatedDate)}` : ''}`}
+              author={pageCreatedBy}
               html={page.html}
             />}
           </>}

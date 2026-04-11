@@ -213,7 +213,7 @@ export async function get_page(request) {
     } else {
       sendInfoLog(`הדף הציבורי *${item.title}* נפתח`)
     }
-    return okResponse({...item, createdBy: getPhoneTitle(item.createdBy)})
+    return okResponse(item)
   } else {
     if (item) {
       sendInfoLog(`בוצע נסיון חיצוני לגשת לדף הפנימי *${item.title}*`)
@@ -514,15 +514,22 @@ export async function get_pageHistory(request) {
   }
 
   const pageId = decodeURI(request.path[0])
-  let result = await wixData.query('pages_history').eq('pageId', pageId).descending('_createdDate').limit(50).find(suppressAuthAndHooks)
+  const [historyResult, pageResult] = await Promise.all([
+    wixData.query('pages_history').eq('pageId', pageId).descending('_createdDate').limit(50).find(suppressAuthAndHooks),
+    wixData.query('pages').eq('_id', pageId).find(suppressAuthAndHooks),
+  ])
 
-  const entries = result.items.map(item => ({
+  const entries = historyResult.items.map(item => ({
     ...item,
     changedBy: getPhoneTitle(item.changedBy),
   }))
 
+  const [pageItem] = pageResult.items
+  const createdBy = pageItem ? getPhoneTitle(pageItem.createdBy) : null
+  const createdDate = pageItem ? pageItem._createdDate : null
+
   sendInfoLog(`בוצעה בקשה להיסטוריית הדף *${pageId}* ע"י *${getPhoneTitle(loginCheck.body.phoneNumber)}*, וחזרו *${entries.length}* רשומות`)
-  return okResponse(entries)
+  return okResponse({ entries, createdBy, createdDate })
 }
 
 // URL: https://<wix-site-url>/_functions/tags
