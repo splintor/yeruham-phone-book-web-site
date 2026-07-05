@@ -73,16 +73,6 @@ export default function App(appProps: AppProps): ReactElement {
       <meta name="viewport" content="width=device-width, initial-scale=1" key="viewport"/>
       <meta name="description" content={description} key="description"/>
       <meta property="og:site_name" content={siteInfo.siteTitle} key="siteName"/>
-      {isHomePage && <script
-        type="application/ld+json"
-        key="websiteJsonLd"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: siteInfo.siteTitle,
-          url: origin,
-        }) }}
-      />}
       {showPreview && <>
         <meta property="og:title" content={decodeURI(pageTitle)} key="pageTitle"/>
         <meta property="og:description" content={description} key="previewDescription"/>
@@ -95,6 +85,15 @@ export default function App(appProps: AppProps): ReactElement {
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.rtl.min.css"
             integrity="sha384-jHiSqEim4+W1UCvv8kTcMbtCZlRF8MxbgKdfpvncia8gdN1UImBnhTpKtufREzv7" crossOrigin="anonymous"/>
     </Head>
+    {isHomePage && <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: siteInfo.siteTitle,
+        url: origin,
+      }) }}
+    />}
     <ErrorBoundary>
       {authData ? (isPageAllowed && !hashAuth) ? <AppComponent authData={authData} {...appProps} /> : <LoginPage hashAuth={hashAuth}/> : ''}
     </ErrorBoundary>
