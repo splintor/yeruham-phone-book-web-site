@@ -48,6 +48,7 @@ export default function App(appProps: AppProps): ReactElement {
           : ''
         : siteInfo.siteDescription
 
+  const isHomePage = !page && !tag && !search && !newPage
   const [authData, setAuthData] = useState<AuthData>()
   useEffect(() => setAuthData(parseAuthCookies()), [])
   const hashAuth = useHashAuth()
@@ -71,6 +72,17 @@ export default function App(appProps: AppProps): ReactElement {
       <title>{pageTitle}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" key="viewport"/>
       <meta name="description" content={description} key="description"/>
+      <meta property="og:site_name" content={siteInfo.siteTitle} key="siteName"/>
+      {isHomePage && <script
+        type="application/ld+json"
+        key="websiteJsonLd"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: siteInfo.siteTitle,
+          url: origin,
+        }) }}
+      />}
       {showPreview && <>
         <meta property="og:title" content={decodeURI(pageTitle)} key="pageTitle"/>
         <meta property="og:description" content={description} key="previewDescription"/>
